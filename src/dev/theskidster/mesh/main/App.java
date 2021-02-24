@@ -47,6 +47,4 @@ public final class App {
         glfwSetWindowShouldClose(window.handle, true);
     }
     
-    
-    
 }
