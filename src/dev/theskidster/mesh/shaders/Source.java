@@ -1,6 +1,7 @@
 package dev.theskidster.mesh.shaders;
 
 import dev.theskidster.mesh.main.App;
+import dev.theskidster.mesh.main.Logger;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -26,8 +27,7 @@ final class Source {
                 builder.append(line).append("\n");
             }
         } catch(Exception e) {
-            //TODO: add logger
-            System.out.println("failed to read");
+            Logger.logSevere("Failed to pase GLSL file: \"" + filename + "\"", e);
         }
         
         CharSequence sourceCode = builder.toString();
@@ -37,8 +37,7 @@ final class Source {
         glCompileShader(handle);
         
         if(glGetShaderi(handle, GL_COMPILE_STATUS) != GL_TRUE) {
-            //TODO: add logger
-            System.out.println("failed to compile");
+            Logger.logSevere("Failed to compile GLSL file: \"" + filename + "\" " + glGetShaderInfoLog(handle), null);
         }
     }
     

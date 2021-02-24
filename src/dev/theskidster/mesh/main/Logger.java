@@ -79,25 +79,24 @@ public final class Logger {
                .append(System.lineSeparator())
                .append(System.lineSeparator());
 
-        if(e != null) {
-            var stackTrace = e.getStackTrace();
+        if(e == null) e = new RuntimeException();
+        var stackTrace = e.getStackTrace();
+        
+        System.err.println(e.toString());
+        builder.append(e.toString())
+               .append(System.lineSeparator());
 
-            System.err.println(e.toString());
-            builder.append(e.toString())
+        for(StackTraceElement element : stackTrace) {
+            System.err.println("\t" + element.toString());
+
+            builder.append("\t")
+                   .append(element.toString())
                    .append(System.lineSeparator());
-
-            for(StackTraceElement element : stackTrace) {
-                System.err.println("\t" + element.toString());
-
-                builder.append("\t")
-                       .append(element.toString())
-                       .append(System.lineSeparator());
-            }
-
-            System.err.println();
-            builder.append(System.lineSeparator());
         }
 
+        System.err.println();
+        builder.append(System.lineSeparator());
+        
         File file     = new File("log " + date + ".txt");
         int duplicate = 0;
 
