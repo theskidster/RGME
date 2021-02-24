@@ -1,6 +1,7 @@
 package dev.theskidster.mesh.main;
 
 import static org.lwjgl.glfw.GLFW.*;
+import org.lwjgl.opengl.GL;
 
 /**
  * @author J Hoffman
@@ -9,6 +10,8 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public final class App {
 
+    public static final String DOMAIN = "mesh";
+    
     private final Monitor monitor;
     private final Window window;
     
@@ -18,6 +21,13 @@ public final class App {
         monitor = new Monitor();
         window  = new Window("Mesh Manipulator", monitor);
         
+        glfwMakeContextCurrent(window.handle);
+        GL.createCapabilities();
+        
+        //Establish the shader program that will be used to render the applications UI.
+        {
+            
+        }
         
     }
     
@@ -29,7 +39,14 @@ public final class App {
             glfwSwapBuffers(window.handle);
         }
         
+        GL.destroy();
         glfwTerminate();
     }
+    
+    void finish() {
+        glfwSetWindowShouldClose(window.handle, true);
+    }
+    
+    
     
 }
