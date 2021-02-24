@@ -1,7 +1,11 @@
 package dev.theskidster.mesh.main;
 
+import dev.theskidster.mesh.shader.BufferType;
+import dev.theskidster.mesh.shader.Shader;
+import java.util.LinkedList;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
+import static org.lwjgl.opengl.GL20.*;
 
 /**
  * @author J Hoffman
@@ -14,6 +18,7 @@ public final class App {
     
     private final Monitor monitor;
     private final Window window;
+    private final Program uiProgram;
     
     App() {
         glfwInit();
@@ -26,7 +31,15 @@ public final class App {
         
         //Establish the shader program that will be used to render the applications UI.
         {
+            var shaderSourceFiles = new LinkedList<Shader>() {{
+                add(new Shader("uiVertex.glsl", GL_VERTEX_SHADER));
+                add(new Shader("uiFragment.glsl", GL_FRAGMENT_SHADER));
+            }};
             
+            uiProgram = new Program(shaderSourceFiles, "ui");
+            uiProgram.use();
+            
+            uiProgram.addUniform(BufferType.MAT4, "uProjection");
         }
         
     }

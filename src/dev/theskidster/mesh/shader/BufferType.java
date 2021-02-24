@@ -1,4 +1,4 @@
-package dev.theskidster.mesh.shaders;
+package dev.theskidster.mesh.shader;
 
 /**
  * @author J Hoffman
