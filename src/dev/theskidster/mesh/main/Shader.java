@@ -1,7 +1,5 @@
-package dev.theskidster.mesh.shader;
+package dev.theskidster.mesh.main;
 
-import dev.theskidster.mesh.main.App;
-import dev.theskidster.mesh.main.Logger;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -12,12 +10,12 @@ import static org.lwjgl.opengl.GL20.*;
  * Created: Feb 23, 2021
  */
 
-public final class Shader {
+final class Shader {
     
-    public final int handle;
+    final int handle;
     
-    public Shader(String filename, int type) {
-        String filepath       = "/dev/theskidster/" + App.DOMAIN + "/shader/" + filename;
+    Shader(String filename, int type) {
+        String filepath       = "/dev/theskidster/" + App.DOMAIN + "/shaders/" + filename;
         StringBuilder builder = new StringBuilder();
         InputStream file      = Shader.class.getResourceAsStream(filepath);
         

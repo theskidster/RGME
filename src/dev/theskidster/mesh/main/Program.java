@@ -1,9 +1,6 @@
 package dev.theskidster.mesh.main;
 
-import dev.theskidster.mesh.main.Logger;
-import dev.theskidster.mesh.shader.BufferType;
-import dev.theskidster.mesh.shader.Shader;
-import static dev.theskidster.mesh.shader.BufferType.*;
+import static dev.theskidster.mesh.main.BufferType.*;
 import java.nio.Buffer;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -22,7 +19,7 @@ import org.lwjgl.system.MemoryStack;
 
 public class Program {
     
-    public final int handle;
+    final int handle;
     
     private final Map<String, UniformVariable> uniforms = new HashMap<>();
     private static final Map<BufferType, Integer> bufferSizes;

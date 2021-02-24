@@ -1,7 +1,5 @@
 package dev.theskidster.mesh.main;
 
-import dev.theskidster.mesh.shader.BufferType;
-import dev.theskidster.mesh.shader.Shader;
 import java.util.LinkedList;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;

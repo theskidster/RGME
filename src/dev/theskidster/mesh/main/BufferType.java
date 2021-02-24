@@ -1,11 +1,11 @@
-package dev.theskidster.mesh.shader;
+package dev.theskidster.mesh.main;
 
 /**
  * @author J Hoffman
  * Created: Feb 23, 2021
  */
 
-public enum BufferType {
+enum BufferType {
     INT,
     FLOAT,
     VEC2, VEC3,

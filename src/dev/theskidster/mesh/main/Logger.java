@@ -27,6 +27,9 @@ public final class Logger {
         logInfo("OPENGL VERSION:\t" + glGetString(GL_VERSION));
         logInfo("APP VERSION:\t" + App.VERSION);
         logInfo("--------------------------------------------------------------------------------");
+        
+        System.out.println();
+        builder.append(System.lineSeparator());
     }
     
     public static void logInfo(String message) {
