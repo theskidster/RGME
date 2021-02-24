@@ -1,4 +1,4 @@
-package dev.theskidster.mesh.main;
+package dev.theskidster.rgme.main;
 
 import java.util.LinkedList;
 import static org.lwjgl.glfw.GLFW.*;
@@ -12,7 +12,7 @@ import static org.lwjgl.opengl.GL20.*;
 
 public final class App {
 
-    public static final String DOMAIN  = "mesh";
+    public static final String DOMAIN  = "rgme";
     public static final String VERSION = "0.0.0";
     
     private final Monitor monitor;

@@ -1,4 +1,4 @@
-package dev.theskidster.mesh.main;
+package dev.theskidster.rgme.main;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

@@ -1,4 +1,4 @@
-package dev.theskidster.mesh.main;
+package dev.theskidster.rgme.main;
 
 import java.io.File;
 import java.io.FileWriter;

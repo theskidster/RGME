@@ -1,6 +1,6 @@
-package dev.theskidster.mesh.main;
+package dev.theskidster.rgme.main;
 
-import static dev.theskidster.mesh.main.BufferType.*;
+import static dev.theskidster.rgme.main.BufferType.*;
 import java.nio.Buffer;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -33,7 +33,7 @@ public class Program {
         }};
     }
     
-    public Program(LinkedList<Shader> shaders, String name) {
+    Program(LinkedList<Shader> shaders, String name) {
         handle = glCreateProgram();
         shaders.forEach(shader -> glAttachShader(handle, shader.handle));
         glLinkProgram(handle);

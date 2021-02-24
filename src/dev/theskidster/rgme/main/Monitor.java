@@ -1,4 +1,4 @@
-package dev.theskidster.mesh.main;
+package dev.theskidster.rgme.main;
 
 import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
 import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
