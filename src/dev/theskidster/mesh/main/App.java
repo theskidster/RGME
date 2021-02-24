@@ -14,7 +14,8 @@ import static org.lwjgl.opengl.GL20.*;
 
 public final class App {
 
-    public static final String DOMAIN = "mesh";
+    public static final String DOMAIN  = "mesh";
+    public static final String VERSION = "0.0.0";
     
     private final Monitor monitor;
     private final Window window;
@@ -46,6 +47,7 @@ public final class App {
     
     void start() {
         window.show(monitor);
+        Logger.logSystemInfo();
         
         while(!glfwWindowShouldClose(window.handle)) {
             glfwPollEvents();

@@ -5,6 +5,9 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import static org.lwjgl.glfw.GLFW.glfwGetVersionString;
+import static org.lwjgl.opengl.GL11.GL_VERSION;
+import static org.lwjgl.opengl.GL11.glGetString;
 
 /**
  * @author J Hoffman
@@ -16,8 +19,14 @@ public final class Logger {
     private static PrintWriter writer;
     private final static StringBuilder builder = new StringBuilder();
     
-    void logSystemInfo() {
-        //TODO: provide this once GL info is available
+    static void logSystemInfo() {
+        logInfo("--------------------------------------------------------------------------------");
+        logInfo("OS NAME:\t\t" + System.getProperty("os.name"));
+        logInfo("JAVA VERSION:\t" + System.getProperty("java.version"));
+        logInfo("GLFW VERSION:\t" + glfwGetVersionString());
+        logInfo("OPENGL VERSION:\t" + glGetString(GL_VERSION));
+        logInfo("APP VERSION:\t" + App.VERSION);
+        logInfo("--------------------------------------------------------------------------------");
     }
     
     public static void logInfo(String message) {
