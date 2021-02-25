@@ -49,7 +49,7 @@ public class Program {
     
     void addUniform(BufferType type, String name) {
         if(glGetUniformLocation(handle, name) == -1) {
-            Logger.logSevere("Failed to find uniform: \"" + name + "\". Check " + 
+            Logger.logSevere("Failed to find uniform: \"" + name + "\" check " + 
                              "variable name or GLSL source file where it is declared.", 
                              null);
         }
