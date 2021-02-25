@@ -1,7 +1,9 @@
 package dev.theskidster.rgme.main;
 
+import dev.theskidster.rgme.ui.UI;
 import java.nio.IntBuffer;
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.glViewport;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -43,12 +45,22 @@ final class Window {
         handle = glfwCreateWindow(width, height, title, NULL, NULL);
     }
     
-    void show(Monitor monitor) {
+    void show(Monitor monitor, UI ui) {
         glfwSetWindowMonitor(handle, NULL, xPos, yPos, width, height, monitor.refreshRate);
         glfwSetWindowPos(handle, xPos, yPos);
         glfwSwapInterval(1);
         glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         glfwShowWindow(handle);
+        
+        ui.setViewport(width, height);
+        
+        glfwSetWindowSizeCallback(handle, (window, w, h) -> {
+            width  = w;
+            height = h;
+            
+            glViewport(0, 0, width, height);
+            ui.setViewport(width, height);
+        });
     }
     
 }

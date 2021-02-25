@@ -9,11 +9,12 @@ import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.utils.Color;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
-import org.joml.Vector2i;
 import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL30.*;
+import org.lwjgl.system.MemoryStack;
 
 /**
  * @author J Hoffman
@@ -126,31 +127,33 @@ class FreeTypeFont {
             
             float x = xPos + g.bearingX * scale;
             float y = yPos + (g.height - g.bearingY) * scale;
-            
             float w = g.width * scale;
             float h = g.height * scale;
-
-            float vertices[] = {
-                x,     y - h, 0, 0,
-                x,     y,     0, 1,
-                x + w, y,     1, 1,
-                x,     y - h, 0, 0,
-                x + w, y,     1, 1,
-                x + w, y - h, 1, 0,
-            };
-
-            glBindTexture(GL_TEXTURE_2D, g.texHandle);
-
-            glBindBuffer(GL_ARRAY_BUFFER, vbo);
-            glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
-
-            glDrawArrays(GL_TRIANGLES, 0, 6);
             
+            glBindTexture(GL_TEXTURE_2D, g.texHandle);
+            
+            try(MemoryStack stack = MemoryStack.stackPush()) {
+                FloatBuffer vertexBuf = stack.mallocFloat(24 * Float.BYTES);
+                
+                //(vec2 position), (vec2 texCoords)
+                vertexBuf.put(x)    .put(y - h).put(0).put(0);
+                vertexBuf.put(x)    .put(y)    .put(0).put(1);
+                vertexBuf.put(x + w).put(y)    .put(1).put(1);
+                vertexBuf.put(x)    .put(y - h).put(0).put(0);
+                vertexBuf.put(x + w).put(y)    .put(1).put(1);
+                vertexBuf.put(x + w).put(y - h).put(1).put(0);
+                
+                vertexBuf.flip();
+
+                glBindBuffer(GL_ARRAY_BUFFER, vbo);
+                glBufferSubData(GL_ARRAY_BUFFER, 0, vertexBuf);
+            }
+            
+            glDrawArrays(GL_TRIANGLES, 0, 6);
             xPos += (g.advance >> 6) * scale;
         }
         
         glDisable(GL_BLEND);
-        
         App.checkGLError();
     }
     

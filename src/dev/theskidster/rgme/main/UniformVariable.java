@@ -12,7 +12,7 @@ import java.nio.IntBuffer;
 final class UniformVariable {
 
     final int location;
-    private Buffer buffer;
+    private final Buffer buffer;
     
     UniformVariable(int location, Buffer buffer) {
         this.location = location;

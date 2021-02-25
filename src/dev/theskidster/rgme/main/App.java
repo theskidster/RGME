@@ -58,7 +58,7 @@ public final class App {
     }
     
     void start() {
-        window.show(monitor);
+        window.show(monitor, ui);
         Logger.logSystemInfo();
         
         final double TARGET_DELTA = 1 / 60.0;
