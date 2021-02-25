@@ -20,10 +20,11 @@ public final class UI {
     private FreeTypeFont font;
     private final Matrix4f projMatrix = new Matrix4f();
     
-    public UI(long winHandle) {
+    public UI(long windowHandle, int windowWidth, int windowHeight) {
         freeType = FreeType.newLibrary();
         
         setFont("fnt_karla_regular.ttf", 17);
+        setViewportSize(windowWidth, windowHeight);
     }
     
     public void update() {
@@ -46,11 +47,14 @@ public final class UI {
         font = new FreeTypeFont(freeType, filename, size);
     }
     
-    public void setViewport(int width, int height) {
-        viewportWidth  = width;
-        viewportHeight = height;
+    public void setViewportSize(int windowWidth, int windowHeight) {
+        viewportWidth  = windowWidth;
+        viewportHeight = windowHeight;
         
-        projMatrix.setPerspective((float) Math.toRadians(45), (float) width / height, 0.1f, Float.POSITIVE_INFINITY);
+        projMatrix.setPerspective((float) Math.toRadians(45), 
+                                  (float) viewportWidth / viewportHeight, 
+                                  0.1f, 
+                                  Float.POSITIVE_INFINITY);
     }
     
     public void destroy() {

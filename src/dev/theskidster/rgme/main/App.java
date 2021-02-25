@@ -54,7 +54,7 @@ public final class App {
             
         }
         
-        ui = new UI(window.handle);
+        ui = new UI(window.handle, window.width, window.height);
     }
     
     void start() {
