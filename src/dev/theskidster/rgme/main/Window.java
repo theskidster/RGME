@@ -52,14 +52,12 @@ final class Window {
         glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         glfwShowWindow(handle);
         
-        ui.setViewport(width, height);
-        
         glfwSetWindowSizeCallback(handle, (window, w, h) -> {
             width  = w;
             height = h;
             
             glViewport(0, 0, width, height);
-            ui.setViewport(width, height);
+            ui.setViewportSize(width, height);
         });
     }
     
