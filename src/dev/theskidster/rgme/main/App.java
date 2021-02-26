@@ -45,7 +45,7 @@ public final class App {
             uiProgram.use();
             
             uiProgram.addUniform(BufferType.INT,  "uType");
-            uiProgram.addUniform(BufferType.VEC3, "uFontColor");
+            uiProgram.addUniform(BufferType.VEC3, "uColor");
             uiProgram.addUniform(BufferType.MAT4, "uProjection");
         }
         

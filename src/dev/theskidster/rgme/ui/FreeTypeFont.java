@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
-import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryStack;
 
@@ -39,10 +38,10 @@ class FreeTypeFont {
         int bearingY;
     }
     
+    private final int FLOATS_PER_GLYPH = 24;
+    
     private final int vao = glGenVertexArrays();
     private final int vbo = glGenBuffers();
-    
-    private Vector3f colorVal = new Vector3f();
     
     private final Map<Character, Glyph> glyphs = new HashMap<>();
     
@@ -55,7 +54,7 @@ class FreeTypeFont {
             glBindVertexArray(vao);
             
             glBindBuffer(GL_ARRAY_BUFFER, vbo);
-            glBufferData(GL_ARRAY_BUFFER, Float.BYTES * 6 * 4, GL_DYNAMIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, FLOATS_PER_GLYPH * Float.BYTES, GL_DYNAMIC_DRAW);
             
             glVertexAttribPointer(0, 2, GL_FLOAT, false, (4 * Float.BYTES), 0);
             glVertexAttribPointer(1, 2, GL_FLOAT, false, (4 * Float.BYTES), (2 * Float.BYTES));
@@ -120,7 +119,7 @@ class FreeTypeFont {
         glActiveTexture(GL_TEXTURE0);
         
         uiProgram.setUniform("uType", 0);
-        uiProgram.setUniform("uFontColor", colorVal.set(color.r, color.g, color.b));
+        uiProgram.setUniform("uColor", color.asVec3());
         
         for(char c : text.toCharArray()) {
             Glyph g = glyphs.get(c);
@@ -133,7 +132,7 @@ class FreeTypeFont {
             glBindTexture(GL_TEXTURE_2D, g.texHandle);
             
             try(MemoryStack stack = MemoryStack.stackPush()) {
-                FloatBuffer vertexBuf = stack.mallocFloat(24 * Float.BYTES);
+                FloatBuffer vertexBuf = stack.mallocFloat(FLOATS_PER_GLYPH);
                 
                 //(vec2 position), (vec2 texCoords)
                 vertexBuf.put(x)    .put(y - h).put(0).put(0);
@@ -144,7 +143,7 @@ class FreeTypeFont {
                 vertexBuf.put(x + w).put(y - h).put(1).put(0);
                 
                 vertexBuf.flip();
-
+                
                 glBindBuffer(GL_ARRAY_BUFFER, vbo);
                 glBufferSubData(GL_ARRAY_BUFFER, 0, vertexBuf);
             }

@@ -17,26 +17,32 @@ public final class Color {
     public final float g;
     public final float b;
     
+    private final Vector3f conversion;
+    
     private Color() {
         r = g = b = 0;
+        conversion = new Vector3f();
     }
     
     private Color(float scalar) {
         r = g = b = scalar;
+        conversion = new Vector3f(scalar);
     }
     
     private Color(int r, int g, int b) {
-        this.r = r / 255f;
-        this.g = g / 255f;
-        this.b = b / 255f;
+        this.r = (r / 255f);
+        this.g = (g / 255f);
+        this.b = (b / 255f);
+        
+        conversion = new Vector3f(this.r, this.g, this.b);
     }
     
     public static Color create(int r, int g, int b) {
         return new Color(r, g, b);
     }
     
-    public static Vector3f convert(Color color) {
-        return new Vector3f(color.r, color.g, color.b);
+    public Vector3f asVec3() {
+        return conversion;
     }
     
 }
