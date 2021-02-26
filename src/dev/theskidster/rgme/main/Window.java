@@ -1,9 +1,16 @@
 package dev.theskidster.rgme.main;
 
 import dev.theskidster.rgme.ui.UI;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import static org.lwjgl.glfw.GLFW.*;
+import org.lwjgl.glfw.GLFWImage;
 import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.stb.STBImage.STBI_rgb_alpha;
+import static org.lwjgl.stb.STBImage.stbi_image_free;
+import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -45,7 +52,37 @@ final class Window {
         handle = glfwCreateWindow(width, height, title, NULL, NULL);
     }
     
+    private void setIcon(String filename) {
+        try(MemoryStack stack = MemoryStack.stackPush()) {
+            String filepath  = "/dev/theskidster/" + App.DOMAIN + "/assets/" + filename;
+            InputStream file = Window.class.getResourceAsStream(filepath);
+            byte[] data      = file.readAllBytes();
+            
+            IntBuffer widthBuf   = stack.mallocInt(1);
+            IntBuffer heightBuf  = stack.mallocInt(1);
+            IntBuffer channelBuf = stack.mallocInt(1);
+            
+            ByteBuffer icon = stbi_load_from_memory(
+                    stack.malloc(data.length).put(data).flip(),
+                    widthBuf,
+                    heightBuf,
+                    channelBuf,
+                    STBI_rgb_alpha);
+            
+            glfwSetWindowIcon(handle, GLFWImage.mallocStack(1, stack)
+                    .width(widthBuf.get())
+                    .height(heightBuf.get())
+                    .pixels(icon));
+            
+            stbi_image_free(icon);
+            
+        } catch(IOException e) {
+            Logger.logWarning("Failed to set window icon: \"" + filename + "\"", e);
+        }
+    }
+    
     void show(Monitor monitor, UI ui) {
+        setIcon("img_logo.png");
         glfwSetWindowMonitor(handle, NULL, xPos, yPos, width, height, monitor.refreshRate);
         glfwSetWindowPos(handle, xPos, yPos);
         glfwSwapInterval(1);

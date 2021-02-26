@@ -5,7 +5,6 @@ import com.mlomb.freetypejni.Library;
 import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.utils.Color;
-import dev.theskidster.rgme.utils.Rectangle;
 import org.joml.Matrix4f;
 
 /**
@@ -20,11 +19,8 @@ public final class UI {
     
     private final Library freeType;
     private FreeTypeFont font;
-    private final Matrix4f projMatrix = new Matrix4f();
-    
-    private Background bg  = new Background();
-    private Rectangle rect = new Rectangle(0, 20, 100, 45);
-    private Rectangle rect2 = new Rectangle(200, 20, 100, 145);
+    private final Background background = new Background();
+    private final Matrix4f projMatrix   = new Matrix4f();
     
     public UI(long windowHandle, int windowWidth, int windowHeight) {
         freeType = FreeType.newLibrary();
@@ -46,8 +42,6 @@ public final class UI {
     public void render(Program uiProgram) {
         uiProgram.setUniform("uProjection", false, projMatrix);
         
-        bg.drawRectangle(rect, Color.GRAY, uiProgram);
-        
         font.drawString("bleh", 100, 200, 1, Color.WHITE, uiProgram);
     }
     
@@ -67,6 +61,8 @@ public final class UI {
     
     public void destroy() {
         freeType.delete();
+        font.freeBuffers();
+        
     }
     
 }
