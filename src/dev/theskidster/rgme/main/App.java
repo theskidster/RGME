@@ -54,7 +54,7 @@ public final class App {
             
         }
         
-        ui = new UI(window.handle, window.width, window.height);
+        ui = new UI(window.handle);
     }
     
     void start() {
@@ -83,7 +83,7 @@ public final class App {
                 
                 glfwPollEvents();
                 
-                ui.update();
+                ui.update(window.width, window.height);
             }
             
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

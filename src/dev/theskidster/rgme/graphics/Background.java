@@ -58,4 +58,9 @@ public final class Background {
         App.checkGLError();
     }
     
+    public void freeBuffers() {
+        glDeleteVertexArrays(vao);
+        glDeleteBuffers(vbo);
+    }
+    
 }

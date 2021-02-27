@@ -8,9 +8,7 @@ import java.nio.IntBuffer;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.glfw.GLFWImage;
 import static org.lwjgl.opengl.GL11.glViewport;
-import static org.lwjgl.stb.STBImage.STBI_rgb_alpha;
-import static org.lwjgl.stb.STBImage.stbi_image_free;
-import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
+import static org.lwjgl.stb.STBImage.*;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -92,9 +90,11 @@ final class Window {
         glfwSetWindowSizeCallback(handle, (window, w, h) -> {
             width  = w;
             height = h;
-            
             glViewport(0, 0, width, height);
-            ui.setViewportSize(width, height);
+        });
+        
+        glfwSetCursorPosCallback(handle, (window, x, y) -> {
+            ui.setMouseCursorPos(x, y);
         });
     }
     

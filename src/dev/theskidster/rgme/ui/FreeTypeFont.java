@@ -27,7 +27,7 @@ import org.lwjgl.system.MemoryStack;
     to distribute the application as an executable.
 */
 
-class FreeTypeFont {
+public final class FreeTypeFont {
     
     private final class Glyph {
         int texHandle;
@@ -111,7 +111,7 @@ class FreeTypeFont {
         }
     }
     
-    void drawString(String text, float xPos, float yPos, float scale, Color color, Program uiProgram) {
+    public void drawString(String text, float xPos, float yPos, float scale, Color color, Program uiProgram) {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         
