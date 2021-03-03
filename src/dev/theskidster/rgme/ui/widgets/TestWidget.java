@@ -16,16 +16,12 @@ import java.util.LinkedHashSet;
 
 public class TestWidget extends Widget {
 
-    Rectangle bar = new Rectangle(400, 200, 300, 280);
-    Icon icon     = new Icon(20, 20);
+    Rectangle bar = new Rectangle(200, 200, 600, 400);
     
     public TestWidget() {
         super(0, 0);
         
         elements = new LinkedHashSet() {{}};
-        
-        icon.position.set(bar.xPos + 20, bar.yPos + 40);
-        icon.setSubImage(0, 1);
     }
     
     @Override
@@ -37,7 +33,6 @@ public class TestWidget extends Widget {
     public void render(Program uiProgram, Background background, FreeTypeFont font) {
         background.drawRectangle(bar, Color.RGME_MEDIUM_GRAY, uiProgram);
         elements.forEach(element -> element.render(uiProgram, background, font));
-        icon.render(uiProgram);
     }
     
 }
