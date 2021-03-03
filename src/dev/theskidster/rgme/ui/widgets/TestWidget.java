@@ -35,7 +35,7 @@ public class TestWidget extends Widget {
 
     @Override
     public void render(Program uiProgram, Background background, FreeTypeFont font) {
-        background.drawRectangle(bar, Color.DARK_GRAY, uiProgram);
+        background.drawRectangle(bar, Color.RGME_MEDIUM_GRAY, uiProgram);
         elements.forEach(element -> element.render(uiProgram, background, font));
         icon.render(uiProgram);
     }
