@@ -4,9 +4,8 @@ import com.mlomb.freetypejni.FreeType;
 import com.mlomb.freetypejni.Library;
 import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.main.Program;
-import dev.theskidster.rgme.ui.widgets.MenuBar;
+import dev.theskidster.rgme.ui.widgets.TestWidget;
 import dev.theskidster.rgme.ui.widgets.Widget;
-import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Mouse;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -35,7 +34,7 @@ public final class UI {
         setFont("fnt_karla_regular.ttf", 17);
         
         widgets = new LinkedHashMap<>() {{
-            put("menu bar", new MenuBar());
+            put("test", new TestWidget());
         }};
     }
     
@@ -64,8 +63,6 @@ public final class UI {
     public void render(Program uiProgram) {
         uiProgram.setUniform("uProjection", false, projMatrix);
         widgets.forEach((name, widget) -> widget.render(uiProgram, background, font));
-        
-        font.drawString("bleh", 100, 200, 1, Color.WHITE, uiProgram);
     }
     
     public void setFont(String filename, int size) {
