@@ -36,14 +36,14 @@ public final class Icon {
         atlas = new Atlas(texture, cellWidth, cellHeight);
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
-            g.vertices = stack.mallocFloat(28);
+            g.vertices = stack.mallocFloat(16);
             g.indices  = stack.mallocInt(6);
             
             //(vec2 position), (vec2 tex coords) (vec3 color)
-            g.vertices.put(0)        .put(-cellHeight)  .put(0)                  .put(0)                   .put(1).put(1).put(1);
-            g.vertices.put(cellWidth).put(-cellHeight)  .put(atlas.subImageWidth).put(0)                   .put(1).put(1).put(1);
-            g.vertices.put(cellWidth).put(0)            .put(atlas.subImageWidth).put(atlas.subImageHeight).put(1).put(1).put(1);
-            g.vertices.put(0)        .put(0)            .put(0)                  .put(atlas.subImageHeight).put(1).put(1).put(1);
+            g.vertices.put(0)        .put(-cellHeight)  .put(0)                  .put(0);
+            g.vertices.put(cellWidth).put(-cellHeight)  .put(atlas.subImageWidth).put(0);
+            g.vertices.put(cellWidth).put(0)            .put(atlas.subImageWidth).put(atlas.subImageHeight);
+            g.vertices.put(0)        .put(0)            .put(0)                  .put(atlas.subImageHeight);
             
             g.indices.put(0).put(1).put(2);
             g.indices.put(2).put(3).put(0);
@@ -54,13 +54,11 @@ public final class Icon {
         
         g.bindBuffers();
         
-        glVertexAttribPointer(0, 2, GL_FLOAT, false, (7 * Float.BYTES), 0);
-        glVertexAttribPointer(1, 2, GL_FLOAT, false, (7 * Float.BYTES), (2 * Float.BYTES));
-        glVertexAttribPointer(2, 3, GL_FLOAT, false, (7 * Float.BYTES), (4 * Float.BYTES));
+        glVertexAttribPointer(0, 2, GL_FLOAT, false, (4 * Float.BYTES), 0);
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, (4 * Float.BYTES), (2 * Float.BYTES));
         
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
-        glEnableVertexAttribArray(2);
     }
     
     public void setSubImage(int cellX, int cellY) {

@@ -9,6 +9,7 @@ import org.joml.Vector3f;
 
 public final class Color {
 
+    //RGME color palette
     public static final Color RGME_WHITE       = new Color(215, 216, 223);
     public static final Color RGME_SILVER      = new Color(161, 162, 179);
     public static final Color RGME_LIGHT_GRAY  = new Color(85, 93, 109);
