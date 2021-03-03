@@ -1,0 +1,13 @@
+
+03-02-2021 8:59PM
+ERROR: Failed to compile GLSL file: "uiFragment.glsl" ERROR: 0:24: 'assign' : l-value required 
+
+
+
+java.lang.RuntimeException
+	dev.theskidster.rgme.main.Logger.logSevere(Logger.java:94)
+	dev.theskidster.rgme.main.Shader.<init>(Shader.java:38)
+	dev.theskidster.rgme.main.App$1.<init>(App.java:41)
+	dev.theskidster.rgme.main.App.<init>(App.java:39)
+	dev.theskidster.rgme.main.Main.main(Main.java:12)
+

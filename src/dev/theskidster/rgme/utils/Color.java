@@ -9,9 +9,12 @@ import org.joml.Vector3f;
 
 public final class Color {
 
-    public static final Color WHITE = new Color(1);
-    public static final Color DARK_GRAY  = new Color(0.2f);
-    public static final Color BLACK = new Color();
+    public static final Color WHITE     = new Color(1);
+    public static final Color SILVER    = new Color(0.72f);
+    public static final Color DARK_GRAY = new Color(0.2f);
+    public static final Color BLACK     = new Color();
+    
+    
     
     public final float r;
     public final float g;

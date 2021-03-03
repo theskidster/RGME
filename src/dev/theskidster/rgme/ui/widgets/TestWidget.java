@@ -1,6 +1,7 @@
 package dev.theskidster.rgme.ui.widgets;
 
 import dev.theskidster.rgme.graphics.Background;
+import dev.theskidster.rgme.graphics.Icon;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.ui.FreeTypeFont;
 import dev.theskidster.rgme.utils.Color;
@@ -16,11 +17,15 @@ import java.util.LinkedHashSet;
 public class TestWidget extends Widget {
 
     Rectangle bar = new Rectangle(400, 200, 300, 280);
+    Icon icon     = new Icon(20, 20);
     
     public TestWidget() {
         super(0, 0);
         
         elements = new LinkedHashSet() {{}};
+        
+        icon.position.set(bar.xPos + 20, bar.yPos + 40);
+        icon.setSubImage(0, 1);
     }
     
     @Override
@@ -32,6 +37,7 @@ public class TestWidget extends Widget {
     public void render(Program uiProgram, Background background, FreeTypeFont font) {
         background.drawRectangle(bar, Color.DARK_GRAY, uiProgram);
         elements.forEach(element -> element.render(uiProgram, background, font));
+        icon.render(uiProgram);
     }
     
 }

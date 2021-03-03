@@ -45,6 +45,8 @@ public final class App {
             uiProgram.use();
             
             uiProgram.addUniform(BufferType.INT,  "uType");
+            uiProgram.addUniform(BufferType.VEC2, "uTexCoords");
+            uiProgram.addUniform(BufferType.VEC2, "uPosition");
             uiProgram.addUniform(BufferType.VEC3, "uColor");
             uiProgram.addUniform(BufferType.MAT4, "uProjection");
         }
