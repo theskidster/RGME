@@ -130,4 +130,8 @@ public final class App {
         }
     }
     
+    public static boolean tick(int cycles) {
+        return tickCount % cycles == 0;
+    }
+    
 }

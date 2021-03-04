@@ -1,7 +1,6 @@
 package dev.theskidster.rgme.ui.widgets;
 
 import dev.theskidster.rgme.graphics.Background;
-import dev.theskidster.rgme.graphics.Icon;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.ui.FreeTypeFont;
 import dev.theskidster.rgme.utils.Color;

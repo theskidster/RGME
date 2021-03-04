@@ -20,7 +20,7 @@ public abstract class Element {
     public boolean hovered;
     public boolean clicked;
     
-    public abstract void update(int parentX, int parentY, Mouse mouse);
+    public abstract void update(int parentPosX, int parentPosY, Mouse mouse);
     public abstract void render(Program uiProgram, Background background, FreeTypeFont font);
     
 }

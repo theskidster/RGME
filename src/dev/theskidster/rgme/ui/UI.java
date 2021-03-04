@@ -4,6 +4,7 @@ import com.mlomb.freetypejni.FreeType;
 import com.mlomb.freetypejni.Library;
 import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.main.Program;
+import dev.theskidster.rgme.ui.elements.TextInputElement;
 import dev.theskidster.rgme.ui.widgets.TestWidget;
 import dev.theskidster.rgme.ui.widgets.Widget;
 import dev.theskidster.rgme.utils.Mouse;
@@ -20,6 +21,7 @@ import static org.lwjgl.glfw.GLFW.*;
 public final class UI {
     
     private final Mouse mouse;
+    private static TextInputElement textInput;
     private final Library freeType;
     private FreeTypeFont font;
     private final Background background = new Background();
@@ -65,6 +67,20 @@ public final class UI {
         widgets.forEach((name, widget) -> widget.render(uiProgram, background, font));
     }
     
+    public void destroy() {
+        freeType.delete();
+        font.freeBuffers();
+        background.freeBuffers();
+    }
+    
+    public void captureKeyInput(int key, int action) {
+        if(textInput != null) textInput.processInput(key, action);
+    }
+    
+    public static TextInputElement getTextInputElement() {
+        return textInput;
+    } 
+    
     public void setFont(String filename, int size) {
         font = new FreeTypeFont(freeType, filename, size);
     }
@@ -73,10 +89,8 @@ public final class UI {
         mouse.cursorPos.set((int) xPos, (int) yPos);
     }
     
-    public void destroy() {
-        freeType.delete();
-        font.freeBuffers();
-        background.freeBuffers();
+    public static void setTextInputElement(TextInputElement currElement) {
+        textInput = currElement;
     }
     
 }

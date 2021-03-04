@@ -96,6 +96,10 @@ final class Window {
         glfwSetCursorPosCallback(handle, (window, x, y) -> {
             ui.setMouseCursorPos(x, y);
         });
+        
+        glfwSetKeyCallback(handle, (window, key, scancode, action, mods) -> {
+            ui.captureKeyInput(key, action);
+        });
     }
     
 }
