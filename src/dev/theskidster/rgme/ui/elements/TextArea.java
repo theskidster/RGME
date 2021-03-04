@@ -1,6 +1,7 @@
 package dev.theskidster.rgme.ui.elements;
 
 import dev.theskidster.rgme.graphics.Background;
+import dev.theskidster.rgme.graphics.Icon;
 import dev.theskidster.rgme.main.App;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.ui.FreeTypeFont;
@@ -16,8 +17,19 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class TextArea extends TextInputElement {
 
+    private final Icon leftBorder;
+    private final Icon rightBorder;
+    
     public TextArea(int xOffset, int yOffset, int width, int parentPosX, int parentPosY) {
         super(xOffset, yOffset, width, parentPosX, parentPosY);
+        
+        leftBorder  = new Icon(15, 30);
+        leftBorder.setSubImage(2, 2);
+        leftBorder.setColor(Color.WHITE);
+        
+        rightBorder = new Icon(15, 30);
+        rightBorder.setSubImage(3, 2);
+        rightBorder.setColor(Color.WHITE);
     }
 
     @Override
@@ -86,6 +98,12 @@ public class TextArea extends TextInputElement {
         scissorBox.width  = width;
         scissorBox.height = HEIGHT;
         
+        leftBorder.position.set(parentPosX + xOffset, 
+                                parentPosY + yOffset + HEIGHT);
+        
+        rightBorder.position.set(parentPosX + xOffset + (width - 15), 
+                                 parentPosY + yOffset + HEIGHT);
+        
         timer.update();
         if(timer.finished()) caratIdle = true;
         if(App.tick(18) && caratIdle) caratBlink = !caratBlink;
@@ -116,6 +134,9 @@ public class TextArea extends TextInputElement {
     public void render(Program uiProgram, Background background, FreeTypeFont font) {
         background.drawRectangle(rectBack, Color.RGME_LIGHT_GRAY, uiProgram);
         background.drawRectangle(rectFront, Color.RGME_DARK_GRAY, uiProgram);
+        
+        leftBorder.render(uiProgram);
+        rightBorder.render(uiProgram);
         
         font.drawString(typed.toString(), textPos.x + getTextOffset(), textPos.y, 1, Color.RGME_WHITE, scissorBox, uiProgram);
         

@@ -9,12 +9,16 @@ import org.joml.Vector3f;
 
 public final class Color {
 
+    //XJGE color palette
+    public static final Color WHITE = new Color(1);
+    
     //RGME color palette
     public static final Color RGME_WHITE       = new Color(215, 216, 223);
     public static final Color RGME_SILVER      = new Color(161, 162, 179);
     public static final Color RGME_LIGHT_GRAY  = new Color(85, 93, 109);
     public static final Color RGME_MEDIUM_GRAY = new Color(48, 53, 71);
-    public static final Color RGME_DARK_GRAY   = new Color(32, 35, 51);
+    public static final Color RGME_DARK_GRAY   = new Color(40, 45, 62);
+    public static final Color RGME_SLATE_GRAY  = new Color(32, 35, 51);
     public static final Color RGME_BLACK       = new Color(19, 22, 29);
     public static final Color RGME_RED         = new Color(232, 17, 35);
     public static final Color RGME_GREEN       = new Color(4, 186, 0);
