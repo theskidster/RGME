@@ -40,18 +40,13 @@ public abstract class TextInputElement extends Element {
     
     protected Rectangle rectBack;
     protected Rectangle rectFront;
+    protected final Timer timer;
+    protected final Icon carat;
     protected final Rectangle scissorBox = new Rectangle();
     
-    protected static final Icon carat;
-    protected static final Timer timer;
     protected static Map<Integer, Key> keyChars;
     
     static {
-        carat = new Icon(15, 30);
-        carat.setSubImage(5, 2);
-        
-        timer = new Timer(1, 18);
-        
         keyChars = new HashMap<>() {{
             put(GLFW_KEY_SPACE,      new Key(' ', ' '));
             put(GLFW_KEY_APOSTROPHE, new Key('\'', '\"'));
@@ -104,13 +99,23 @@ public abstract class TextInputElement extends Element {
         }};
     }
     
-    TextInputElement(int xOffset, int yOffset, int width) {
+    TextInputElement(int xOffset, int yOffset, int width, int parentPosX, int parentPosY) {
         this.xOffset = xOffset;
         this.yOffset = yOffset;
         this.width   = width;
         
+        setParentPos(parentPosX, parentPosY);
+        
         rectBack  = new Rectangle(xOffset, yOffset, width, HEIGHT);
         rectFront = new Rectangle(xOffset, yOffset + 1, width, HEIGHT - 2);
+        timer     = new Timer(1, 18);
+        carat     = new Icon(15, 30);
+        
+        carat.setSubImage(5, 2);
+        
+        carat.position.set(
+                (parentPosX + xOffset) + (lengthToIndex + textOffset) + PADDING, 
+                (parentPosY + yOffset) + HEIGHT - 5);        
     }
     
     private int getClosest(int value1, int value2, int target) {
@@ -225,7 +230,7 @@ public abstract class TextInputElement extends Element {
         currIndex = index;
     }
     
-    protected void setParentPos(int parentPosX, int parentPosY) {
+    protected final void setParentPos(int parentPosX, int parentPosY) {
         this.parentPosX = parentPosX;
         this.parentPosY = parentPosY;
     }

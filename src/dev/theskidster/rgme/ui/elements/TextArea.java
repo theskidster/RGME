@@ -16,8 +16,8 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class TextArea extends TextInputElement {
 
-    public TextArea(int xOffset, int yOffset, int width) {
-        super(xOffset, yOffset, width);
+    public TextArea(int xOffset, int yOffset, int width, int parentPosX, int parentPosY) {
+        super(xOffset, yOffset, width, parentPosX, parentPosY);
     }
 
     @Override

@@ -19,7 +19,8 @@ public class TestWidget extends Widget {
         super(200, 200, 600, 400);
         
         elements = new LinkedHashSet() {{
-            add(new TextArea(40, 60, 200));
+            add(new TextArea(40, 60, 200, bounds.xPos, bounds.yPos));
+            add(new TextArea(100, 300, 120, bounds.xPos, bounds.yPos));
         }};
     }
     
