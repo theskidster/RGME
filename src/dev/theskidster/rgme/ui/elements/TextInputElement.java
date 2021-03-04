@@ -1,9 +1,13 @@
 package dev.theskidster.rgme.ui.elements;
 
 import dev.theskidster.rgme.graphics.Icon;
+import dev.theskidster.rgme.ui.FreeTypeFont;
 import dev.theskidster.rgme.ui.UI;
 import dev.theskidster.rgme.utils.Rectangle;
+import dev.theskidster.rgme.utils.Timer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.joml.Vector2i;
 import static org.lwjgl.glfw.GLFW.*;
@@ -15,23 +19,38 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public abstract class TextInputElement extends Element {
     
+    protected final int HEIGHT  = 30;
+    protected final int PADDING = 4;
+    
     protected final int width;
-    protected final int height;
+    private int currIndex;
+    private int prevIndex;
+    private int lengthToIndex;
+    private int textOffset;
+    private int parentPosX;
+    private int parentPosY;
     
     private boolean hasFocus;
+    protected boolean shiftHeld;
+    protected boolean caratIdle;
+    protected boolean caratBlink;
     
     protected final StringBuilder typed = new StringBuilder();
     protected final Vector2i textPos    = new Vector2i();
     
     protected Rectangle rectBack;
-    protected Rectangle scissorBox;
+    protected Rectangle rectFront;
+    protected final Rectangle scissorBox = new Rectangle();
     
     protected static final Icon carat;
+    protected static final Timer timer;
     protected static Map<Integer, Key> keyChars;
     
     static {
         carat = new Icon(15, 30);
         carat.setSubImage(5, 2);
+        
+        timer = new Timer(1, 18);
         
         keyChars = new HashMap<>() {{
             put(GLFW_KEY_SPACE,      new Key(' ', ' '));
@@ -85,29 +104,139 @@ public abstract class TextInputElement extends Element {
         }};
     }
     
-    TextInputElement(int xOffset, int yOffset, int width, int height) {
+    TextInputElement(int xOffset, int yOffset, int width) {
         this.xOffset = xOffset;
         this.yOffset = yOffset;
         this.width   = width;
-        this.height  = height;
         
-        rectBack   = new Rectangle(xOffset, yOffset, width, height);
-        scissorBox = new Rectangle(xOffset, yOffset, width, height);
+        rectBack  = new Rectangle(xOffset, yOffset, width, HEIGHT);
+        rectFront = new Rectangle(xOffset, yOffset + 1, width, HEIGHT - 2);
     }
     
-    public void focus() {
+    private int getClosest(int value1, int value2, int target) {
+        return (target - value1 >= value2 - target) ? value2 : value1;
+    }
+    
+    private int search(int[] values, int cursorX) {
+        int n = values.length;
+        
+        if(cursorX <= values[0])     return values[0];
+        if(cursorX >= values[n - 1]) return values[n - 1];
+        
+        int i   = 0;
+        int j   = n;
+        int mid = 0;
+        
+        while(i < j) {
+            mid = (i + j) / 2;
+            
+            if(values[mid] == cursorX) return values[mid]; 
+            
+            if(cursorX < values[mid]) {
+                if(mid > 0 && cursorX > values[mid - 1]) {
+                    return getClosest(values[mid - 1], values[mid], cursorX);
+                }
+                
+                j = mid;
+            } else {
+                if(mid < n - 1 && cursorX < values[mid + 1]) {
+                    return getClosest(values[mid], values[mid + 1], cursorX);
+                }
+                
+                i = mid + 1;
+            }
+        }
+        
+        return values[mid];
+    }
+    
+    protected int findClosestIndex(int cursorX) {
+        if(typed.length() <= 1) return 0;
+        
+        List<Integer> culled = new ArrayList<>();
+        
+        //Remove numbers that are outside of the carats range
+        for(int i = 0; i < typed.length(); i++) {
+            int position = FreeTypeFont.getLengthInPixels(typed.substring(0, i), 1) + textOffset;
+            
+            if(position > 0 && position < width) {
+                culled.add(position);
+            }
+        }
+        
+        int[] values = culled.stream().mapToInt(Integer::intValue).toArray();
+        int result   = 0;
+        
+        for(int i = 0; i < typed.length(); i++) {
+            if(FreeTypeFont.getLengthInPixels(typed.substring(0, i), 1) + textOffset == search(values, cursorX)) {
+                result = i;
+            }
+        }
+        
+        return result;
+    }
+    
+    protected void insertChar(char c) {
+        typed.insert(currIndex, c);
+        prevIndex = currIndex; //TODO: move this into method
+        currIndex++;
+        scroll();
+    }
+    
+    protected void scroll() {
+        lengthToIndex = FreeTypeFont.getLengthInPixels(typed.substring(0, currIndex), 1);
+        
+        int result = (width - PADDING) - (lengthToIndex + textPos.x - (parentPosX + xOffset + PADDING));
+        
+        if(prevIndex < currIndex) {
+            if(carat.position.x > (parentPosX + xOffset + width) - PADDING) {
+                textOffset = result;
+                if(textOffset > 0) textOffset = 0;
+            }
+        } else {
+            if(carat.position.x < parentPosX + xOffset + PADDING) {
+                textOffset = result - width;
+            }
+        }
+        
+        carat.position.set(
+                (parentPosX + xOffset) + (lengthToIndex + textOffset) + PADDING, 
+                (parentPosY + yOffset) + HEIGHT - 5);
+    }
+    
+    protected void focus() {
         hasFocus = true;
         UI.setTextInputElement(this);
+        timer.start();
     }
     
-    public void unfocus() {
+    protected void unfocus() {
+        hasFocus = false;
         
+        if(UI.getTextInputElement() != null && UI.getTextInputElement().equals(this)) {
+            UI.setTextInputElement(this);
+        }
+        
+        validateInput();
     }
+    
+    protected void setIndex(int index) {
+        prevIndex = currIndex;
+        currIndex = index;
+    }
+    
+    protected void setParentPos(int parentPosX, int parentPosY) {
+        this.parentPosX = parentPosX;
+        this.parentPosY = parentPosY;
+    }
+    
+    protected int getIndex()         { return currIndex; }
+    protected int getTextOffset()    { return textOffset; }
+    protected int getLengthToIndex() { return lengthToIndex; }
+    protected boolean hasFocus()     { return hasFocus; }
     
     abstract void validateInput();
     
     public abstract void processInput(int key, int action);
-    
-    public boolean hasFocus() { return hasFocus; }
     
 }

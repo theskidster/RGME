@@ -7,6 +7,7 @@ import dev.theskidster.rgme.main.App;
 import dev.theskidster.rgme.main.Logger;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.utils.Color;
+import dev.theskidster.rgme.utils.Rectangle;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.FloatBuffer;
@@ -43,7 +44,7 @@ public final class FreeTypeFont {
     private final int vao = glGenVertexArrays();
     private final int vbo = glGenBuffers();
     
-    private final Map<Character, Glyph> glyphs = new HashMap<>();
+    private static final Map<Character, Glyph> glyphs = new HashMap<>();
     
     FreeTypeFont(Library freeType, String filename, int size) {
         String filepath = "/dev/theskidster/" + App.DOMAIN + "/assets/" + filename;
@@ -154,6 +155,22 @@ public final class FreeTypeFont {
         
         glDisable(GL_BLEND);
         App.checkGLError();
+    }
+    
+    public void drawString(String text, float x, float y, float scale, Color color, Rectangle scissorBox, Program uiProgram) {
+        glEnable(GL_SCISSOR_TEST);
+        
+        glScissor((int) scissorBox.xPos, (int) scissorBox.yPos, (int) scissorBox.width, (int) scissorBox.height);
+        drawString(text, x, y, scale, color, uiProgram);
+        
+        glDisable(GL_SCISSOR_TEST);
+    }
+    
+    public static int getLengthInPixels(String text, float scale) {
+        int length = 0;
+        for(char c : text.toCharArray()) length += (glyphs.get(c).advance >> 6) * scale;
+        
+        return length;
     }
     
     void freeBuffers() {

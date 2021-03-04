@@ -15,6 +15,8 @@ public class Rectangle {
     public float width;
     public float height;
     
+    public Rectangle() {}
+    
     public Rectangle(int xPos, int yPos, int width, int height) {
         this.xPos   = xPos;
         this.yPos   = yPos;

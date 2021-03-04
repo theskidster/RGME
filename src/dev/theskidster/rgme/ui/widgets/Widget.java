@@ -5,7 +5,9 @@ import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.ui.FreeTypeFont;
 import dev.theskidster.rgme.ui.elements.Element;
 import dev.theskidster.rgme.utils.Mouse;
+import dev.theskidster.rgme.utils.Rectangle;
 import java.util.Set;
+import static org.lwjgl.glfw.GLFW.GLFW_ARROW_CURSOR;
 
 /**
  * @author J Hoffman
@@ -14,17 +16,23 @@ import java.util.Set;
 
 public abstract class Widget {
     
-    public int xPos;
-    public int yPos;
-    
     public boolean hovered;
     public boolean removeRequest;
     
-    Set<Element> elements;
+    protected Rectangle bounds;
     
-    Widget(int xPos, int yPos) {
-        this.xPos = xPos;
-        this.yPos = yPos;
+    protected Set<Element> elements;
+    
+    Widget(int xPos, int yPos, int width, int height) {
+        bounds = new Rectangle(xPos, yPos, width, height);
+    }
+    
+    protected void resetMouseShape(Mouse mouse) {
+        hovered = bounds.contains(mouse.cursorPos);
+        
+        if(!elements.stream().anyMatch(element -> element.hovered)) {
+            mouse.setCursorShape(GLFW_ARROW_CURSOR);
+        }
     }
     
     public abstract void update(int viewportWidth, int viewportHeight, Mouse mouse);

@@ -20,6 +20,8 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public final class UI {
     
+    private static int viewHeight;
+    
     private final Mouse mouse;
     private static TextInputElement textInput;
     private final Library freeType;
@@ -41,6 +43,8 @@ public final class UI {
     }
     
     public void update(int viewportWidth, int viewportHeight) {
+        viewHeight = viewportHeight;
+        
         projMatrix.setPerspective((float) Math.toRadians(45), 
                                   (float) viewportWidth / viewportHeight, 
                                   0.1f, 
@@ -77,9 +81,8 @@ public final class UI {
         if(textInput != null) textInput.processInput(key, action);
     }
     
-    public static TextInputElement getTextInputElement() {
-        return textInput;
-    } 
+    public static TextInputElement getTextInputElement() { return textInput; } 
+    public static int getViewHeight() { return viewHeight; }
     
     public void setFont(String filename, int size) {
         font = new FreeTypeFont(freeType, filename, size);
@@ -87,6 +90,16 @@ public final class UI {
     
     public void setMouseCursorPos(double xPos, double yPos) {
         mouse.cursorPos.set((int) xPos, (int) yPos);
+    }
+    
+    public void setMouseAction(int button, int action) {
+        switch(button) {
+            case GLFW_MOUSE_BUTTON_RIGHT  -> mouse.button = "right";
+            case GLFW_MOUSE_BUTTON_MIDDLE -> mouse.button = "middle";
+            default -> mouse.button = "left";
+        }
+        
+        mouse.clicked = (action == GLFW_PRESS);
     }
     
     public static void setTextInputElement(TextInputElement currElement) {
