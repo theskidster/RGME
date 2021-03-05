@@ -40,6 +40,7 @@ public abstract class TextInputElement extends Element {
     
     protected Rectangle rectBack;
     protected Rectangle rectFront;
+    protected Rectangle highlight;
     protected final Timer timer;
     protected final Icon carat;
     protected final Rectangle scissorBox = new Rectangle();
@@ -108,6 +109,7 @@ public abstract class TextInputElement extends Element {
         
         rectBack  = new Rectangle(xOffset, yOffset, width, HEIGHT);
         rectFront = new Rectangle(xOffset, yOffset + 1, width, HEIGHT - 2);
+        highlight = new Rectangle();
         timer     = new Timer(1, 18);
         carat     = new Icon(15, 30);
         
@@ -156,15 +158,18 @@ public abstract class TextInputElement extends Element {
     }
     
     protected int findClosestIndex(int cursorX) {
-        if(typed.length() <= 1) return 0;
+        if(typed.length() <= 1) {
+            int charWidth = FreeTypeFont.getLengthInPixels(typed.toString(), 1);
+            return (cursorX < (charWidth / 2)) ? 0 : 1;
+        }
         
         List<Integer> culled = new ArrayList<>();
         
         //Remove numbers that are outside of the carats range
-        for(int i = 0; i < typed.length(); i++) {
+        for(int i = 0; i < typed.length() + 1; i++) {
             int position = FreeTypeFont.getLengthInPixels(typed.substring(0, i), 1) + textOffset;
             
-            if(position > 0 && position < width) {
+            if(position >= 0 && position < width) {
                 culled.add(position);
             }
         }
@@ -172,7 +177,7 @@ public abstract class TextInputElement extends Element {
         int[] values = culled.stream().mapToInt(Integer::intValue).toArray();
         int result   = 0;
         
-        for(int i = 0; i < typed.length(); i++) {
+        for(int i = 0; i < typed.length() + 1; i++) {
             if(FreeTypeFont.getLengthInPixels(typed.substring(0, i), 1) + textOffset == search(values, cursorX)) {
                 result = i;
             }

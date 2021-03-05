@@ -110,6 +110,8 @@ public class TextArea extends TextInputElement {
             if(mouse.clicked) {
                 if(hasFocus()) {
                     if(typed.length() > 0) {
+                        //TODO: add text highlight
+                        
                         int newIndex = findClosestIndex(mouse.cursorPos.x - (parentPosX + xOffset) - PADDING);
                         setIndex(newIndex);
                         scroll();
