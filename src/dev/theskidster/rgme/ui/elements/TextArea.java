@@ -9,6 +9,10 @@ import dev.theskidster.rgme.ui.UI;
 import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Mouse;
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.GL_SCISSOR_TEST;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glScissor;
 
 /**
  * @author J Hoffman
@@ -51,19 +55,45 @@ public class TextArea extends TextInputElement {
             switch(key) {
                 case GLFW_KEY_BACKSPACE -> {
                     if(getIndex() > 0) {
-                        setIndex(getIndex() - 1);
-                        typed.deleteCharAt(getIndex());
-                        scroll();
+                        if(highlight.width > 0) {
+                            int min = Math.min(firstIndex, lastIndex);
+                            int max = Math.max(firstIndex, lastIndex);
+                            
+                            typed.replace(min, max, "");
+                            
+                            setIndex(min);
+                            scroll();
+                            
+                            highlight.width = 0;
+                        } else {
+                            setIndex(getIndex() - 1);
+                            typed.deleteCharAt(getIndex());
+                            scroll();
+                        }
                     }
                 }
                     
                 case GLFW_KEY_RIGHT -> {
-                    setIndex((getIndex() > typed.length() - 1) ? typed.length() : getIndex() + 1);
+                    if(highlight.width > 0) {
+                        setIndex(Math.max(firstIndex, lastIndex));
+                        scroll();
+                        highlight.width = 0;
+                    } else {
+                        setIndex((getIndex() > typed.length() - 1) ? typed.length() : getIndex() + 1);
+                    }
+                    
                     scroll();
                 }
                     
                 case GLFW_KEY_LEFT -> {
-                    setIndex((getIndex() <= 0) ? 0 : getIndex() - 1);
+                    if(highlight.width > 0) {
+                        setIndex(Math.min(firstIndex, lastIndex));
+                        scroll();
+                        highlight.width = 0;
+                    } else {
+                        setIndex((getIndex() <= 0) ? 0 : getIndex() - 1);
+                    }
+                    
                     scroll();
                 }
             }
@@ -85,6 +115,8 @@ public class TextArea extends TextInputElement {
         
         rectFront.xPos = parentPosX + xOffset;
         rectFront.yPos = parentPosY + yOffset + 1;
+        
+        highlight.yPos = parentPosY + yOffset + 1;
         
         textPos.set(parentPosX + xOffset + PADDING, 
                     parentPosY + yOffset + 21);
@@ -110,19 +142,55 @@ public class TextArea extends TextInputElement {
             if(mouse.clicked) {
                 if(hasFocus()) {
                     if(typed.length() > 0) {
-                        //TODO: add text highlight
+                        if(prevCursorX != mouse.cursorPos.x) {
+                            if(mouse.cursorPos.x - (parentPosX + xOffset) - PADDING >= width - (PADDING * 3)) {
+                                setIndex((getIndex() > typed.length() - 1) ? typed.length() : getIndex() + 1);
+                                scroll();
+                            }
+                            
+                            if(mouse.cursorPos.x - (parentPosX + xOffset) - PADDING <= (PADDING * 3)) {
+                                setIndex((getIndex() <= 0) ? 0 : getIndex() - 1);
+                                scroll();
+                            }
+                        } else {
+                            int newIndex = findClosestIndex(mouse.cursorPos.x - (parentPosX + xOffset) - PADDING);
+                            setIndex(newIndex);
+                            scroll();
+                            
+                            if(!firstIndexSet) {
+                                firstIndex    = getIndex();
+                                firstIndexSet = true;
+                            } else {
+                                lastIndex = getIndex();
+
+                                int firstIndexPosX = FreeTypeFont.getLengthInPixels(typed.substring(0, firstIndex), 1);
+                                int lastIndexPosX  = FreeTypeFont.getLengthInPixels(typed.substring(0, lastIndex), 1);
+
+                                int minX = Math.min(firstIndexPosX, lastIndexPosX);
+                                int maxX = Math.max(firstIndexPosX, lastIndexPosX);
+
+                                highlight.xPos  = (minX + (parentPosX + xOffset) + PADDING) + getTextOffset();
+                                highlight.width = (maxX - minX);
+                            }
+                        }
                         
-                        int newIndex = findClosestIndex(mouse.cursorPos.x - (parentPosX + xOffset) - PADDING);
-                        setIndex(newIndex);
-                        scroll();
+                        prevCursorX = mouse.cursorPos.x;
                     }
                 } else {
                     focus();
+                    prevCursorX = mouse.cursorPos.x;
                 }
+            } else {
+                firstIndexSet = false;
             }
         } else {
-            if(mouse.clicked && hasFocus()) unfocus();
-            hovered = false;
+            if(mouse.clicked && hasFocus()) {
+                unfocus();
+                highlight.width = 0;
+            }
+            
+            hovered       = false;
+            firstIndexSet = false;
         }
         
         if(hovered) mouse.setCursorShape(GLFW_IBEAM_CURSOR);
@@ -132,6 +200,11 @@ public class TextArea extends TextInputElement {
     public void render(Program uiProgram, Background background, FreeTypeFont font) {
         background.drawRectangle(rectBack, Color.RGME_LIGHT_GRAY, uiProgram);
         background.drawRectangle(rectFront, Color.RGME_DARK_GRAY, uiProgram);
+        
+        glEnable(GL_SCISSOR_TEST);
+        glScissor((int) scissorBox.xPos, (int) scissorBox.yPos, (int) scissorBox.width, (int) scissorBox.height);
+        background.drawRectangle(highlight, Color.RGME_BLUE, uiProgram);
+        glDisable(GL_SCISSOR_TEST);
         
         leftBorder.render(uiProgram);
         rightBorder.render(uiProgram);

@@ -29,11 +29,15 @@ public abstract class TextInputElement extends Element {
     private int textOffset;
     private int parentPosX;
     private int parentPosY;
+    protected int prevCursorX;
+    protected int firstIndex;
+    protected int lastIndex;
     
     private boolean hasFocus;
     protected boolean shiftHeld;
     protected boolean caratIdle;
     protected boolean caratBlink;
+    protected boolean firstIndexSet;
     
     protected final StringBuilder typed = new StringBuilder();
     protected final Vector2i textPos    = new Vector2i();
@@ -109,7 +113,7 @@ public abstract class TextInputElement extends Element {
         
         rectBack  = new Rectangle(xOffset, yOffset, width, HEIGHT);
         rectFront = new Rectangle(xOffset, yOffset + 1, width, HEIGHT - 2);
-        highlight = new Rectangle();
+        highlight = new Rectangle(0, 0, 0, HEIGHT - 2);
         timer     = new Timer(1, 18);
         carat     = new Icon(15, 30);
         
