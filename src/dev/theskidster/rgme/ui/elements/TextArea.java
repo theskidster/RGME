@@ -66,10 +66,6 @@ public class TextArea extends TextInputElement {
                     setIndex((getIndex() <= 0) ? 0 : getIndex() - 1);
                     scroll();
                 }
-                    
-                case GLFW_KEY_TAB -> {
-                    //TODO: add observable to skip to next component in widget?
-                }
             }
         } else {
             timer.start();

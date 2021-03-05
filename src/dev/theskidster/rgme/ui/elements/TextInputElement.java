@@ -194,13 +194,13 @@ public abstract class TextInputElement extends Element {
         int result = (width - PADDING) - (lengthToIndex + textPos.x - (parentPosX + xOffset + PADDING));
         
         if(prevIndex < currIndex) {
-            if(carat.position.x > (parentPosX + xOffset + width) - PADDING) {
-                textOffset = result;
+            if(carat.position.x >= (parentPosX + xOffset + width) - (PADDING * 3)) {
+                textOffset = result - PADDING;
                 if(textOffset > 0) textOffset = 0;
             }
         } else {
-            if(carat.position.x < parentPosX + xOffset + PADDING) {
-                textOffset = result - width;
+            if(carat.position.x <= parentPosX + xOffset + (PADDING * 3)) {
+                textOffset = result - width + PADDING;
             }
         }
         
