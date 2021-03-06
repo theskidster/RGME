@@ -157,11 +157,11 @@ public final class FreeTypeFont {
         App.checkGLError();
     }
     
-    public void drawString(String text, float x, float y, float scale, Color color, Rectangle scissorBox, Program uiProgram) {
+    public void drawString(String text, float xPos, float yPos, float scale, Color color, Rectangle scissorBox, Program uiProgram) {
         glEnable(GL_SCISSOR_TEST);
         
         glScissor((int) scissorBox.xPos, (int) scissorBox.yPos, (int) scissorBox.width, (int) scissorBox.height);
-        drawString(text, x, y, scale, color, uiProgram);
+        drawString(text, xPos, yPos, scale, color, uiProgram);
         
         glDisable(GL_SCISSOR_TEST);
     }

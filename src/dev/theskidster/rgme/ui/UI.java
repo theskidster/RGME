@@ -5,7 +5,7 @@ import com.mlomb.freetypejni.Library;
 import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.ui.elements.TextInputElement;
-import dev.theskidster.rgme.ui.widgets.TestWidget;
+import dev.theskidster.rgme.ui.widgets.SceneGraph;
 import dev.theskidster.rgme.ui.widgets.Widget;
 import dev.theskidster.rgme.utils.Mouse;
 import java.util.LinkedHashMap;
@@ -38,8 +38,8 @@ public final class UI {
         setFont("fnt_karla_regular.ttf", 17);
         
         widgets = new LinkedHashMap<>() {{
-            put("test", new TestWidget());
-            //put("scene graph", new SceneGraph());
+            //put("test", new TestWidget());
+            put("scene graph", new SceneGraph());
         }};
     }
     
