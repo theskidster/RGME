@@ -19,7 +19,7 @@ import static org.lwjgl.opengl.GL11.glScissor;
  * Created: Mar 2, 2021
  */
 
-public class TextArea extends TextInputElement {
+public final class TextArea extends TextInputElement {
 
     private final Icon leftBorder;
     private final Icon rightBorder;
@@ -49,7 +49,21 @@ public class TextArea extends TextInputElement {
             timer.restart();
             
             keyChars.forEach((k, c) -> {
-                if(key == k) insertChar(c.getChar(shiftHeld));
+                if(key == k) {
+                    if(highlight.width > 0) {
+                        int min = Math.min(firstIndex, lastIndex);
+                        int max = Math.max(firstIndex, lastIndex);
+
+                        typed.replace(min, max, "");
+
+                        setIndex(min);
+                        scroll();
+
+                        highlight.width = 0;
+                    }
+                    
+                    insertChar(c.getChar(shiftHeld));
+                }
             });
             
             switch(key) {
@@ -181,7 +195,7 @@ public class TextArea extends TextInputElement {
                     prevCursorX = mouse.cursorPos.x;
                 }
             } else {
-                firstIndexSet = false;
+                firstIndexSet  = false;
             }
         } else {
             if(mouse.clicked && hasFocus()) {

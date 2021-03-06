@@ -39,6 +39,7 @@ public final class UI {
         
         widgets = new LinkedHashMap<>() {{
             put("test", new TestWidget());
+            //put("scene graph", new SceneGraph());
         }};
     }
     

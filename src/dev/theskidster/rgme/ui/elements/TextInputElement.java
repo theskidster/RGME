@@ -248,6 +248,7 @@ public abstract class TextInputElement extends Element {
     protected int getTextOffset()    { return textOffset; }
     protected int getLengthToIndex() { return lengthToIndex; }
     protected boolean hasFocus()     { return hasFocus; }
+    public String getText()          { return typed.toString(); }
     
     abstract void validateInput();
     
