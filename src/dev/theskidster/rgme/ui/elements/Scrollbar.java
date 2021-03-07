@@ -19,6 +19,8 @@ public final class Scrollbar extends Element {
 
     private final int MARGIN = 24;
     
+    private int contentLength;
+    private int totalContentLength;
     private int length;
     
     private final boolean vertical;
@@ -29,13 +31,12 @@ public final class Scrollbar extends Element {
     private final Rectangle[] rectangles = new Rectangle[5];
     private final Color[] buttonColors   = new Color[2];
     
-    private final Map<Integer, Rectangle> containers = new HashMap<>();
-    
-    public Scrollbar(int xOffset, int yOffset, boolean vertical, int length) {
-        this.xOffset  = xOffset;
-        this.yOffset  = yOffset;
-        this.vertical = vertical;
-        this.length   = length;
+    public Scrollbar(int xOffset, int yOffset, boolean vertical, int length, int contentLength) {
+        this.xOffset       = xOffset;
+        this.yOffset       = yOffset;
+        this.vertical      = vertical;
+        this.length        = length;
+        this.contentLength = contentLength;
         
         icons[0] = new Icon(24, 24);
         icons[1] = new Icon(24, 24);
@@ -94,10 +95,20 @@ public final class Scrollbar extends Element {
             rectangles[1].xPos = bounds.xPos + 1;
             rectangles[1].yPos = bounds.yPos + MARGIN;
             
-            if(containers.isEmpty()) {
+            if(totalContentLength < contentLength) {
                 rectangles[2].xPos   = bounds.xPos + 3;
                 rectangles[2].yPos   = bounds.yPos + MARGIN;
                 rectangles[2].height = length;
+            } else {
+                /*
+                float difference = (float) (totalContentLength - contentLength);
+                float scale      = 1 - (difference / (contentLength / 2));
+                //float scale = ((float) (totalContentLength - contentLength)) / ((float) (contentLength));
+                
+                System.out.println("cl: " + contentLength);
+                System.out.println("tl: " + totalContentLength);
+                System.out.println("s: " + scale);
+                */
             }
             
             rectangles[3].xPos = bounds.xPos;
@@ -121,7 +132,7 @@ public final class Scrollbar extends Element {
             rectangles[1].xPos = bounds.xPos + MARGIN;
             rectangles[1].yPos = bounds.yPos + 1;
             
-            if(containers.isEmpty()) {
+            if(totalContentLength < contentLength) {
                 rectangles[2].xPos  = bounds.xPos + MARGIN;
                 rectangles[2].yPos  = bounds.yPos + 3;
                 rectangles[2].width = length;
@@ -164,17 +175,12 @@ public final class Scrollbar extends Element {
         }
     }
     
-    public void setContainers(Map<Integer, Rectangle> containers) {
-        /*
-        TODO:
-        
-        containers will contain rectangle objects that specify the dimensions of
-        the content in the table that this scrollbar will use to determine its 
-        length
-        */
-        
-        this.containers.clear();
-        this.containers.putAll(containers);
+    public void setContentLength(Map<Integer, Integer> elementLengths) {
+        totalContentLength = 0;
+                
+        elementLengths.forEach((index, elementLength) -> {
+            totalContentLength += elementLength;
+        });
     }
     
 }

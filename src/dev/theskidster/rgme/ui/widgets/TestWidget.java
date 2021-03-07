@@ -20,8 +20,8 @@ public class TestWidget extends Widget {
         super(200, 200, 600, 400);
         
         elements = new LinkedHashSet<>() {{
-            add(new Scrollbar(400, 30, true, 200));
-            add(new Scrollbar(140, 300, false, 200));
+            add(new Scrollbar(400, 30, true, 200, 0));
+            add(new Scrollbar(140, 300, false, 200, 0));
             add(new TextArea(200, 200, 120, bounds.xPos, bounds.yPos));
         }};
     }

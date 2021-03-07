@@ -9,7 +9,9 @@ import dev.theskidster.rgme.ui.elements.Scrollbar;
 import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Mouse;
 import dev.theskidster.rgme.utils.Rectangle;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 
 /**
  * @author J Hoffman
@@ -18,12 +20,12 @@ import java.util.LinkedHashSet;
 
 public final class SceneGraph extends Widget {
     
-    private int prevCategoryIndex = -1;
-    private int currCategoryIndex = -1;
-    
     private final Rectangle seperator = new Rectangle(0, 0, 2, 224);
+    private final Scrollbar scrollbar;
     
     private final Category[] categories = new Category[6];
+    
+    private final Map<Integer, Integer> categoryLengths = new HashMap<>();
     
     public SceneGraph() {
         super(0, 28, 320, 0, "Scene Graph", 5, 0);
@@ -39,8 +41,10 @@ public final class SceneGraph extends Widget {
         categories[4] = new Category("Entities");
         categories[5] = new Category("Instances");
         
+        scrollbar = new Scrollbar((int) (bounds.width - 24), 40, true, 176, 224);
+        
         elements = new LinkedHashSet<>() {{
-            add(new Scrollbar((int) (bounds.width - 24), 40, true, 176));
+            add(scrollbar);
         }};
         
         categories[0].addGameObject(new TestObject());
@@ -78,12 +82,16 @@ public final class SceneGraph extends Widget {
             category.update(bounds.xPos, bounds.yPos + verticalOffset, mouse); //TODO: add scrollbar offset
             verticalOffset += 28 * category.getLength();
             
+            categoryLengths.put(i, 28 * category.getLength());
+            
             if(mouse.clicked && category.onlyBoundsSelected()) {
                 setCurrCategory(i, true);
             } else if(category.hasSelectedMember()) {
                 setCurrCategory(i, false);
             }
         }
+        
+        scrollbar.setContentLength(categoryLengths);
     }
 
     @Override
@@ -109,15 +117,9 @@ public final class SceneGraph extends Widget {
             categories[i].selected = (i == index);
             categories[i].clicked  = (i == index) && clicked;
             
-            if((i != index) ^ clicked) {
+            if(((i != index) ^ clicked) || (i != index) && clicked) {
                 categories[i].unselectMembers();
             }
-        }
-        
-        //TODO: remove if unused
-        if(index != prevCategoryIndex) {
-            currCategoryIndex = index;
-            prevCategoryIndex = currCategoryIndex;
         }
     }
     

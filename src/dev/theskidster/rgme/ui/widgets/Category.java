@@ -176,11 +176,7 @@ class Category extends Element {
         currGameObject = null;
     }
     
-    void passSceneGraphToMembers(SceneGraph sceneGraph) {
-        
-    }
-    
-    float getLength() { return length; }
+    int getLength() { return length; }
     
     boolean onlyBoundsSelected() {
         return hovered && !eyeHovered && !arrowHovered && 
