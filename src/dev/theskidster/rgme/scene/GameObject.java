@@ -9,6 +9,8 @@ import org.joml.Vector3f;
 
 public abstract class GameObject {
     
+    protected boolean visible;
+    
     protected String name;
     protected Vector3f position;
     
@@ -16,8 +18,13 @@ public abstract class GameObject {
         this.name = name;
     }
     
+    public boolean getVisible()   { return visible; }
     public String getName()       { return name; }
     public Vector3f getPosition() { return position; };
+    
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
     
     public void setName(String name) {
         this.name = name;

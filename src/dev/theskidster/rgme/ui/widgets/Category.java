@@ -9,7 +9,9 @@ import dev.theskidster.rgme.ui.elements.Element;
 import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Mouse;
 import dev.theskidster.rgme.utils.Rectangle;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,11 +21,14 @@ import java.util.Map;
 
 class Category extends Element {
 
-    private float length = 28;
+    private int memberIndex;
+    private int length = 1;
     
     boolean visible;
     boolean selected;
     boolean collapsed = true;
+    boolean eyeHovered;
+    boolean arrowHovered;
     
     private final Rectangle bounds;
     private final Rectangle eyeButton;
@@ -32,14 +37,14 @@ class Category extends Element {
     private final Icon eyeIcon;
     private final Icon arrowIcon;
     
-    private final String name;
+    private final String categoryName;
     
-    private final Map<String, GameObject> gameObjects = new HashMap<>();
+    private final Map<Integer, Member> members = new LinkedHashMap<>();
+    private final List<String> objectNames     = new ArrayList<>();
     
-    Category(String name) {
-        this.name = name;
-        
-        bounds = new Rectangle(0, 0, 296, 28);
+    Category(String categoryName) {
+        this.categoryName = categoryName;
+        bounds    = new Rectangle(0, 0, 296, 28);
         
         eyeButton = new Rectangle(0, 0, 22, 14);
         eyeIcon   = new Icon(20, 20);
@@ -62,6 +67,9 @@ class Category extends Element {
             currPressed = mouse.clicked;
         }
         
+        eyeHovered   = false;
+        arrowHovered = false;
+        
         //toggle category visibility
         {
             eyeButton.xPos = bounds.xPos + 3;
@@ -70,6 +78,8 @@ class Category extends Element {
             eyeIcon.position.set(eyeButton.xPos + 1, eyeButton.yPos + 17);
 
             if(eyeButton.contains(mouse.cursorPos)) {
+                eyeHovered = true;
+                
                 if(prevPressed != currPressed && !prevPressed) visible = !visible;
 
                 if(visible) {
@@ -89,50 +99,70 @@ class Category extends Element {
             arrowIcon.position.set(arrowButton.xPos - 3, arrowButton.yPos + 18);
 
             if(arrowButton.contains(mouse.cursorPos)) {
+                arrowHovered = true;
+                
                 if(prevPressed != currPressed && !prevPressed) collapsed = !collapsed;
 
                 if(collapsed) {
                     arrowIcon.setSubImage(7, 1);
-                    length = 28;
+                    length = 1;
                 } else {
                     arrowIcon.setSubImage(8, 1);
-                    //TODO: expand category
-                    
-                    
+                    if(!members.isEmpty()) length = members.size() + 1;
                 }
             }
         }
         
-        if(gameObjects.isEmpty()) {
+        if(!collapsed && !members.isEmpty()) {
+            for(int i = 0; i < memberIndex; i++) {
+                if(members.get(i) != null) {
+                    members.get(i).update(bounds.xPos, bounds.yPos, mouse, i + 1);
+                }
+            }
             
+            if(!hovered && mouse.clicked) {
+                clicked = false;
+            }
         }
     }
 
     @Override
     public void render(Program uiProgram, Background background, FreeTypeFont font) {
-        background.drawRectangle(bounds, Color.RGME_BLUE, uiProgram);
+        if(clicked) background.drawRectangle(bounds, Color.RGME_BLUE, uiProgram);
         
         eyeIcon.render(uiProgram);
         arrowIcon.render(uiProgram);
         
-        font.drawString(name, 
+        font.drawString(categoryName, 
                         bounds.xPos + 56, bounds.yPos + 20, 
                         1, 
                         selected ? Color.RGME_YELLOW : Color.RGME_WHITE, 
                         uiProgram);
         
-        if(!collapsed) {
-            if(gameObjects.isEmpty()) {
-                
-            } else {
-                for(int i = 0; i < gameObjects.size(); i++) {
-                    
-                }
-            }
+        if(!collapsed && !members.isEmpty()) {
+            members.values().forEach(member -> member.render(uiProgram, background, font, selected));
         }
     }
     
-    String getName()  { return name; }
     float getLength() { return length; }
+    
+    boolean onlyBoundsSelected() {
+        return hovered && !eyeHovered && !arrowHovered && 
+               (prevPressed != currPressed && !prevPressed);
+    }
+    
+    void addGameObject(GameObject gameObject) {
+        int duplicate = 0;
+
+        while(objectNames.contains(gameObject.getName())) {
+            duplicate++;
+            gameObject.setName(gameObject.getName() + " (" + duplicate + ")");
+        }
+        
+        objectNames.add(gameObject.getName());
+        members.put(memberIndex, new Member(categoryName, gameObject));
+        
+        memberIndex++;
+    }
     
 }

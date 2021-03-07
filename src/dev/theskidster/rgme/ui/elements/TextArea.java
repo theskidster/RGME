@@ -37,7 +37,7 @@ public final class TextArea extends TextInputElement {
     }
 
     @Override
-    void validateInput() {
+    protected void validateInput() {
         
     }
 

@@ -19,7 +19,6 @@ public abstract class Element {
     protected boolean currPressed;
     public boolean hovered;
     public boolean clicked;
-    public boolean remove;
     
     public abstract void update(int parentPosX, int parentPosY, Mouse mouse);
     public abstract void render(Program uiProgram, Background background, FreeTypeFont font);

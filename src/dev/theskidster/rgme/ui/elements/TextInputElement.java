@@ -104,7 +104,7 @@ public abstract class TextInputElement extends Element {
         }};
     }
     
-    TextInputElement(int xOffset, int yOffset, int width, int parentPosX, int parentPosY) {
+    public TextInputElement(int xOffset, int yOffset, int width, int parentPosX, int parentPosY) {
         this.xOffset = xOffset;
         this.yOffset = yOffset;
         this.width   = width;
@@ -250,7 +250,7 @@ public abstract class TextInputElement extends Element {
     protected boolean hasFocus()     { return hasFocus; }
     public String getText()          { return typed.toString(); }
     
-    abstract void validateInput();
+    protected abstract void validateInput();
     
     public abstract void processInput(int key, int action);
     
