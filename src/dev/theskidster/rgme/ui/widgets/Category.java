@@ -24,7 +24,7 @@ class Category extends Element {
     private int memberIndex;
     private int length = 1;
     
-    boolean visible;
+    boolean visible = true;
     boolean selected;
     boolean collapsed = true;
     boolean eyeHovered;
@@ -38,6 +38,8 @@ class Category extends Element {
     private final Icon arrowIcon;
     
     private final String categoryName;
+    
+    private Color color;
     
     private final Map<Integer, Member> members = new LinkedHashMap<>();
     private final List<String> objectNames     = new ArrayList<>();
@@ -61,6 +63,7 @@ class Category extends Element {
         bounds.yPos = yOffset + parentPosY + 40;
         
         hovered = bounds.contains(mouse.cursorPos);
+        color   = (selected) ? Color.RGME_YELLOW : Color.RGME_WHITE;
         
         if(hovered) {
             prevPressed = currPressed;
@@ -76,18 +79,18 @@ class Category extends Element {
             eyeButton.yPos = bounds.yPos + 7;
 
             eyeIcon.position.set(eyeButton.xPos + 1, eyeButton.yPos + 17);
-
+            eyeIcon.setColor(color);
+            
             if(eyeButton.contains(mouse.cursorPos)) {
                 eyeHovered = true;
                 
-                if(prevPressed != currPressed && !prevPressed) visible = !visible;
-
-                if(visible) {
-                    eyeIcon.setSubImage(10, 2);
-                } else {
-                    eyeIcon.setSubImage(9, 2);
-                    //TODO: toggle visiblity of all game objects in this category
+                if(prevPressed != currPressed && !prevPressed) {
+                    visible = !visible;
+                    members.forEach((index, member) -> member.gameObject.setVisible(visible));
                 }
+
+                if(visible) eyeIcon.setSubImage(9, 2);
+                else        eyeIcon.setSubImage(10, 2);
             }
         }
         
@@ -97,7 +100,8 @@ class Category extends Element {
             arrowButton.yPos = bounds.yPos + 7;
 
             arrowIcon.position.set(arrowButton.xPos - 3, arrowButton.yPos + 18);
-
+            arrowIcon.setColor(color);
+            
             if(arrowButton.contains(mouse.cursorPos)) {
                 arrowHovered = true;
                 
@@ -116,7 +120,7 @@ class Category extends Element {
         if(!collapsed && !members.isEmpty()) {
             for(int i = 0; i < memberIndex; i++) {
                 if(members.get(i) != null) {
-                    members.get(i).update(bounds.xPos, bounds.yPos, mouse, i + 1);
+                    members.get(i).update(bounds.xPos, bounds.yPos, mouse, i + 1, selected);
                 }
             }
             
@@ -136,11 +140,11 @@ class Category extends Element {
         font.drawString(categoryName, 
                         bounds.xPos + 56, bounds.yPos + 20, 
                         1, 
-                        selected ? Color.RGME_YELLOW : Color.RGME_WHITE, 
+                        color, 
                         uiProgram);
         
         if(!collapsed && !members.isEmpty()) {
-            members.values().forEach(member -> member.render(uiProgram, background, font, selected));
+            members.values().forEach(member -> member.render(uiProgram, background, font));
         }
     }
     

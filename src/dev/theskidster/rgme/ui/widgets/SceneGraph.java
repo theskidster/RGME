@@ -73,7 +73,7 @@ public final class SceneGraph extends Widget {
 
     @Override
     public void render(Program uiProgram, Background background, FreeTypeFont font) {
-        background.drawRectangle(bounds, Color.RGME_MEDIUM_GRAY, uiProgram);
+        background.drawRectangle(bounds, Color.RGME_DARK_GRAY, uiProgram);
         background.drawRectangle(titleBar, Color.RGME_LIGHT_GRAY, uiProgram);
         
         icon.render(uiProgram);

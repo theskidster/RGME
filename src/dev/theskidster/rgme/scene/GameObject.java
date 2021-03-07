@@ -9,7 +9,7 @@ import org.joml.Vector3f;
 
 public abstract class GameObject {
     
-    protected boolean visible;
+    protected boolean visible = true;
     
     protected String name;
     protected Vector3f position;
