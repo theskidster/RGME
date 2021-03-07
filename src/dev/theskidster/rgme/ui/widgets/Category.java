@@ -50,11 +50,11 @@ class Category extends Element {
         this.categoryName = categoryName;
         bounds    = new Rectangle(0, 0, 296, 28);
         
-        eyeButton = new Rectangle(0, 0, 22, 14);
+        eyeButton = new Rectangle(0, 0, 22, 18);
         eyeIcon   = new Icon(20, 20);
         eyeIcon.setSubImage(9, 2);
         
-        arrowButton = new Rectangle(0, 0, 14, 14);
+        arrowButton = new Rectangle(0, 0, 16, 16);
         arrowIcon   = new Icon(20, 20);
         arrowIcon.setSubImage(7, 1);
     }
@@ -78,9 +78,9 @@ class Category extends Element {
         //toggle category visibility
         {
             eyeButton.xPos = bounds.xPos + 3;
-            eyeButton.yPos = bounds.yPos + 7;
+            eyeButton.yPos = bounds.yPos + 5;
 
-            eyeIcon.position.set(eyeButton.xPos + 1, eyeButton.yPos + 17);
+            eyeIcon.position.set(eyeButton.xPos + 1, eyeButton.yPos + 19);
             eyeIcon.setColor(color);
             
             if(eyeButton.contains(mouse.cursorPos)) {
@@ -98,10 +98,10 @@ class Category extends Element {
         
         //expand/collapse category
         {
-            arrowButton.xPos = bounds.xPos + 36;
+            arrowButton.xPos = bounds.xPos + 34;
             arrowButton.yPos = bounds.yPos + 7;
 
-            arrowIcon.position.set(arrowButton.xPos - 3, arrowButton.yPos + 18);
+            arrowIcon.position.set(arrowButton.xPos - 1, arrowButton.yPos + 18);
             arrowIcon.setColor(color);
             
             if(arrowButton.contains(mouse.cursorPos)) {

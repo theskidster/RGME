@@ -45,7 +45,7 @@ class Member {
             case "Instances"        -> typeIcon.setSubImage(6, 1);
         }
         
-        eyeButton = new Rectangle(0, 0, 22, 14);
+        eyeButton = new Rectangle(0, 0, 22, 18);
         eyeIcon   = new Icon(20, 20);
         eyeIcon.setSubImage(9, 2);
     }
@@ -73,7 +73,7 @@ class Member {
         //toggle game object visibility
         {
             eyeButton.xPos = bounds.xPos + 3;
-            eyeButton.yPos = bounds.yPos + 7;
+            eyeButton.yPos = bounds.yPos + 5;
             
             if(eyeButton.contains(mouse.cursorPos)) {
                 eyeHovered = true;
@@ -85,7 +85,7 @@ class Member {
                 eyeHovered = false;
             }
             
-            eyeIcon.position.set(eyeButton.xPos + 1, eyeButton.yPos + 17);
+            eyeIcon.position.set(eyeButton.xPos + 1, eyeButton.yPos + 19);
             eyeIcon.setColor(color);
             
             if(gameObject.getVisible()) eyeIcon.setSubImage(9, 2);
