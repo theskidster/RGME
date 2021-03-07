@@ -196,10 +196,14 @@ class Category extends Element {
     void addGameObject(GameObject gameObject) {
         int duplicate = 0;
 
-        while(objectNames.contains(gameObject.getName())) {
+        String gameObjectName = gameObject.getName();
+        
+        while(objectNames.contains(gameObjectName)) {
             duplicate++;
-            gameObject.setName(gameObject.getName() + " (" + duplicate + ")");
+            gameObjectName = gameObject.getName() + " (" + duplicate + ")";
         }
+        
+        gameObject.setName(gameObjectName);
         
         objectNames.add(gameObject.getName());
         members.put(maxMemberIndex, new Member(categoryName, gameObject));
