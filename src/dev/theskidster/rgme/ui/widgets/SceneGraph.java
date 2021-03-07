@@ -2,6 +2,7 @@ package dev.theskidster.rgme.ui.widgets;
 
 import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.main.Program;
+import dev.theskidster.rgme.scene.GameObject;
 import dev.theskidster.rgme.scene.TestObject;
 import dev.theskidster.rgme.ui.FreeTypeFont;
 import dev.theskidster.rgme.ui.elements.Scrollbar;
@@ -22,7 +23,7 @@ public final class SceneGraph extends Widget {
     
     private final Rectangle seperator = new Rectangle(0, 0, 2, 224);
     
-    private final Category[] categories = new Category[2];
+    private final Category[] categories = new Category[6];
     
     public SceneGraph() {
         super(0, 28, 320, 0, "Scene Graph", 5, 0);
@@ -33,6 +34,10 @@ public final class SceneGraph extends Widget {
         
         categories[0] = new Category("Visible Geometry");
         categories[1] = new Category("Bounding Volumes");
+        categories[2] = new Category("Trigger Boxes");
+        categories[3] = new Category("Light Sources");
+        categories[4] = new Category("Entities");
+        categories[5] = new Category("Instances");
         
         elements = new LinkedHashSet<>() {{
             add(new Scrollbar((int) (bounds.width - 24), 40, true, 176));
@@ -40,6 +45,14 @@ public final class SceneGraph extends Widget {
         
         categories[0].addGameObject(new TestObject());
         categories[0].addGameObject(new TestObject());
+        categories[1].addGameObject(new TestObject());
+        categories[1].addGameObject(new TestObject());
+        categories[2].addGameObject(new TestObject());
+        categories[3].addGameObject(new TestObject());
+        categories[4].addGameObject(new TestObject());
+        categories[4].addGameObject(new TestObject());
+        categories[4].addGameObject(new TestObject());
+        categories[5].addGameObject(new TestObject());
     }
 
     @Override
@@ -67,6 +80,8 @@ public final class SceneGraph extends Widget {
             
             if(mouse.clicked && category.onlyBoundsSelected()) {
                 setCurrCategory(i, true);
+            } else if(category.hasSelectedMember()) {
+                setCurrCategory(i, false);
             }
         }
     }
@@ -89,16 +104,25 @@ public final class SceneGraph extends Widget {
         background.drawRectangle(seperator, Color.RGME_BLACK, uiProgram);
     }
     
-    private void setCurrCategory(int index, boolean clicked) {
+    void setCurrCategory(int index, boolean clicked) {
         for(int i = 0; i < categories.length; i++) {
             categories[i].selected = (i == index);
-            categories[i].clicked  = clicked && (i == index);
+            categories[i].clicked  = (i == index) && clicked;
+            
+            if((i != index) ^ clicked) {
+                categories[i].unselectMembers();
+            }
         }
         
+        //TODO: remove if unused
         if(index != prevCategoryIndex) {
             currCategoryIndex = index;
             prevCategoryIndex = currCategoryIndex;
         }
+    }
+    
+    GameObject getSelectedGameObject() {
+        return Category.currGameObject;
     }
     
 }

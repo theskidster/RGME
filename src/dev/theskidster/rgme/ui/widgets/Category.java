@@ -21,7 +21,7 @@ import java.util.Map;
 
 class Category extends Element {
 
-    private int memberIndex;
+    private int maxMemberIndex;
     private int length = 1;
     
     boolean visible = true;
@@ -38,6 +38,8 @@ class Category extends Element {
     private final Icon arrowIcon;
     
     private final String categoryName;
+    
+    static GameObject currGameObject;
     
     private Color color;
     
@@ -118,14 +120,14 @@ class Category extends Element {
         }
         
         if(!collapsed && !members.isEmpty()) {
-            for(int i = 0; i < memberIndex; i++) {
+            for(int i = 0; i < maxMemberIndex; i++) {
                 if(members.get(i) != null) {
                     members.get(i).update(bounds.xPos, bounds.yPos, mouse, i + 1, selected);
+                    
+                    if(mouse.clicked && members.get(i).onlyBoundsSelected()) {
+                        setCurrSelectedMember(i);
+                    }
                 }
-            }
-            
-            if(!hovered && mouse.clicked) {
-                clicked = false;
             }
         }
     }
@@ -148,11 +150,51 @@ class Category extends Element {
         }
     }
     
+    private void setCurrSelectedMember(int index) {
+        for(int i = 0; i < maxMemberIndex; i++) {
+            if(members.get(i) != null) {
+                members.get(i).selected = (i == index);
+                
+                if(members.get(i).selected) {
+                    currGameObject = members.get(i).gameObject;
+                    
+                    //these values are for the categories state
+                    selected = true;
+                    clicked  = false;
+                }
+            }
+        }
+    }
+    
+    void unselectMembers() {
+        for(int i = 0; i < maxMemberIndex; i++) {
+            if(members.get(i) != null) {
+                members.get(i).selected = false;
+            }
+        }
+        
+        currGameObject = null;
+    }
+    
+    void passSceneGraphToMembers(SceneGraph sceneGraph) {
+        
+    }
+    
     float getLength() { return length; }
     
     boolean onlyBoundsSelected() {
         return hovered && !eyeHovered && !arrowHovered && 
                (prevPressed != currPressed && !prevPressed);
+    }
+    
+    boolean hasSelectedMember() {
+        for(int i = 0; i < maxMemberIndex; i++) {
+            if(members.get(i) != null) {
+                if(members.get(i).selected) return true;
+            } 
+        }
+        
+        return false;
     }
     
     void addGameObject(GameObject gameObject) {
@@ -164,9 +206,9 @@ class Category extends Element {
         }
         
         objectNames.add(gameObject.getName());
-        members.put(memberIndex, new Member(categoryName, gameObject));
+        members.put(maxMemberIndex, new Member(categoryName, gameObject));
         
-        memberIndex++;
+        maxMemberIndex++;
     }
     
 }

@@ -18,7 +18,10 @@ class Member {
     
     private boolean prevPressed;
     private boolean currPressed;
-    boolean clicked;
+    private boolean eyeHovered;
+    private boolean hovered;
+    private boolean clicked;
+    boolean selected;
     
     final GameObject gameObject;
     final Rectangle bounds;
@@ -36,6 +39,10 @@ class Member {
         switch(categoryName) {
             case "Visible Geometry" -> typeIcon.setSubImage(0, 1);
             case "Bounding Volumes" -> typeIcon.setSubImage(1, 1);
+            case "Trigger Boxes"    -> typeIcon.setSubImage(2, 1);
+            case "Light Sources"    -> typeIcon.setSubImage(3, 1);
+            case "Entities"         -> typeIcon.setSubImage(5, 1);
+            case "Instances"        -> typeIcon.setSubImage(6, 1);
         }
         
         eyeButton = new Rectangle(0, 0, 22, 14);
@@ -47,10 +54,21 @@ class Member {
         bounds.xPos = parentPosX;
         bounds.yPos = parentPosY + (28 * index);
         
-        color = (categorySelected) ? Color.RGME_YELLOW : Color.RGME_WHITE;
-        
         prevPressed = currPressed;
         currPressed = mouse.clicked;
+        
+        //detemine member selection eligibility
+        {
+            if(bounds.contains(mouse.cursorPos)) {
+                hovered = true;
+                if(mouse.clicked) clicked = true;
+            } else {
+                hovered = false;
+                clicked = false;
+            }
+        }
+        
+        color = (categorySelected) ? Color.RGME_YELLOW : Color.RGME_WHITE;
         
         //toggle game object visibility
         {
@@ -58,9 +76,13 @@ class Member {
             eyeButton.yPos = bounds.yPos + 7;
             
             if(eyeButton.contains(mouse.cursorPos)) {
+                eyeHovered = true;
+                
                 if(prevPressed != currPressed && !prevPressed) {
                     gameObject.setVisible(!gameObject.getVisible());
                 }
+            } else {
+                eyeHovered = false;
             }
             
             eyeIcon.position.set(eyeButton.xPos + 1, eyeButton.yPos + 17);
@@ -75,7 +97,7 @@ class Member {
     }
     
     public void render(Program uiProgram, Background background, FreeTypeFont font) {
-        if(clicked) background.drawRectangle(bounds, Color.RGME_BLUE, uiProgram);
+        if(selected) background.drawRectangle(bounds, Color.RGME_BLUE, uiProgram);
         
         font.drawString(
                 gameObject.getName(), 
@@ -86,6 +108,11 @@ class Member {
         
         eyeIcon.render(uiProgram);
         typeIcon.render(uiProgram);
+    }
+    
+    boolean onlyBoundsSelected() {
+        return hovered && clicked && !eyeHovered && 
+               (prevPressed != currPressed && !prevPressed);
     }
     
 }
