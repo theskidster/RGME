@@ -23,6 +23,9 @@ public final class Scrollbar extends Element {
     private int totalContentLength;
     private int length;
     
+    private float prevScale;
+    private float currScale;
+    
     private final boolean vertical;
     
     private final Rectangle bounds = new Rectangle();
@@ -54,6 +57,9 @@ public final class Scrollbar extends Element {
         rectangles[4] = new Rectangle(0, 0, MARGIN, MARGIN);
         
         if(vertical) {
+            bounds.width  = MARGIN;
+            bounds.height = length + (MARGIN * 2);
+            
             icons[0].setSubImage(4, 3);
             icons[2].setSubImage(6, 0);
             icons[3].setSubImage(7, 0);
@@ -62,6 +68,9 @@ public final class Scrollbar extends Element {
             rectangles[1] = new Rectangle(0, 0, MARGIN - 2, length);
             rectangles[2] = new Rectangle(0, 0, MARGIN - 6, 0);
         } else {
+            bounds.width  = length + (MARGIN * 2);
+            bounds.height = MARGIN;
+            
             icons[0].setSubImage(3, 4);
             icons[2].setSubImage(8, 0);
             icons[3].setSubImage(9, 0);
@@ -81,13 +90,10 @@ public final class Scrollbar extends Element {
         bounds.yPos = yOffset + parentPosY;
         
         if(vertical) {
-            bounds.width  = MARGIN;
-            bounds.height = length + (MARGIN * 2);
-            
             icons[0].position.set(bounds.xPos, bounds.yPos + MARGIN);
-            icons[1].position.set(bounds.xPos, bounds.yPos + length + (MARGIN * 2));
+            icons[1].position.set(bounds.xPos, bounds.yPos + bounds.height);
             icons[2].position.set(bounds.xPos + 2, bounds.yPos + 21);
-            icons[3].position.set(bounds.xPos + 2, bounds.yPos + length + (MARGIN * 2) - 1);
+            icons[3].position.set(bounds.xPos + 2, bounds.yPos + bounds.height - 1);
             
             rectangles[0].xPos = bounds.xPos;
             rectangles[0].yPos = bounds.yPos + MARGIN;
@@ -98,29 +104,31 @@ public final class Scrollbar extends Element {
             if(totalContentLength < contentLength) {
                 rectangles[2].xPos   = bounds.xPos + 3;
                 rectangles[2].yPos   = bounds.yPos + MARGIN;
-                rectangles[2].height = length;
+                rectangles[2].height = bounds.height - (MARGIN * 2);
             } else {
-                /*
-                float difference = (float) (totalContentLength - contentLength);
-                float scale      = 1 - (difference / (contentLength / 2));
-                //float scale = ((float) (totalContentLength - contentLength)) / ((float) (contentLength));
+                int difference = totalContentLength - contentLength;
                 
-                System.out.println("cl: " + contentLength);
-                System.out.println("tl: " + totalContentLength);
-                System.out.println("s: " + scale);
-                */
+                prevScale = currScale;
+                currScale = (float) (difference) / (float) (contentLength);
+                
+                if(prevScale != currScale) {
+                    length = (int) (bounds.height - (MARGIN * 2));
+                    
+                    int change = (int) -(length * currScale) / 2;
+                    length += change;
+                    
+                    rectangles[2].height = length;
+                }
             }
             
             rectangles[3].xPos = bounds.xPos;
             rectangles[3].yPos = bounds.yPos;
             
             rectangles[4].xPos = bounds.xPos;
-            rectangles[4].yPos = bounds.yPos + length + MARGIN;
+            rectangles[4].yPos = (int) (bounds.yPos + bounds.height - MARGIN);
             
         } else {
-            bounds.width  = length + (MARGIN * 2);
-            bounds.height = MARGIN;
-            
+            /*
             icons[0].position.set(bounds.xPos, bounds.yPos + MARGIN);
             icons[1].position.set(bounds.xPos + length + MARGIN, bounds.yPos + MARGIN);
             icons[2].position.set(bounds.xPos + 1, bounds.yPos + 22);
@@ -143,7 +151,7 @@ public final class Scrollbar extends Element {
             
             rectangles[4].xPos = bounds.xPos + length + MARGIN;
             rectangles[4].yPos = bounds.yPos;
-            
+            */
         }
         
         hovered = bounds.contains(mouse.cursorPos);
