@@ -30,8 +30,8 @@ public final class SceneGraph extends Widget {
     public SceneGraph() {
         super(0, 28, 320, 0, "Scene Graph", 5, 0);
         
-        bounds.xPos = 450;
-        bounds.yPos = 200;
+        bounds.xPos   = 450;
+        bounds.yPos   = 200;
         bounds.height = 264;
         
         categories[0] = new Category("Visible Geometry");
@@ -49,6 +49,11 @@ public final class SceneGraph extends Widget {
         
         categories[0].addGameObject(new TestObject());
         categories[0].addGameObject(new TestObject());
+        categories[0].addGameObject(new TestObject());
+        categories[0].addGameObject(new TestObject());
+        categories[0].addGameObject(new TestObject());
+        categories[0].addGameObject(new TestObject());
+        categories[0].addGameObject(new TestObject());
         categories[1].addGameObject(new TestObject());
         categories[1].addGameObject(new TestObject());
         categories[2].addGameObject(new TestObject());
@@ -56,6 +61,10 @@ public final class SceneGraph extends Widget {
         categories[4].addGameObject(new TestObject());
         categories[4].addGameObject(new TestObject());
         categories[4].addGameObject(new TestObject());
+        categories[5].addGameObject(new TestObject());
+        categories[5].addGameObject(new TestObject());
+        categories[5].addGameObject(new TestObject());
+        categories[5].addGameObject(new TestObject());
         categories[5].addGameObject(new TestObject());
     }
 
@@ -76,12 +85,12 @@ public final class SceneGraph extends Widget {
         
         elements.forEach(element -> element.update(bounds.xPos, bounds.yPos, mouse));
         
-        int verticalOffset = 0;
+        int verticalOffset = scrollbar.getContentScrollOffset();
         
         for(int i = 0; i < categories.length; i++) {
             Category category = categories[i];
             
-            category.update(bounds.xPos, bounds.yPos + verticalOffset, mouse); //TODO: add scrollbar offset
+            category.update(bounds.xPos, bounds.yPos + verticalOffset, mouse);
             verticalOffset += 28 * category.getLength();
             
             categoryLengths.put(i, 28 * category.getLength());

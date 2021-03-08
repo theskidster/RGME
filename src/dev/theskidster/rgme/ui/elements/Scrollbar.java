@@ -18,14 +18,12 @@ public final class Scrollbar extends Element {
 
     private final int MARGIN = 24;
     
-    private int contentLength;
+    private final int length;
     private int contentOffset;
-    private int totalContentLength;
-    private int length;
-    private int prevCursorPos;
+    private int prevChange;
     
-    private float prevScale;
-    private float currScale;
+    private final float viewportLength;
+    private float totalContentLength;
     
     private final boolean vertical;
     public boolean parentHovered;
@@ -36,12 +34,13 @@ public final class Scrollbar extends Element {
     private final Rectangle[] rectangles = new Rectangle[5];
     private final Color[] buttonColors   = new Color[2];
     
-    public Scrollbar(int xOffset, int yOffset, boolean vertical, int length, int contentLength) {
-        this.xOffset       = xOffset;
-        this.yOffset       = yOffset;
-        this.vertical      = vertical;
-        this.length        = length;
-        this.contentLength = contentLength;
+    public Scrollbar(int xOffset, int yOffset, boolean vertical, int length, int viewportLength) {
+        this.xOffset  = xOffset;
+        this.yOffset  = yOffset;
+        this.vertical = vertical;
+        this.length   = length;
+        
+        this.viewportLength = viewportLength;
         
         icons[0] = new Icon(24, 24);
         icons[1] = new Icon(24, 24);
@@ -106,57 +105,27 @@ public final class Scrollbar extends Element {
             rectangles[1].xPos = bounds.xPos + 1;
             rectangles[1].yPos = bounds.yPos + MARGIN;
             
-            if(totalContentLength < contentLength) {
+            float contentScale = totalContentLength / viewportLength;
+            
+            if(contentScale <= 1) {
                 rectangles[2].xPos   = bounds.xPos + 3;
                 rectangles[2].yPos   = bounds.yPos + MARGIN;
                 rectangles[2].height = bounds.height - (MARGIN * 2);
             } else {
-                int difference = totalContentLength - contentLength;
+                rectangles[2].height = (int) length / contentScale;
                 
-                prevScale = currScale;
-                currScale = (float) (difference) / (float) (contentLength);
-                
-                if(prevScale != currScale) {
-                    length = (int) (bounds.height - (MARGIN * 2));
-                    
-                    int change = (int) -(length * currScale) / 2;
-                    length += change;
-                    
-                    rectangles[2].height = length;
-                }
-                
-                int rateOfChange = 0;
-                boolean minLimitReached = true;
-                boolean maxLimitReached = true;
+                float change = 0;
                 
                 if(rectangles[2].contains(mouse.cursorPos) && mouse.clicked) {
-                    rateOfChange = mouse.cursorPos.y - prevCursorPos;
-
-                    minLimitReached = rectangles[2].yPos + rateOfChange < rectangles[0].yPos;
-                    maxLimitReached = (rectangles[2].yPos + length) + rateOfChange > rectangles[0].yPos + rectangles[0].height;
-
-                    if(prevCursorPos != mouse.cursorPos.y && !maxLimitReached && !minLimitReached) {
-                        rectangles[2].yPos += rateOfChange;
-                    }
-                } else if(parentHovered && mouse.scrolled) {
-                    rateOfChange = mouse.scrollValue * -6;
+                    change = mouse.cursorPos.y - prevChange;
                     
-                    minLimitReached = rectangles[2].yPos + rateOfChange < rectangles[0].yPos;
-                    maxLimitReached = (rectangles[2].yPos + length) + rateOfChange > rectangles[0].yPos + rectangles[0].height;
-
-                    if(!maxLimitReached && !minLimitReached) {
-                        rectangles[2].yPos += rateOfChange;
+                    if(prevChange != mouse.cursorPos.y) {
+                        rectangles[2].yPos += change;
+                        contentOffset += change;
                     }
                 }
                 
-                if(!minLimitReached && !maxLimitReached) {
-                    System.out.println(rateOfChange);
-                }
-                
-                
-                //TODO: calculate content offset and provide through a getter
-                
-                prevCursorPos = mouse.cursorPos.y;
+                prevChange = mouse.cursorPos.y;
             }
             
             rectangles[3].xPos = bounds.xPos;
@@ -227,6 +196,10 @@ public final class Scrollbar extends Element {
         elementLengths.forEach((index, elementLength) -> {
             totalContentLength += elementLength;
         });
+    }
+    
+    public int getContentScrollOffset() {
+        return -contentOffset;
     }
     
 }
