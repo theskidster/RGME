@@ -119,9 +119,24 @@ public final class Scrollbar extends Element {
                 if(rectangles[2].contains(mouse.cursorPos) && mouse.clicked) {
                     change = mouse.cursorPos.y - prevChange;
                     
-                    if(prevChange != mouse.cursorPos.y) {
+                    float factor = ((length % rectangles[2].height) / (totalContentLength - viewportLength)) + 1;
+                    
+                    boolean minLimitReached = rectangles[2].yPos + change < rectangles[0].yPos;
+                    boolean maxLimitReached = (rectangles[2].yPos + rectangles[2].height) + change > rectangles[0].yPos + length;
+                    
+                    /*
+                    TODO:
+                    
+                    theres an bug where if a category is open while the scrollbar isnt at the top
+                    the extra space will be added to the top- making reaching the bottom elements 
+                    difficult or imposible.
+                    
+                    You can likely fix this by offsetting the position of the scrollbar to compensate.
+                    */
+                    
+                    if(!minLimitReached && !maxLimitReached) {
                         rectangles[2].yPos += change;
-                        contentOffset += change;
+                        contentOffset += Math.round(change * (contentScale * factor));
                     }
                 }
                 
