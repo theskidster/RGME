@@ -7,7 +7,6 @@ import dev.theskidster.rgme.ui.FreeTypeFont;
 import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Mouse;
 import dev.theskidster.rgme.utils.Rectangle;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -20,13 +19,16 @@ public final class Scrollbar extends Element {
     private final int MARGIN = 24;
     
     private int contentLength;
+    private int contentOffset;
     private int totalContentLength;
     private int length;
+    private int prevCursorPos;
     
     private float prevScale;
     private float currScale;
     
     private final boolean vertical;
+    public boolean parentHovered;
     
     private final Rectangle bounds = new Rectangle();
     
@@ -89,6 +91,9 @@ public final class Scrollbar extends Element {
         bounds.xPos = xOffset + parentPosX;
         bounds.yPos = yOffset + parentPosY;
         
+        prevPressed = currPressed;
+        currPressed = mouse.clicked;
+        
         if(vertical) {
             icons[0].position.set(bounds.xPos, bounds.yPos + MARGIN);
             icons[1].position.set(bounds.xPos, bounds.yPos + bounds.height);
@@ -119,6 +124,39 @@ public final class Scrollbar extends Element {
                     
                     rectangles[2].height = length;
                 }
+                
+                int rateOfChange = 0;
+                boolean minLimitReached = true;
+                boolean maxLimitReached = true;
+                
+                if(rectangles[2].contains(mouse.cursorPos) && mouse.clicked) {
+                    rateOfChange = mouse.cursorPos.y - prevCursorPos;
+
+                    minLimitReached = rectangles[2].yPos + rateOfChange < rectangles[0].yPos;
+                    maxLimitReached = (rectangles[2].yPos + length) + rateOfChange > rectangles[0].yPos + rectangles[0].height;
+
+                    if(prevCursorPos != mouse.cursorPos.y && !maxLimitReached && !minLimitReached) {
+                        rectangles[2].yPos += rateOfChange;
+                    }
+                } else if(parentHovered && mouse.scrolled) {
+                    rateOfChange = mouse.scrollValue * -6;
+                    
+                    minLimitReached = rectangles[2].yPos + rateOfChange < rectangles[0].yPos;
+                    maxLimitReached = (rectangles[2].yPos + length) + rateOfChange > rectangles[0].yPos + rectangles[0].height;
+
+                    if(!maxLimitReached && !minLimitReached) {
+                        rectangles[2].yPos += rateOfChange;
+                    }
+                }
+                
+                if(!minLimitReached && !maxLimitReached) {
+                    System.out.println(rateOfChange);
+                }
+                
+                
+                //TODO: calculate content offset and provide through a getter
+                
+                prevCursorPos = mouse.cursorPos.y;
             }
             
             rectangles[3].xPos = bounds.xPos;

@@ -101,6 +101,10 @@ final class Window {
             ui.setMouseAction(button, action);
         });
         
+        glfwSetScrollCallback(handle, (window, xOffset, yOffset) -> {
+            ui.setMouseScroll((int) yOffset);
+        });
+        
         glfwSetKeyCallback(handle, (window, key, scancode, action, mods) -> {
             ui.captureKeyInput(key, action);
         });

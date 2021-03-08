@@ -65,6 +65,8 @@ public final class UI {
         
         widgets.forEach((name, widget) -> widget.update(viewportWidth, viewportHeight, mouse));
         widgets.entrySet().removeIf(widget -> widget.getValue().removeRequest);
+        
+        mouse.scrolled = false;
     }
     
     public void render(Program uiProgram) {
@@ -101,6 +103,11 @@ public final class UI {
         }
         
         mouse.clicked = (action == GLFW_PRESS);
+    }
+    
+    public void setMouseScroll(int value) {
+        mouse.scrollValue = value;
+        mouse.scrolled    = true;
     }
     
     public static void setTextInputElement(TextInputElement currElement) {

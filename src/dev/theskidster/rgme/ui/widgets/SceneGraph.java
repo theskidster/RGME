@@ -66,6 +66,8 @@ public final class SceneGraph extends Widget {
         bounds.height = viewportHeight - bounds.yPos;
         */
         
+        hovered = bounds.contains(mouse.cursorPos);
+        
         seperator.xPos = bounds.xPos + 28;
         seperator.yPos = bounds.yPos + 40;
         
@@ -92,6 +94,7 @@ public final class SceneGraph extends Widget {
         }
         
         scrollbar.setContentLength(categoryLengths);
+        scrollbar.parentHovered = hovered;
     }
 
     @Override

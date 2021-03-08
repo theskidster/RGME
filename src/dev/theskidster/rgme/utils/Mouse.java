@@ -11,11 +11,13 @@ import static org.lwjgl.glfw.GLFW.*;
 public final class Mouse {
     
     private int prevCursorShape;
+    public int scrollValue;
     
     private final long windowHandle;
     private long cursorHandle;
     
     public boolean clicked;
+    public boolean scrolled;
     
     public String button = "";
     public Vector2i cursorPos = new Vector2i();
