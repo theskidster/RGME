@@ -1,6 +1,6 @@
 package dev.theskidster.rgme.utils;
 
-import org.joml.Vector2i;
+import org.joml.Vector2f;
 
 /**
  * @author J Hoffman
@@ -9,22 +9,21 @@ import org.joml.Vector2i;
 
 public class Rectangle {
 
-    public int xPos;
-    public int yPos;
-    
+    public float xPos;
+    public float yPos;
     public float width;
     public float height;
     
     public Rectangle() {}
     
-    public Rectangle(int xPos, int yPos, int width, int height) {
+    public Rectangle(float xPos, float yPos, int width, int height) {
         this.xPos   = xPos;
         this.yPos   = yPos;
         this.width  = width;
         this.height = height;
     }
     
-    public boolean contains(Vector2i point) {
+    public boolean contains(Vector2f point) {
         return (point.x > xPos && point.x < xPos + width) && 
                (point.y > yPos && point.y < yPos + height);
     }

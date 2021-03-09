@@ -50,7 +50,7 @@ class Member {
         eyeIcon.setSubImage(9, 2);
     }
 
-    public void update(int parentPosX, int parentPosY, Mouse mouse, int index, boolean categorySelected) {
+    public void update(float parentPosX, float parentPosY, Mouse mouse, int index, boolean categorySelected) {
         bounds.xPos = parentPosX;
         bounds.yPos = parentPosY + (28 * index);
         

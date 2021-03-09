@@ -1,6 +1,6 @@
 package dev.theskidster.rgme.utils;
 
-import org.joml.Vector2i;
+import org.joml.Vector2f;
 import static org.lwjgl.glfw.GLFW.*;
 
 /**
@@ -11,16 +11,17 @@ import static org.lwjgl.glfw.GLFW.*;
 public final class Mouse {
     
     private int prevCursorShape;
-    public int scrollValue;
     
     private final long windowHandle;
     private long cursorHandle;
+    
+    public float scrollValue;
     
     public boolean clicked;
     public boolean scrolled;
     
     public String button = "";
-    public Vector2i cursorPos = new Vector2i();
+    public Vector2f cursorPos = new Vector2f();
     
     public Mouse(long windowHandle) {
         this.windowHandle = windowHandle;

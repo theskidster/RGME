@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.joml.Vector2i;
+import org.joml.Vector2f;
 import static org.lwjgl.glfw.GLFW.*;
 
 /**
@@ -27,11 +27,12 @@ public abstract class TextInputElement extends Element {
     private int prevIndex;
     private int lengthToIndex;
     private int textOffset;
-    private int parentPosX;
-    private int parentPosY;
     protected int prevCursorX;
     protected int firstIndex;
     protected int lastIndex;
+    
+    private float parentPosX;
+    private float parentPosY;
     
     private boolean hasFocus;
     protected boolean shiftHeld;
@@ -40,7 +41,7 @@ public abstract class TextInputElement extends Element {
     protected boolean firstIndexSet;
     
     protected final StringBuilder typed = new StringBuilder();
-    protected final Vector2i textPos    = new Vector2i();
+    protected final Vector2f textPos    = new Vector2f();
     
     protected Rectangle rectBack;
     protected Rectangle rectFront;
@@ -104,7 +105,7 @@ public abstract class TextInputElement extends Element {
         }};
     }
     
-    public TextInputElement(int xOffset, int yOffset, int width, int parentPosX, int parentPosY) {
+    public TextInputElement(int xOffset, int yOffset, int width, float parentPosX, float parentPosY) {
         this.xOffset = xOffset;
         this.yOffset = yOffset;
         this.width   = width;
@@ -124,11 +125,11 @@ public abstract class TextInputElement extends Element {
                 (parentPosY + yOffset) + HEIGHT - 5);        
     }
     
-    private int getClosest(int value1, int value2, int target) {
-        return (target - value1 >= value2 - target) ? value2 : value1;
+    private int getClosest(float value1, float value2, float target) {
+        return (int) ((target - value1 >= value2 - target) ? value2 : value1);
     }
     
-    private int search(int[] values, int cursorX) {
+    private int search(int[] values, float cursorX) {
         int n = values.length;
         
         if(cursorX <= values[0])     return values[0];
@@ -161,7 +162,7 @@ public abstract class TextInputElement extends Element {
         return values[mid];
     }
     
-    protected int findClosestIndex(int cursorX) {
+    protected int findClosestIndex(float cursorX) {
         if(typed.length() <= 1) {
             int charWidth = FreeTypeFont.getLengthInPixels(typed.toString(), 1);
             return (cursorX < (charWidth / 2)) ? 0 : 1;
@@ -200,7 +201,7 @@ public abstract class TextInputElement extends Element {
     protected void scroll() {
         lengthToIndex = FreeTypeFont.getLengthInPixels(typed.substring(0, currIndex), 1);
         
-        int result = (width - PADDING) - (lengthToIndex + textPos.x - (parentPosX + xOffset + PADDING));
+        int result = (int) ((width - PADDING) - (lengthToIndex + textPos.x - (parentPosX + xOffset + PADDING)));
         
         if(prevIndex < currIndex) {
             if(carat.position.x >= (parentPosX + xOffset + width) - (PADDING * 3)) {
@@ -239,7 +240,7 @@ public abstract class TextInputElement extends Element {
         currIndex = index;
     }
     
-    protected final void setParentPos(int parentPosX, int parentPosY) {
+    protected final void setParentPos(float parentPosX, float parentPosY) {
         this.parentPosX = parentPosX;
         this.parentPosY = parentPosY;
     }

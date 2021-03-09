@@ -24,7 +24,7 @@ public final class TextArea extends TextInputElement {
     private final Icon leftBorder;
     private final Icon rightBorder;
     
-    public TextArea(int xOffset, int yOffset, int width, int parentPosX, int parentPosY) {
+    public TextArea(int xOffset, int yOffset, int width, float parentPosX, float parentPosY) {
         super(xOffset, yOffset, width, parentPosX, parentPosY);
         
         leftBorder  = new Icon(15, 30);
@@ -121,7 +121,7 @@ public final class TextArea extends TextInputElement {
     }
 
     @Override
-    public void update(int parentPosX, int parentPosY, Mouse mouse) {
+    public void update(float parentPosX, float parentPosY, Mouse mouse) {
         setParentPos(parentPosX, parentPosY);
         
         rectBack.xPos = parentPosX + xOffset;
@@ -188,11 +188,11 @@ public final class TextArea extends TextInputElement {
                             }
                         }
                         
-                        prevCursorX = mouse.cursorPos.x;
+                        prevCursorX = (int) mouse.cursorPos.x;
                     }
                 } else {
                     focus();
-                    prevCursorX = mouse.cursorPos.x;
+                    prevCursorX = (int) mouse.cursorPos.x;
                 }
             } else {
                 firstIndexSet  = false;

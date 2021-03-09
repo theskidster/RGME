@@ -105,8 +105,8 @@ public final class UI {
         mouse.clicked = (action == GLFW_PRESS);
     }
     
-    public void setMouseScroll(int value) {
-        mouse.scrollValue = value;
+    public void setMouseScroll(double value) {
+        mouse.scrollValue = (float) value;
         mouse.scrolled    = true;
     }
     

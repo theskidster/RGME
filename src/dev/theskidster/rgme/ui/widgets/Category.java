@@ -60,7 +60,7 @@ class Category extends Element {
     }
     
     @Override
-    public void update(int parentPosX, int parentPosY, Mouse mouse) {
+    public void update(float parentPosX, float parentPosY, Mouse mouse) {
         bounds.xPos = xOffset + parentPosX;
         bounds.yPos = yOffset + parentPosY + 40;
         

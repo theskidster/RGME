@@ -12,15 +12,15 @@ import dev.theskidster.rgme.utils.Mouse;
 
 public abstract class Element {
 
-    protected int xOffset;
-    protected int yOffset;
+    protected float xOffset;
+    protected float yOffset;
     
     protected boolean prevPressed;
     protected boolean currPressed;
     public boolean hovered;
     public boolean clicked;
     
-    public abstract void update(int parentPosX, int parentPosY, Mouse mouse);
+    public abstract void update(float parentPosX, float parentPosY, Mouse mouse);
     public abstract void render(Program uiProgram, Background background, FreeTypeFont font);
     
 }

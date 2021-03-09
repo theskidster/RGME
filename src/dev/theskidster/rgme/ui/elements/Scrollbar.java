@@ -17,13 +17,14 @@ import java.util.Map;
 public final class Scrollbar extends Element {
 
     private final int MARGIN = 24;
-    
     private final int length;
-    private int contentOffset;
-    private int prevChange;
     
+    private float contentOffset;
+    private float prevCursorChange;
+    private float prevScrollChange;
     private final float viewportLength;
-    private float totalContentLength;
+    private float currTotalContentLength;
+    private float prevTotalContentLength;
     
     private final boolean vertical;
     public boolean parentHovered;
@@ -86,7 +87,7 @@ public final class Scrollbar extends Element {
     }
     
     @Override
-    public void update(int parentPosX, int parentPosY, Mouse mouse) {
+    public void update(float parentPosX, float parentPosY, Mouse mouse) {
         bounds.xPos = xOffset + parentPosX;
         bounds.yPos = yOffset + parentPosY;
         
@@ -105,42 +106,32 @@ public final class Scrollbar extends Element {
             rectangles[1].xPos = bounds.xPos + 1;
             rectangles[1].yPos = bounds.yPos + MARGIN;
             
-            float contentScale = totalContentLength / viewportLength;
+            float contentScale = currTotalContentLength / viewportLength;
             
             if(contentScale <= 1) {
                 rectangles[2].xPos   = bounds.xPos + 3;
                 rectangles[2].yPos   = bounds.yPos + MARGIN;
                 rectangles[2].height = bounds.height - (MARGIN * 2);
             } else {
-                rectangles[2].height = (int) length / contentScale;
+                rectangles[2].height = length / contentScale;
                 
                 float change = 0;
                 
                 if(rectangles[2].contains(mouse.cursorPos) && mouse.clicked) {
-                    change = mouse.cursorPos.y - prevChange;
-                    
-                    float factor = ((length % rectangles[2].height) / (totalContentLength - viewportLength)) + 1;
+                    change = mouse.cursorPos.y - prevCursorChange;
                     
                     boolean minLimitReached = rectangles[2].yPos + change < rectangles[0].yPos;
                     boolean maxLimitReached = (rectangles[2].yPos + rectangles[2].height) + change > rectangles[0].yPos + length;
                     
-                    /*
-                    TODO:
-                    
-                    theres an bug where if a category is open while the scrollbar isnt at the top
-                    the extra space will be added to the top- making reaching the bottom elements 
-                    difficult or imposible.
-                    
-                    You can likely fix this by offsetting the position of the scrollbar to compensate.
-                    */
-                    
                     if(!minLimitReached && !maxLimitReached) {
+                        float scaleFactor = (1 + ((currTotalContentLength / rectangles[2].height) / contentScale));
+                        
                         rectangles[2].yPos += change;
-                        contentOffset += Math.round(change * (contentScale * factor));
+                        contentOffset += change * scaleFactor;
                     }
                 }
                 
-                prevChange = mouse.cursorPos.y;
+                prevCursorChange = mouse.cursorPos.y;
             }
             
             rectangles[3].xPos = bounds.xPos;
@@ -162,7 +153,7 @@ public final class Scrollbar extends Element {
             rectangles[1].xPos = bounds.xPos + MARGIN;
             rectangles[1].yPos = bounds.yPos + 1;
             
-            if(totalContentLength < contentLength) {
+            if(currTotalContentLength < contentLength) {
                 rectangles[2].xPos  = bounds.xPos + MARGIN;
                 rectangles[2].yPos  = bounds.yPos + 3;
                 rectangles[2].width = length;
@@ -206,15 +197,16 @@ public final class Scrollbar extends Element {
     }
     
     public void setContentLength(Map<Integer, Integer> elementLengths) {
-        totalContentLength = 0;
+        prevTotalContentLength = currTotalContentLength;
+        currTotalContentLength = 0;
                 
         elementLengths.forEach((index, elementLength) -> {
-            totalContentLength += elementLength;
+            currTotalContentLength += elementLength;
         });
     }
     
     public int getContentScrollOffset() {
-        return -contentOffset;
+        return (int) -(contentOffset);
     }
     
 }
