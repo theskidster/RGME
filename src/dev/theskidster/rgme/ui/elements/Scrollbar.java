@@ -120,15 +120,15 @@ public final class Scrollbar extends Element {
                 
                 float change = 0;
                 
-                if(rectangles[2].contains(mouse.cursorPos) && mouse.clicked) {
+                if(rectangles[2].contains(mouse.cursorPos) && mouse.clicked && mouse.button.equals("left")) {
                     change = mouse.cursorPos.y - prevCursorChange;
                     scroll(change, contentScale);
                 } else if(parentHovered && mouse.scrolled) {
                     change = mouse.scrollValue * -5;
                     scroll(change, contentScale);
-                } else if(rectangles[3].contains(mouse.cursorPos) && mouse.clicked) {
+                } else if(rectangles[3].contains(mouse.cursorPos) && mouse.clicked && mouse.button.equals("left")) {
                     scroll(-2, contentScale);
-                } else if(rectangles[4].contains(mouse.cursorPos) && mouse.clicked) {
+                } else if(rectangles[4].contains(mouse.cursorPos) && mouse.clicked && mouse.button.equals("left")) {
                     scroll(2, contentScale);
                 }
                 

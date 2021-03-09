@@ -65,14 +65,13 @@ public final class SceneGraph extends Widget {
         categories[0].addGameObject(new TestObject());
         categories[0].addGameObject(new TestObject());
         categories[0].addGameObject(new TestObject());
-        categories[1].addGameObject(new TestObject());
-        categories[1].addGameObject(new TestObject());
-        categories[2].addGameObject(new TestObject());
-        categories[2].addGameObject(new TestObject());
-        categories[2].addGameObject(new TestObject());
+        categories[0].addGameObject(new TestObject());
+        categories[0].addGameObject(new TestObject());
+        categories[0].addGameObject(new TestObject());
+        categories[0].addGameObject(new TestObject());
+        categories[0].addGameObject(new TestObject());
+        categories[0].addGameObject(new TestObject());
         categories[3].addGameObject(new WorldLight());
-        categories[4].addGameObject(new TestObject());
-        categories[4].addGameObject(new TestObject());
     }
 
     @Override
