@@ -106,12 +106,19 @@ public final class Scrollbar extends Element {
             rectangles[1].xPos = bounds.xPos + 1;
             rectangles[1].yPos = bounds.yPos + MARGIN;
             
+            rectangles[3].xPos = bounds.xPos;
+            rectangles[3].yPos = bounds.yPos;
+            
+            rectangles[4].xPos = bounds.xPos;
+            rectangles[4].yPos = (int) (bounds.yPos + bounds.height - MARGIN);
+            
             float contentScale = currTotalContentLength / viewportLength;
             
             if(contentScale <= 1) {
                 rectangles[2].xPos   = bounds.xPos + 3;
                 rectangles[2].yPos   = bounds.yPos + MARGIN;
                 rectangles[2].height = bounds.height - (MARGIN * 2);
+                contentOffset        = 0;
             } else {
                 rectangles[2].height = length / contentScale;
                 
@@ -119,27 +126,29 @@ public final class Scrollbar extends Element {
                 
                 if(rectangles[2].contains(mouse.cursorPos) && mouse.clicked) {
                     change = mouse.cursorPos.y - prevCursorChange;
-                    
-                    boolean minLimitReached = rectangles[2].yPos + change < rectangles[0].yPos;
-                    boolean maxLimitReached = (rectangles[2].yPos + rectangles[2].height) + change > rectangles[0].yPos + length;
-                    
-                    if(!minLimitReached && !maxLimitReached) {
-                        float scaleFactor = (1 + ((currTotalContentLength / rectangles[2].height) / contentScale));
-                        
-                        rectangles[2].yPos += change;
-                        contentOffset += change * scaleFactor;
-                    }
+                    scroll(change, contentScale);
+                } else if(parentHovered && mouse.scrolled) {
+                    change = mouse.scrollValue * -5;
+                    scroll(change, contentScale);
+                } else if(rectangles[3].contains(mouse.cursorPos) && mouse.clicked) {
+                    scroll(-2, contentScale);
+                } else if(rectangles[4].contains(mouse.cursorPos) && mouse.clicked) {
+                    scroll(2, contentScale);
                 }
                 
                 prevCursorChange = mouse.cursorPos.y;
+                
+                /*
+                Included the hack below just incase someone happens to resize a category 
+                near the bottom of the list.
+                */
+                if(prevTotalContentLength != currTotalContentLength) {
+                    if((rectangles[2].yPos + rectangles[2].height) > rectangles[0].yPos + length) {
+                        rectangles[2].yPos = rectangles[0].yPos;
+                        contentOffset      = 0;
+                    }
+                }
             }
-            
-            rectangles[3].xPos = bounds.xPos;
-            rectangles[3].yPos = bounds.yPos;
-            
-            rectangles[4].xPos = bounds.xPos;
-            rectangles[4].yPos = (int) (bounds.yPos + bounds.height - MARGIN);
-            
         } else {
             /*
             icons[0].position.set(bounds.xPos, bounds.yPos + MARGIN);
@@ -193,6 +202,18 @@ public final class Scrollbar extends Element {
             }
         } else {
             buttonColors[colorIndex] = Color.RGME_DARK_GRAY;
+        }
+    }
+    
+    private void scroll(float change, float contentScale) {
+        boolean minLimitReached = rectangles[2].yPos + change < rectangles[0].yPos;
+        boolean maxLimitReached = (rectangles[2].yPos + rectangles[2].height) + change > rectangles[0].yPos + length;
+
+        if(!minLimitReached && !maxLimitReached) {
+            float scaleFactor = ((currTotalContentLength / rectangles[2].height) / contentScale);
+
+            rectangles[2].yPos += change;
+            contentOffset = (rectangles[2].yPos - rectangles[0].yPos) * (1 + scaleFactor);
         }
     }
     
