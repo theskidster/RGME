@@ -67,10 +67,8 @@ public final class SceneGraph extends Widget {
 
     @Override
     public void update(int viewportWidth, int viewportHeight, Mouse mouse) {
-        /*
-        bounds.xPos   = (int) (viewportWidth - bounds.width);
-        bounds.height = viewportHeight - bounds.yPos;
-        */
+        bounds.xPos = (int) (viewportWidth - bounds.width);
+        bounds.yPos = 28;
         
         hovered = bounds.contains(mouse.cursorPos);
         

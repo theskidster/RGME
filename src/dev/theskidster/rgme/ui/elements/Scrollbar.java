@@ -101,20 +101,17 @@ public final class Scrollbar extends Element {
             
             rectangles[0].xPos = bounds.xPos;
             rectangles[0].yPos = bounds.yPos + MARGIN;
-            
             rectangles[1].xPos = bounds.xPos + 1;
             rectangles[1].yPos = bounds.yPos + MARGIN;
-            
+            rectangles[2].xPos = bounds.xPos + 3;
             rectangles[3].xPos = bounds.xPos;
             rectangles[3].yPos = bounds.yPos;
-            
             rectangles[4].xPos = bounds.xPos;
             rectangles[4].yPos = (int) (bounds.yPos + bounds.height - MARGIN);
             
             float contentScale = currTotalContentLength / viewportLength;
             
             if(contentScale <= 1) {
-                rectangles[2].xPos   = bounds.xPos + 3;
                 rectangles[2].yPos   = bounds.yPos + MARGIN;
                 rectangles[2].height = bounds.height - (MARGIN * 2);
                 contentOffset        = 0;
