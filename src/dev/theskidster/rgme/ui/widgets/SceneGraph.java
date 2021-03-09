@@ -12,6 +12,7 @@ import dev.theskidster.rgme.utils.Rectangle;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  * @author J Hoffman
@@ -20,7 +21,8 @@ import java.util.Map;
 
 public final class SceneGraph extends Widget {
     
-    private final Rectangle seperator = new Rectangle(0, 0, 2, 224);
+    private final Rectangle scissorBox = new Rectangle();
+    private final Rectangle seperator  = new Rectangle(0, 0, 2, 224);
     private final Scrollbar scrollbar;
     
     private final Category[] categories = new Category[6];
@@ -75,6 +77,11 @@ public final class SceneGraph extends Widget {
         seperator.xPos = bounds.xPos + 28;
         seperator.yPos = bounds.yPos + 40;
         
+        scissorBox.xPos   = bounds.xPos;
+        scissorBox.yPos   = viewportHeight - (bounds.yPos + bounds.height);
+        scissorBox.width  = bounds.xPos + bounds.width;
+        scissorBox.height = bounds.height - 40;
+        
         updateTitleBarPos(viewportWidth, viewportHeight);
         resetMouseShape(mouse);
         
@@ -116,10 +123,12 @@ public final class SceneGraph extends Widget {
         
         elements.forEach(element -> element.render(uiProgram, background, font));
         
-        //TODO: specify scissor box
+        glEnable(GL_SCISSOR_TEST);
+        glScissor((int) scissorBox.xPos, (int) scissorBox.yPos, (int) scissorBox.width, (int) scissorBox.height);
         for(Category category : categories) {
             category.render(uiProgram, background, font);
         }
+        glDisable(GL_SCISSOR_TEST);
         
         background.drawRectangle(seperator, Color.RGME_BLACK, uiProgram);
     }
