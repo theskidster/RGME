@@ -36,7 +36,7 @@ class Member {
     Member(String categoryName, GameObject gameObject) {
         this.gameObject = gameObject;
         
-        bounds   = new Rectangle(0, 0, 296, 28);
+        bounds   = new Rectangle(0, 0, 336, 28);
         gameObjectIcon = new Icon(20, 20);
         
         switch(categoryName) {
@@ -70,7 +70,7 @@ class Member {
         
         //detemine member selection eligibility
         {
-            if(!outOfBounds && !topEdge.contains(mouse.cursorPos) && !bottomEdge.contains(mouse.cursorPos)) {
+            if(!outOfBounds && !topEdge.contains(mouse.cursorPos) && !bottomEdge.contains(mouse.cursorPos) && mouse.button.equals("left")) {
                 if(bounds.contains(mouse.cursorPos) && !eyeButton.contains(mouse.cursorPos)) {
                     hovered = true;
                     if(mouse.clicked) clicked = true;
@@ -97,7 +97,7 @@ class Member {
             eyeButton.yPos = bounds.yPos + 5;
             
             if(eyeButton.contains(mouse.cursorPos) && !outOfBounds && !topEdge.contains(mouse.cursorPos) && 
-              !bottomEdge.contains(mouse.cursorPos)) {
+              !bottomEdge.contains(mouse.cursorPos) && mouse.button.equals("left")) {
                 eyeHovered = true;
                 
                 if(prevPressed != currPressed && !prevPressed) {

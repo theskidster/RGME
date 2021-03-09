@@ -58,7 +58,7 @@ class Category extends Element {
     
     Category(String categoryName) {
         this.categoryName = categoryName;
-        bounds    = new Rectangle(0, 0, 296, 28);
+        bounds    = new Rectangle(0, 0, 336, 28);
         
         eyeButton = new Rectangle(0, 0, 22, 18);
         eyeIcon   = new Icon(20, 20);
@@ -105,7 +105,7 @@ class Category extends Element {
             eyeIcon.setColor(color);
             
             if(eyeButton.contains(mouse.cursorPos) && !outOfBounds && !parentEdges[0].contains(mouse.cursorPos) && 
-              !parentEdges[1].contains(mouse.cursorPos)) {
+              !parentEdges[1].contains(mouse.cursorPos) && mouse.button.equals("left")) {
                 eyeHovered = true;
                 
                 if(prevPressed != currPressed && !prevPressed) {
@@ -127,7 +127,7 @@ class Category extends Element {
             arrowIcon.setColor(color);
             
             if(arrowButton.contains(mouse.cursorPos) && !outOfBounds && !parentEdges[0].contains(mouse.cursorPos) && 
-              !parentEdges[1].contains(mouse.cursorPos)) {
+              !parentEdges[1].contains(mouse.cursorPos) && mouse.button.equals("left")) {
                 arrowHovered = true;
                 
                 if(prevPressed != currPressed && !prevPressed) collapsed = !collapsed;

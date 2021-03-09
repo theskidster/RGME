@@ -41,7 +41,7 @@ public final class SceneGraph extends Widget {
     private final Map<Integer, Integer> categoryLengths = new HashMap<>();
     
     public SceneGraph() {
-        super(0, 28, 320, 264, "Scene Graph", 5, 0);
+        super(0, 28, 360, 264, "Scene Graph", 5, 0);
         
         bounds.xPos = UI.getViewWidth() - bounds.width;
         bounds.yPos = 28;
@@ -130,7 +130,7 @@ public final class SceneGraph extends Widget {
             categoryLengths.put(i, 28 * category.getLength());
             
             if(!titleBar.contains(mouse.cursorPos) && !(mouse.cursorPos.y > bounds.yPos + bounds.height)) {
-                if(mouse.clicked && category.onlyBoundsSelected()) {
+                if(mouse.clicked && category.onlyBoundsSelected() && mouse.button.equals("left")) {
                     setCurrCategory(i, true);
                 } else if(category.hasSelectedMember()) {
                     setCurrCategory(i, false);
