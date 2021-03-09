@@ -243,6 +243,10 @@ class Category extends Element {
         maxMemberIndex++;
     }
     
+    void removeObjectName(String gameObjectName) {
+        objectNames.remove(gameObjectName);
+    }
+    
     boolean containsObjectByName(String gameObjectName) {
         return objectNames.contains(gameObjectName);
     }

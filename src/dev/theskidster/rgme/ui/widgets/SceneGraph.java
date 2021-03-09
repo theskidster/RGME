@@ -104,7 +104,9 @@ public final class SceneGraph extends Widget {
             textArea.scissorBox.height = scissorBox.height;
             
             if(!textArea.hasFocus()) {
-                if(!categories[currCategoryIndex].containsObjectByName(textArea.getText())) {
+                if(!categories[currCategoryIndex].containsObjectByName(textArea.getText()) && 
+                   !(textArea.getText().length() == 0)) {
+                    categories[currCategoryIndex].removeObjectName(selectedMember.gameObject.getName());
                     selectedMember.gameObject.setName(textArea.getText());
                 }
                 
