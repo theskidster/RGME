@@ -21,11 +21,17 @@ import static org.lwjgl.opengl.GL11.glScissor;
 
 public final class TextArea extends TextInputElement {
 
+    private final boolean borderVisible;
+    
     private final Icon leftBorder;
     private final Icon rightBorder;
     
-    public TextArea(int xOffset, int yOffset, int width, float parentPosX, float parentPosY) {
+    public TextArea(int xOffset, int yOffset, int width, float parentPosX, float parentPosY, boolean borderVisible) {
         super(xOffset, yOffset, width, parentPosX, parentPosY);
+        
+        this.borderVisible = borderVisible;
+        
+        if(!borderVisible) rectFront.height = 24;
         
         leftBorder  = new Icon(15, 30);
         leftBorder.setSubImage(2, 2);
@@ -109,6 +115,10 @@ public final class TextArea extends TextInputElement {
                     }
                     
                     scroll();
+                }
+                
+                case GLFW_KEY_ENTER -> {
+                    unfocus();
                 }
             }
         } else {
@@ -212,20 +222,20 @@ public final class TextArea extends TextInputElement {
 
     @Override
     public void render(Program uiProgram, Background background, FreeTypeFont font) {
-        background.drawRectangle(rectBack, Color.RGME_LIGHT_GRAY, uiProgram);
+        if(borderVisible) background.drawRectangle(rectBack, Color.RGME_LIGHT_GRAY, uiProgram);
         background.drawRectangle(rectFront, Color.RGME_DARK_GRAY, uiProgram);
         
         glEnable(GL_SCISSOR_TEST);
         glScissor((int) scissorBox.xPos, (int) scissorBox.yPos, (int) scissorBox.width, (int) scissorBox.height);
-        background.drawRectangle(highlight, Color.RGME_BLUE, uiProgram);
+            background.drawRectangle(highlight, Color.RGME_BLUE, uiProgram);
+            font.drawString(typed.toString(), textPos.x + getTextOffset(), textPos.y, 1, Color.WHITE, uiProgram);
+            if(hasFocus() && caratBlink) carat.render(uiProgram);
         glDisable(GL_SCISSOR_TEST);
         
-        leftBorder.render(uiProgram);
-        rightBorder.render(uiProgram);
-        
-        font.drawString(typed.toString(), textPos.x + getTextOffset(), textPos.y, 1, Color.RGME_WHITE, scissorBox, uiProgram);
-        
-        if(hasFocus() && caratBlink) carat.render(uiProgram);
+        if(borderVisible) {
+            leftBorder.render(uiProgram);
+            rightBorder.render(uiProgram);
+        }
     }
     
 }

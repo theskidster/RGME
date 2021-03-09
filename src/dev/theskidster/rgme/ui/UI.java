@@ -20,9 +20,10 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public final class UI {
     
+    private static int viewWidth;
     private static int viewHeight;
     
-    private final Mouse mouse;
+    private static Mouse mouse;
     private static TextInputElement textInput;
     private final Library freeType;
     private FreeTypeFont font;
@@ -31,8 +32,10 @@ public final class UI {
     
     private Map<String, Widget> widgets;
     
-    public UI(long windowHandle) {
-        mouse = new Mouse(windowHandle);
+    public UI(long windowHandle, int viewportWidth, int viewportHeight) {
+        mouse      = new Mouse(windowHandle);
+        viewWidth  = viewportWidth;
+        viewHeight = viewportHeight;
         
         freeType = FreeType.newLibrary();
         setFont("fnt_karla_regular.ttf", 17);
@@ -44,6 +47,7 @@ public final class UI {
     }
     
     public void update(int viewportWidth, int viewportHeight) {
+        viewWidth  = viewportWidth;
         viewHeight = viewportHeight;
         
         projMatrix.setPerspective((float) Math.toRadians(45), 
@@ -59,7 +63,8 @@ public final class UI {
                         0,  0, -1, 0, 
                        -1,  1,  0, 1);
         
-        if(!widgets.values().stream().anyMatch(widget -> widget.hovered)) {
+        if(!widgets.values().stream().anyMatch(widget -> widget.hovered) ||
+           !widgets.values().stream().anyMatch(widget -> widget.hasHoveredElement())) {
             mouse.setCursorShape(GLFW_ARROW_CURSOR);
         }
         
@@ -85,6 +90,7 @@ public final class UI {
     }
     
     public static TextInputElement getTextInputElement() { return textInput; } 
+    public static int getViewWidth() { return viewWidth; }
     public static int getViewHeight() { return viewHeight; }
     
     public void setFont(String filename, int size) {
@@ -112,6 +118,7 @@ public final class UI {
     
     public static void setTextInputElement(TextInputElement currElement) {
         textInput = currElement;
+        if(currElement == null) mouse.setCursorShape(GLFW_ARROW_CURSOR);
     }
     
 }

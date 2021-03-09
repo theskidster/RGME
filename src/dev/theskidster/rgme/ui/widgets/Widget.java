@@ -8,7 +8,6 @@ import dev.theskidster.rgme.ui.elements.Element;
 import dev.theskidster.rgme.utils.Mouse;
 import dev.theskidster.rgme.utils.Rectangle;
 import java.util.Set;
-import static org.lwjgl.glfw.GLFW.GLFW_ARROW_CURSOR;
 
 /**
  * @author J Hoffman
@@ -48,15 +47,11 @@ public abstract class Widget {
         icon.position.set(bounds.xPos + 10, bounds.yPos + 30);
     }
     
-    protected void resetMouseShape(Mouse mouse) {
-        hovered = bounds.contains(mouse.cursorPos);
-        
-        if(!elements.stream().anyMatch(element -> element.hovered)) {
-            mouse.setCursorShape(GLFW_ARROW_CURSOR);
-        }
-    }
-    
     public abstract void update(int viewportWidth, int viewportHeight, Mouse mouse);
     public abstract void render(Program uiProgram, Background background, FreeTypeFont font);
+    
+    public boolean hasHoveredElement() {
+        return elements.stream().anyMatch(element -> element.hovered);
+    }
     
 }

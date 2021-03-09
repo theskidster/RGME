@@ -230,7 +230,7 @@ class Category extends Element {
 
         String gameObjectName = gameObject.getName();
         
-        while(objectNames.contains(gameObjectName)) {
+        while(containsObjectByName(gameObjectName)) {
             duplicate++;
             gameObjectName = gameObject.getName() + " (" + duplicate + ")";
         }
@@ -241,6 +241,10 @@ class Category extends Element {
         members.put(maxMemberIndex, new Member(categoryName, gameObject));
         
         maxMemberIndex++;
+    }
+    
+    boolean containsObjectByName(String gameObjectName) {
+        return objectNames.contains(gameObjectName);
     }
     
 }

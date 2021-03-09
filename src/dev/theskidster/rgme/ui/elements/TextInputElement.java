@@ -48,7 +48,7 @@ public abstract class TextInputElement extends Element {
     protected Rectangle highlight;
     protected final Timer timer;
     protected final Icon carat;
-    protected final Rectangle scissorBox = new Rectangle();
+    public final Rectangle scissorBox = new Rectangle();
     
     protected static Map<Integer, Key> keyChars;
     
@@ -122,7 +122,7 @@ public abstract class TextInputElement extends Element {
         
         carat.position.set(
                 (parentPosX + xOffset) + (lengthToIndex + textOffset) + PADDING, 
-                (parentPosY + yOffset) + HEIGHT - 5);        
+                (parentPosY + yOffset) + HEIGHT - 5);
     }
     
     private int getClosest(float value1, float value2, float target) {
@@ -198,7 +198,7 @@ public abstract class TextInputElement extends Element {
         scroll();
     }
     
-    protected void scroll() {
+    public void scroll() {
         lengthToIndex = FreeTypeFont.getLengthInPixels(typed.substring(0, currIndex), 1);
         
         int result = (int) ((width - PADDING) - (lengthToIndex + textPos.x - (parentPosX + xOffset + PADDING)));
@@ -229,7 +229,7 @@ public abstract class TextInputElement extends Element {
         hasFocus = false;
         
         if(UI.getTextInputElement() != null && UI.getTextInputElement().equals(this)) {
-            UI.setTextInputElement(this);
+            UI.setTextInputElement(null);
         }
         
         validateInput();
@@ -245,10 +245,17 @@ public abstract class TextInputElement extends Element {
         this.parentPosY = parentPosY;
     }
     
+    public void setText(String text) {
+        typed.setLength(0);
+        currIndex = 0;
+        
+        for(char c : text.toCharArray()) insertChar(c);
+    }
+    
     protected int getIndex()         { return currIndex; }
     protected int getTextOffset()    { return textOffset; }
     protected int getLengthToIndex() { return lengthToIndex; }
-    protected boolean hasFocus()     { return hasFocus; }
+    public boolean hasFocus()        { return hasFocus; }
     public String getText()          { return typed.toString(); }
     
     protected abstract void validateInput();

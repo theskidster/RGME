@@ -21,14 +21,13 @@ public class TestWidget extends Widget {
         
         elements = new LinkedHashSet<>() {{
             add(new Scrollbar(400, 30, true, 200, 0));
-            add(new Scrollbar(140, 300, false, 200, 0));
-            add(new TextArea(200, 200, 120, bounds.xPos, bounds.yPos));
+            add(new TextArea(200, 200, 120, bounds.xPos, bounds.yPos, true));
         }};
     }
     
     @Override
     public void update(int viewportWidth, int viewportHeight, Mouse mouse) {
-        resetMouseShape(mouse);
+        hovered = bounds.contains(mouse.cursorPos);
         elements.forEach(element -> element.update(bounds.xPos, bounds.yPos, mouse));
     }
 

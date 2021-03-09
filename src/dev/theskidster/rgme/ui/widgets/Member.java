@@ -4,6 +4,7 @@ import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.graphics.Icon;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.scene.GameObject;
+import dev.theskidster.rgme.scene.WorldLight;
 import dev.theskidster.rgme.ui.FreeTypeFont;
 import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Mouse;
@@ -16,6 +17,8 @@ import dev.theskidster.rgme.utils.Rectangle;
 
 class Member {
     
+    private int clickCount;
+    
     private boolean prevPressed;
     private boolean currPressed;
     private boolean eyeHovered;
@@ -25,7 +28,7 @@ class Member {
     
     final GameObject gameObject;
     final Rectangle bounds;
-    final Icon typeIcon;
+    final Icon gameObjectIcon;
     private Color color;
     private final Icon eyeIcon;
     private final Rectangle eyeButton;
@@ -34,15 +37,19 @@ class Member {
         this.gameObject = gameObject;
         
         bounds   = new Rectangle(0, 0, 296, 28);
-        typeIcon = new Icon(20, 20);
+        gameObjectIcon = new Icon(20, 20);
         
         switch(categoryName) {
-            case "Visible Geometry" -> typeIcon.setSubImage(0, 1);
-            case "Bounding Volumes" -> typeIcon.setSubImage(1, 1);
-            case "Trigger Boxes"    -> typeIcon.setSubImage(2, 1);
-            case "Light Sources"    -> typeIcon.setSubImage(3, 1);
-            case "Entities"         -> typeIcon.setSubImage(5, 1);
-            case "Instances"        -> typeIcon.setSubImage(6, 1);
+            case "Visible Geometry" -> gameObjectIcon.setSubImage(0, 1);
+            case "Bounding Volumes" -> gameObjectIcon.setSubImage(1, 1);
+            case "Trigger Boxes"    -> gameObjectIcon.setSubImage(2, 1);
+            
+            case "Light Sources" -> {
+                gameObjectIcon.setSubImage((gameObject instanceof WorldLight) ? 3 : 4, 1);
+            }
+            
+            case "Entities"  -> gameObjectIcon.setSubImage(5, 1);
+            case "Instances" -> gameObjectIcon.setSubImage(6, 1);
         }
         
         eyeButton = new Rectangle(0, 0, 22, 18);
@@ -64,12 +71,20 @@ class Member {
         //detemine member selection eligibility
         {
             if(!outOfBounds && !topEdge.contains(mouse.cursorPos) && !bottomEdge.contains(mouse.cursorPos)) {
-                if(bounds.contains(mouse.cursorPos)) {
+                if(bounds.contains(mouse.cursorPos) && !eyeButton.contains(mouse.cursorPos)) {
                     hovered = true;
                     if(mouse.clicked) clicked = true;
+                    
+                    //Provide the text area in SceneGraph to change the name of the selected game object.
+                    if((prevPressed != currPressed && !prevPressed) && mouse.cursorPos.x > gameObjectIcon.position.x + 20 &&
+                       !(gameObject instanceof WorldLight)) {
+                        clickCount++;
+                        SceneGraph.showTextArea(clickCount >= 2, this);
+                    }
                 } else {
                     hovered = false;
                     clicked = false;
+                    if(mouse.clicked) clickCount = 0;
                 }
             }
         }
@@ -99,8 +114,8 @@ class Member {
             else                        eyeIcon.setSubImage(10, 2);
         }
         
-        typeIcon.position.set(bounds.xPos + 56, bounds.yPos + 24);
-        typeIcon.setColor(color);
+        gameObjectIcon.position.set(bounds.xPos + 56, bounds.yPos + 24);
+        gameObjectIcon.setColor(color);
     }
     
     public void render(Program uiProgram, Background background, FreeTypeFont font) {
@@ -114,7 +129,7 @@ class Member {
                 uiProgram);
         
         eyeIcon.render(uiProgram);
-        typeIcon.render(uiProgram);
+        gameObjectIcon.render(uiProgram);
     }
     
     boolean onlyBoundsSelected() {
