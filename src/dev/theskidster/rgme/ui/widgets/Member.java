@@ -50,21 +50,27 @@ class Member {
         eyeIcon.setSubImage(9, 2);
     }
 
-    public void update(float parentPosX, float parentPosY, Mouse mouse, int index, boolean categorySelected) {
+    public void update(float parentPosX, float parentPosY, float parentHeight, Mouse mouse, int index, boolean categorySelected, 
+                       Rectangle topEdge, Rectangle bottomEdge) {
         bounds.xPos = parentPosX;
         bounds.yPos = parentPosY + (28 * index);
         
         prevPressed = currPressed;
         currPressed = mouse.clicked;
         
+        boolean outOfBounds = (bounds.yPos + bounds.height <= topEdge.yPos + topEdge.height) || 
+                              (bounds.yPos >= bottomEdge.yPos);
+        
         //detemine member selection eligibility
         {
-            if(bounds.contains(mouse.cursorPos)) {
-                hovered = true;
-                if(mouse.clicked) clicked = true;
-            } else {
-                hovered = false;
-                clicked = false;
+            if(!outOfBounds && !topEdge.contains(mouse.cursorPos) && !bottomEdge.contains(mouse.cursorPos)) {
+                if(bounds.contains(mouse.cursorPos)) {
+                    hovered = true;
+                    if(mouse.clicked) clicked = true;
+                } else {
+                    hovered = false;
+                    clicked = false;
+                }
             }
         }
         
@@ -75,7 +81,8 @@ class Member {
             eyeButton.xPos = bounds.xPos + 3;
             eyeButton.yPos = bounds.yPos + 5;
             
-            if(eyeButton.contains(mouse.cursorPos)) {
+            if(eyeButton.contains(mouse.cursorPos) && !outOfBounds && !topEdge.contains(mouse.cursorPos) && 
+              !bottomEdge.contains(mouse.cursorPos)) {
                 eyeHovered = true;
                 
                 if(prevPressed != currPressed && !prevPressed) {

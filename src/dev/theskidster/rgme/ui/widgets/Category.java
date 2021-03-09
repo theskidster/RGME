@@ -20,9 +20,13 @@ import java.util.Map;
  */
 
 class Category extends Element {
-
-    private int maxMemberIndex;
+    
     private int length = 1;
+    private int maxMemberIndex;
+    private int verticalOffset;
+    
+    private float parentWidth;
+    private float parentHeight;
     
     boolean visible = true;
     boolean selected;
@@ -33,6 +37,7 @@ class Category extends Element {
     private final Rectangle bounds;
     private final Rectangle eyeButton;
     private final Rectangle arrowButton;
+    private static final Rectangle[] parentEdges = new Rectangle[2];
     
     private final Icon eyeIcon;
     private final Icon arrowIcon;
@@ -45,6 +50,11 @@ class Category extends Element {
     
     private final Map<Integer, Member> members = new LinkedHashMap<>();
     private final List<String> objectNames     = new ArrayList<>();
+    
+    static {
+        parentEdges[0] = new Rectangle(0, 0, 0, 28);
+        parentEdges[1] = new Rectangle(0, 0, 0, 28);
+    }
     
     Category(String categoryName) {
         this.categoryName = categoryName;
@@ -62,7 +72,7 @@ class Category extends Element {
     @Override
     public void update(float parentPosX, float parentPosY, Mouse mouse) {
         bounds.xPos = xOffset + parentPosX;
-        bounds.yPos = yOffset + parentPosY + 40;
+        bounds.yPos = yOffset + (parentPosY + 40) + verticalOffset;
         
         hovered = bounds.contains(mouse.cursorPos);
         color   = (selected) ? Color.RGME_YELLOW : Color.RGME_WHITE;
@@ -75,7 +85,18 @@ class Category extends Element {
         eyeHovered   = false;
         arrowHovered = false;
         
-        //toggle category visibility
+        boolean outOfBounds = (bounds.yPos + bounds.height <= parentPosY + 40) || 
+                              (bounds.yPos >= parentPosY + parentHeight);
+        
+        parentEdges[0].xPos  = parentPosX;
+        parentEdges[0].yPos  = parentPosY + 12;
+        parentEdges[0].width = parentWidth;
+        
+        parentEdges[1].xPos  = parentPosX;
+        parentEdges[1].yPos  = parentPosY + parentHeight;
+        parentEdges[1].width = parentWidth;
+        
+        //Toggle category visibility.
         {
             eyeButton.xPos = bounds.xPos + 3;
             eyeButton.yPos = bounds.yPos + 5;
@@ -83,20 +104,21 @@ class Category extends Element {
             eyeIcon.position.set(eyeButton.xPos + 1, eyeButton.yPos + 19);
             eyeIcon.setColor(color);
             
-            if(eyeButton.contains(mouse.cursorPos)) {
+            if(eyeButton.contains(mouse.cursorPos) && !outOfBounds && !parentEdges[0].contains(mouse.cursorPos) && 
+              !parentEdges[1].contains(mouse.cursorPos)) {
                 eyeHovered = true;
                 
                 if(prevPressed != currPressed && !prevPressed) {
                     visible = !visible;
                     members.forEach((index, member) -> member.gameObject.setVisible(visible));
                 }
-
+                
                 if(visible) eyeIcon.setSubImage(9, 2);
                 else        eyeIcon.setSubImage(10, 2);
             }
         }
         
-        //expand/collapse category
+        //Expand/collapse category.
         {
             arrowButton.xPos = bounds.xPos + 34;
             arrowButton.yPos = bounds.yPos + 7;
@@ -104,7 +126,8 @@ class Category extends Element {
             arrowIcon.position.set(arrowButton.xPos - 1, arrowButton.yPos + 18);
             arrowIcon.setColor(color);
             
-            if(arrowButton.contains(mouse.cursorPos)) {
+            if(arrowButton.contains(mouse.cursorPos) && !outOfBounds && !parentEdges[0].contains(mouse.cursorPos) && 
+              !parentEdges[1].contains(mouse.cursorPos)) {
                 arrowHovered = true;
                 
                 if(prevPressed != currPressed && !prevPressed) collapsed = !collapsed;
@@ -122,7 +145,7 @@ class Category extends Element {
         if(!collapsed && !members.isEmpty()) {
             for(int i = 0; i < maxMemberIndex; i++) {
                 if(members.get(i) != null) {
-                    members.get(i).update(bounds.xPos, bounds.yPos, mouse, i + 1, selected);
+                    members.get(i).update(bounds.xPos, bounds.yPos, parentHeight, mouse, i + 1, selected, parentEdges[0], parentEdges[1]);
                     
                     if(mouse.clicked && members.get(i).onlyBoundsSelected()) {
                         setCurrSelectedMember(i);
@@ -174,6 +197,15 @@ class Category extends Element {
         }
         
         currGameObject = null;
+    }
+    
+    void setVerticalOffset(int verticalOffset) {
+        this.verticalOffset = verticalOffset;
+    }
+    
+    void setParentDimensions(float parentWidth, float parentHeight) {
+        this.parentWidth  = parentWidth;
+        this.parentHeight = parentHeight;
     }
     
     int getLength() { return length; }

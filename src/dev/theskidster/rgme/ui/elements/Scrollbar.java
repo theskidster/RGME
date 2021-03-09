@@ -21,7 +21,6 @@ public final class Scrollbar extends Element {
     
     private float contentOffset;
     private float prevCursorChange;
-    private float prevScrollChange;
     private final float viewportLength;
     private float currTotalContentLength;
     private float prevTotalContentLength;
@@ -139,8 +138,9 @@ public final class Scrollbar extends Element {
                 prevCursorChange = mouse.cursorPos.y;
                 
                 /*
-                Included the hack below just incase someone happens to resize a category 
-                near the bottom of the list.
+                Included the hack below just in case the viewport used to 
+                dermine the length of the scrollbar is changed to the extant 
+                that it reaches out of bounds.
                 */
                 if(prevTotalContentLength != currTotalContentLength) {
                     if((rectangles[2].yPos + rectangles[2].height) > rectangles[0].yPos + length) {
@@ -150,30 +150,7 @@ public final class Scrollbar extends Element {
                 }
             }
         } else {
-            /*
-            icons[0].position.set(bounds.xPos, bounds.yPos + MARGIN);
-            icons[1].position.set(bounds.xPos + length + MARGIN, bounds.yPos + MARGIN);
-            icons[2].position.set(bounds.xPos + 1, bounds.yPos + 22);
-            icons[3].position.set(bounds.xPos + length + MARGIN + 3, bounds.yPos + 22);
-            
-            rectangles[0].xPos = bounds.xPos + MARGIN;
-            rectangles[0].yPos = bounds.yPos;
-            
-            rectangles[1].xPos = bounds.xPos + MARGIN;
-            rectangles[1].yPos = bounds.yPos + 1;
-            
-            if(currTotalContentLength < contentLength) {
-                rectangles[2].xPos  = bounds.xPos + MARGIN;
-                rectangles[2].yPos  = bounds.yPos + 3;
-                rectangles[2].width = length;
-            }
-            
-            rectangles[3].xPos = bounds.xPos;
-            rectangles[3].yPos = bounds.yPos;
-            
-            rectangles[4].xPos = bounds.xPos + length + MARGIN;
-            rectangles[4].yPos = bounds.yPos;
-            */
+            //TODO: horizontal implementation
         }
         
         hovered = bounds.contains(mouse.cursorPos);

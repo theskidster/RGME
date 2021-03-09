@@ -47,6 +47,7 @@ public final class SceneGraph extends Widget {
             add(scrollbar);
         }};
         
+        //TODO: remove temp members, include default world lightsource.
         categories[0].addGameObject(new TestObject());
         categories[0].addGameObject(new TestObject());
         categories[1].addGameObject(new TestObject());
@@ -84,15 +85,20 @@ public final class SceneGraph extends Widget {
         for(int i = 0; i < categories.length; i++) {
             Category category = categories[i];
             
-            category.update(bounds.xPos, bounds.yPos + verticalOffset, mouse);
+            category.setVerticalOffset(verticalOffset);
+            category.setParentDimensions(bounds.width, bounds.height);
+            category.update(bounds.xPos, bounds.yPos, mouse);
+            
             verticalOffset += 28 * category.getLength();
             
             categoryLengths.put(i, 28 * category.getLength());
             
-            if(mouse.clicked && category.onlyBoundsSelected()) {
-                setCurrCategory(i, true);
-            } else if(category.hasSelectedMember()) {
-                setCurrCategory(i, false);
+            if(!titleBar.contains(mouse.cursorPos) && !(mouse.cursorPos.y > bounds.yPos + bounds.height)) {
+                if(mouse.clicked && category.onlyBoundsSelected()) {
+                    setCurrCategory(i, true);
+                } else if(category.hasSelectedMember()) {
+                    setCurrCategory(i, false);
+                }
             }
         }
         
