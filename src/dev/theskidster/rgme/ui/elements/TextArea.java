@@ -163,7 +163,7 @@ public final class TextArea extends TextInputElement {
         if(rectFront.contains(mouse.cursorPos)) {
             hovered = true;
             
-            if(mouse.clicked) {
+            if(mouse.clicked && mouse.button.equals("left")) {
                 if(hasFocus()) {
                     if(typed.length() > 0) {
                         if(prevCursorX != mouse.cursorPos.x) {
