@@ -3,7 +3,6 @@ package dev.theskidster.rgme.ui.widgets;
 import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.scene.GameObject;
-import dev.theskidster.rgme.scene.TestObject;
 import dev.theskidster.rgme.scene.WorldLight;
 import dev.theskidster.rgme.ui.FreeTypeFont;
 import dev.theskidster.rgme.ui.UI;
@@ -25,6 +24,8 @@ import static org.lwjgl.opengl.GL11.*;
 
 public final class SceneGraph extends Widget {
     
+    public static final int TOOLBAR_WIDTH = 360;
+    
     private int currCategoryIndex;
     
     private static boolean showTextArea;
@@ -41,7 +42,7 @@ public final class SceneGraph extends Widget {
     private final Map<Integer, Integer> categoryLengths = new HashMap<>();
     
     public SceneGraph() {
-        super(0, 28, 360, 264, "Scene Graph", 5, 0);
+        super(0, 28, TOOLBAR_WIDTH, 264, "Scene Graph", 5, 0);
         
         bounds.xPos = UI.getViewWidth() - bounds.width;
         bounds.yPos = 28;

@@ -2,6 +2,7 @@ package dev.theskidster.rgme.main;
 
 import dev.theskidster.rgme.scene.Scene;
 import dev.theskidster.rgme.ui.UI;
+import static dev.theskidster.rgme.ui.widgets.SceneGraph.TOOLBAR_WIDTH;
 import dev.theskidster.rgme.utils.Color;
 import java.util.LinkedList;
 import static org.lwjgl.glfw.GLFW.*;
@@ -109,7 +110,7 @@ public final class App {
                 
                 glfwPollEvents();
                 
-                camera.update(window.width, window.height);
+                camera.update(window.width - TOOLBAR_WIDTH, window.height);
                 scene.update();
                 ui.update(window.width, window.height);
             }
@@ -117,10 +118,12 @@ public final class App {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             
             sceneProgram.use();
+            glViewport(0, 0, window.width - TOOLBAR_WIDTH, window.height);
             camera.render(sceneProgram);
             scene.render(sceneProgram, camera.position, camera.up);
             
             uiProgram.use();
+            glViewport(0, 0, window.width, window.height);
             ui.render(uiProgram);
             
             glfwSwapBuffers(window.handle);
