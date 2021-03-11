@@ -26,6 +26,10 @@ final class Window {
     
     final long handle;
     
+    private boolean mouseLeftHeld;
+    private boolean mouseMiddleHeld;
+    private boolean mouseRightHeld;
+    
     final String title;
     
     Window(String title, Monitor monitor) {
@@ -79,7 +83,7 @@ final class Window {
         }
     }
     
-    void show(Monitor monitor, UI ui) {
+    void show(Monitor monitor, UI ui, Camera camera) {
         setIcon("img_logo.png");
         glfwSetWindowMonitor(handle, NULL, xPos, yPos, width, height, monitor.refreshRate);
         glfwSetWindowPos(handle, xPos, yPos);
@@ -95,14 +99,29 @@ final class Window {
         
         glfwSetCursorPosCallback(handle, (window, x, y) -> {
             ui.setMouseCursorPos(x, y);
+            
+            if(mouseLeftHeld ^ mouseMiddleHeld ^ mouseRightHeld) {
+                if(mouseMiddleHeld) camera.setPosition(x, y);
+                if(mouseRightHeld)  camera.setDirection(x, y);
+            } else {
+                camera.prevX = x;
+                camera.prevY = y;
+            }
         });
         
         glfwSetMouseButtonCallback(handle, (window, button, action, mods) -> {
             ui.setMouseAction(button, action);
+            
+            switch(button) {
+                case GLFW_MOUSE_BUTTON_LEFT   -> mouseLeftHeld = (action == GLFW_PRESS);
+                case GLFW_MOUSE_BUTTON_MIDDLE -> mouseMiddleHeld = (action == GLFW_PRESS);
+                case GLFW_MOUSE_BUTTON_RIGHT  -> mouseRightHeld = (action == GLFW_PRESS);
+            }
         });
         
         glfwSetScrollCallback(handle, (window, xOffset, yOffset) -> {
             ui.setMouseScroll((int) yOffset);
+            camera.dolly((float) yOffset);
         });
         
         glfwSetKeyCallback(handle, (window, key, scancode, action, mods) -> {
