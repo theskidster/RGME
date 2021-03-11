@@ -25,7 +25,9 @@ public final class App {
     private final Monitor monitor;
     private final Window window;
     private final Program uiProgram;
+    private final Program sceneProgram;
     private final UI ui;
+    private final Camera camera;
     private final Scene scene;
     
     App() {
@@ -56,10 +58,22 @@ public final class App {
         
         //TODO: initialize scene shader
         {
+            var shaderSourceFiles = new LinkedList<Shader>() {{
+                add(new Shader("sceneVertex.glsl", GL_VERTEX_SHADER));
+                add(new Shader("sceneFragment.glsl", GL_FRAGMENT_SHADER));
+            }};
             
+            sceneProgram = new Program(shaderSourceFiles, "scene");
+            sceneProgram.use();
+            
+            sceneProgram.addUniform(BufferType.INT,  "uType");
+            sceneProgram.addUniform(BufferType.MAT4, "uModel");
+            sceneProgram.addUniform(BufferType.MAT4, "uView");
+            sceneProgram.addUniform(BufferType.MAT4, "uProjection");
         }
         
-        ui = new UI(window.handle, window.width, window.height);
+        ui     = new UI(window.handle, window.width, window.height);
+        camera = new Camera();
         
         /*
         TODO:
@@ -95,10 +109,16 @@ public final class App {
                 
                 glfwPollEvents();
                 
+                camera.update(window.width, window.height);
+                scene.update();
                 ui.update(window.width, window.height);
             }
             
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            
+            sceneProgram.use();
+            camera.render(sceneProgram);
+            scene.render(sceneProgram, camera.position, camera.up);
             
             uiProgram.use();
             ui.render(uiProgram);
