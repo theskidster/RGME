@@ -1,6 +1,8 @@
 package dev.theskidster.rgme.main;
 
+import dev.theskidster.rgme.scene.Scene;
 import dev.theskidster.rgme.ui.UI;
+import dev.theskidster.rgme.utils.Color;
 import java.util.LinkedList;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
@@ -24,6 +26,7 @@ public final class App {
     private final Window window;
     private final Program uiProgram;
     private final UI ui;
+    private final Scene scene;
     
     App() {
         glfwInit();
@@ -57,6 +60,13 @@ public final class App {
         }
         
         ui = new UI(window.handle, window.width, window.height);
+        
+        /*
+        TODO:
+        this will likely be changed/removed once user defined scenes are 
+        implemented.
+        */
+        scene = new Scene(16, 32, 16, Color.RGME_NAVY);
     }
     
     void start() {
@@ -132,6 +142,10 @@ public final class App {
     
     public static boolean tick(int cycles) {
         return tickCount % cycles == 0;
+    }
+    
+    public static void setClearColor(Color color) {
+        glClearColor(color.r, color.g, color.b, 0);
     }
     
 }

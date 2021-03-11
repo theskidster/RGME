@@ -62,15 +62,6 @@ public final class SceneGraph extends Widget {
         }};
         
         //TODO: get specified world light or provide default one
-        categories[0].addGameObject(new TestObject());
-        categories[0].addGameObject(new TestObject());
-        categories[0].addGameObject(new TestObject());
-        categories[0].addGameObject(new TestObject());
-        categories[0].addGameObject(new TestObject());
-        categories[0].addGameObject(new TestObject());
-        categories[0].addGameObject(new TestObject());
-        categories[0].addGameObject(new TestObject());
-        categories[0].addGameObject(new TestObject());
         categories[3].addGameObject(new WorldLight());
     }
 

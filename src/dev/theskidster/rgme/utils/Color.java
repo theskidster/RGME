@@ -24,6 +24,7 @@ public final class Color {
     public static final Color RGME_GREEN       = new Color(4, 186, 0);
     public static final Color RGME_BLUE        = new Color(51, 102, 204);
     public static final Color RGME_YELLOW      = new Color(237, 251, 93);
+    public static final Color RGME_NAVY        = new Color(19, 22, 29);
     
     public final float r;
     public final float g;
