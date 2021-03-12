@@ -1,6 +1,7 @@
 package dev.theskidster.rgme.main;
 
 import dev.theskidster.rgme.ui.UI;
+import static dev.theskidster.rgme.ui.widgets.SceneGraph.TOOLBAR_WIDTH;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -99,6 +100,7 @@ final class Window {
         
         glfwSetCursorPosCallback(handle, (window, x, y) -> {
             ui.setMouseCursorPos(x, y);
+            camera.castRay((float) ((2f * x) / (width - TOOLBAR_WIDTH) - 1f), (float) (1f - (2f * yPos) / height));
             
             if(mouseLeftHeld ^ mouseMiddleHeld ^ mouseRightHeld) {
                 if(mouseMiddleHeld) camera.setPosition(x, y);

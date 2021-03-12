@@ -2,6 +2,7 @@ package dev.theskidster.rgme.main;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 /**
  * @author J Hoffman
@@ -19,12 +20,17 @@ public final class Camera {
     final Vector3f position  = new Vector3f();
     final Vector3f direction = new Vector3f(0, 0, -1);
     final Vector3f up        = new Vector3f(0, 1, 0);
+    final Vector3f ray       = new Vector3f();
+    final Vector3f prevRay   = new Vector3f();
+    final Vector3f rayChange = new Vector3f();
     
     private final Vector3f tempVec1 = new Vector3f();
     private final Vector3f tempVec2 = new Vector3f();
+    private final Vector4f tempVec3 = new Vector4f();
     
-    private final Matrix4f view = new Matrix4f();
-    private final Matrix4f proj = new Matrix4f();
+    private final Matrix4f view    = new Matrix4f();
+    private final Matrix4f proj    = new Matrix4f();
+    private final Matrix4f tempMat = new Matrix4f();
     
     void update(int viewportWidth, int viewportHeight) {
         proj.setPerspective((float) Math.toRadians(60f), (float) viewportWidth / viewportHeight, 0.1f, Float.POSITIVE_INFINITY);
@@ -79,6 +85,29 @@ public final class Camera {
     
     public void dolly(float speed) {
         position.add(direction.mul(speed, tempVec1));
+    }
+    
+    public void castRay(float x, float y) {
+        prevRay.x = ray.x;
+        prevRay.y = ray.y;
+        prevRay.z = ray.z;
+        
+        tempVec3.set(x, y, -1f, 1f);
+        
+        proj.invert(tempMat);
+        tempMat.transform(tempVec3);
+        
+        tempVec3.z = -1f;
+        tempVec3.w = 0;
+        
+        view.invert(tempMat);
+        tempMat.transform(tempVec3);
+        
+        ray.set(tempVec3.x, tempVec3.y, tempVec3.z);
+        
+        rayChange.set(getChangeIntensity(ray.x, prevRay.x, 35f), 
+                      getChangeIntensity(ray.y, prevRay.y, 35f), 
+                      getChangeIntensity(ray.z, prevRay.z, 35f));
     }
     
 }
