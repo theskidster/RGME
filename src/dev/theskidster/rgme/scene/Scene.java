@@ -18,6 +18,8 @@ public final class Scene {
     int height;
     int depth;
     
+    private Origin origin;
+    
     private final Map<String, GameObject> gameObjects;
     
     public Scene(int width, int height, int depth, Color clearColor) {
@@ -26,6 +28,8 @@ public final class Scene {
         this.depth  = depth;
         
         App.setClearColor(clearColor);
+        
+        origin = new Origin(width, height, depth);
         
         //TODO: include world light
         
@@ -40,6 +44,8 @@ public final class Scene {
     
     public void render(Program sceneProgram, Vector3f camPos, Vector3f camUp) {
         gameObjects.forEach((name, object) -> object.render(sceneProgram, camPos, camUp));
+        
+        origin.render(sceneProgram);
     }
     
 }
