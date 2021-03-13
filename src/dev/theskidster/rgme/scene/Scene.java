@@ -24,9 +24,8 @@ public final class Scene {
     
     private final static Map<String, Command> commands = new HashMap<>();
     
-    
-    private final Map<String, VisibleGeometry> visibleGeometry = new HashMap<>();
-    private final Map<String, GameObject> gameObjects;
+    public final Map<String, VisibleGeometry> visibleGeometry = new HashMap<>();
+    public final Map<String, GameObject> gameObjects;
     
     public Scene(int width, int height, int depth, Color clearColor) {
         this.width  = width;

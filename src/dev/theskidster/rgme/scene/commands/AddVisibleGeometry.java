@@ -1,7 +1,9 @@
 package dev.theskidster.rgme.scene.commands;
 
 import dev.theskidster.rgme.scene.Scene;
+import dev.theskidster.rgme.scene.TestObject;
 import dev.theskidster.rgme.ui.Command;
+import org.joml.Vector3f;
 
 /**
  * @author J Hoffman
@@ -20,7 +22,7 @@ public class AddVisibleGeometry extends Command {
 
     @Override
     public void execute() {
-        System.out.println("add geometry");
+        scene.gameObjects.put("bleh", new TestObject(new Vector3f()));
     }
 
 }

@@ -5,7 +5,6 @@ import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.scene.GameObject;
 import dev.theskidster.rgme.scene.Scene;
 import dev.theskidster.rgme.scene.WorldLight;
-import dev.theskidster.rgme.scene.commands.AddVisibleGeometry;
 import dev.theskidster.rgme.ui.FreeTypeFont;
 import dev.theskidster.rgme.ui.UI;
 import dev.theskidster.rgme.ui.elements.Menu;
