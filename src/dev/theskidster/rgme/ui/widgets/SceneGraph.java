@@ -3,9 +3,12 @@ package dev.theskidster.rgme.ui.widgets;
 import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.scene.GameObject;
+import dev.theskidster.rgme.scene.Scene;
 import dev.theskidster.rgme.scene.WorldLight;
+import dev.theskidster.rgme.scene.commands.AddVisibleGeometry;
 import dev.theskidster.rgme.ui.FreeTypeFont;
 import dev.theskidster.rgme.ui.UI;
+import dev.theskidster.rgme.ui.elements.Menu;
 import dev.theskidster.rgme.ui.elements.Scrollbar;
 import dev.theskidster.rgme.ui.elements.TextArea;
 import dev.theskidster.rgme.utils.Color;
@@ -14,6 +17,7 @@ import dev.theskidster.rgme.utils.Rectangle;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import org.joml.Vector2f;
 import static org.lwjgl.glfw.GLFW.GLFW_ARROW_CURSOR;
 import static org.lwjgl.opengl.GL11.*;
 
@@ -29,6 +33,8 @@ public final class SceneGraph extends Widget {
     private int currCategoryIndex;
     
     private static boolean showTextArea;
+    private boolean prevPressed;
+    private boolean currPressed;
     
     private final Rectangle scissorBox = new Rectangle();
     private final Rectangle seperator  = new Rectangle(0, 0, 2, 224);
@@ -36,6 +42,10 @@ public final class SceneGraph extends Widget {
     
     private static TextArea textArea;
     private static Member selectedMember;
+    
+    private Menu currContextMenu;
+    private Menu[] contextMenus;
+    private final Vector2f contextMenuPos = new Vector2f();
     
     private final Category[] categories = new Category[6];
     
@@ -64,6 +74,14 @@ public final class SceneGraph extends Widget {
         
         //TODO: get specified world light or provide default one
         categories[3].addGameObject(new WorldLight());
+        
+        contextMenus = new Menu[categories.length];
+        
+        for(int i = 0; i < contextMenus.length; i++) {
+            switch(i) {
+                case 0 -> contextMenus[i] = new Menu("add visible geometry", Scene.getCommand("add visible geometry"), 200);
+            }
+        }
     }
 
     @Override
@@ -72,6 +90,11 @@ public final class SceneGraph extends Widget {
         bounds.yPos = 28;
         
         hovered = bounds.contains(mouse.cursorPos);
+        
+        if(hovered) {
+            prevPressed = currPressed;
+            currPressed = mouse.clicked;
+        }
         
         seperator.xPos = bounds.xPos + 28;
         seperator.yPos = bounds.yPos + 40;
@@ -122,16 +145,49 @@ public final class SceneGraph extends Widget {
             categoryLengths.put(i, 28 * category.getLength());
             
             if(!titleBar.contains(mouse.cursorPos) && !(mouse.cursorPos.y > bounds.yPos + bounds.height)) {
-                if(mouse.clicked && category.onlyBoundsSelected() && mouse.button.equals("left")) {
-                    setCurrCategory(i, true);
-                } else if(category.hasSelectedMember()) {
-                    setCurrCategory(i, false);
+                if(currContextMenu != null && currContextMenu.hovered) {
+                    if(mouse.button.equals("left")) {
+                        currContextMenu.remove = true;
+                    }
+                } else {
+                    if(mouse.clicked && category.onlyBoundsSelected() && (mouse.button.equals("left") || mouse.button.equals("right"))) {
+                        setCurrCategory(i, true);
+                    } else if(category.hasSelectedMember()) {
+                        setCurrCategory(i, false);
+                    }
+                }
+                
+                if(categories[i].selected && category.onlyBoundsSelected()) {
+                    if(mouse.button.equals("right")) {
+                        if(prevPressed != currPressed && !prevPressed) {
+                            switch(currCategoryIndex) {
+                                case 0 -> { currContextMenu = contextMenus[0]; }
+                                case 1 -> {}
+                                case 2 -> {}
+                                case 3 -> {}
+                                case 4 -> {}
+                                case 5 -> {}
+                            }
+                            
+                            contextMenuPos.set(mouse.cursorPos);
+                            currContextMenu.remove = false;
+                        }
+                    } else if(currContextMenu != null) {
+                        currContextMenu.remove = true;
+                    }
                 }
             }
         }
         
         scrollbar.setContentLength(categoryLengths);
         scrollbar.parentHovered = hovered;
+        
+        if(currContextMenu != null) {
+            currContextMenu.update(contextMenuPos.x, contextMenuPos.y, mouse);
+            
+            if(!hovered && mouse.clicked) currContextMenu.remove = true;
+            if(currContextMenu.remove == true) currContextMenu = null;
+        }
     }
 
     @Override
@@ -151,6 +207,8 @@ public final class SceneGraph extends Widget {
         scrollbar.render(uiProgram, background, font);
         
         background.drawRectangle(seperator, Color.RGME_BLACK, uiProgram);
+        
+        if(currContextMenu != null) currContextMenu.render(uiProgram, background, font);
     }
     
     void setCurrCategory(int index, boolean clicked) {

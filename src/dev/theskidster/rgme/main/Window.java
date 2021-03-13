@@ -102,12 +102,14 @@ final class Window {
             ui.setMouseCursorPos(x, y);
             camera.castRay((float) ((2f * x) / (width - TOOLBAR_WIDTH) - 1f), (float) (1f - (2f * yPos) / height));
             
-            if(mouseLeftHeld ^ mouseMiddleHeld ^ mouseRightHeld) {
-                if(mouseMiddleHeld) camera.setPosition(x, y);
-                if(mouseRightHeld)  camera.setDirection(x, y);
-            } else {
-                camera.prevX = x;
-                camera.prevY = y;
+            if(!ui.getWidgetHovered()) {
+                if(mouseLeftHeld ^ mouseMiddleHeld ^ mouseRightHeld) {
+                    if(mouseMiddleHeld) camera.setPosition(x, y);
+                    if(mouseRightHeld)  camera.setDirection(x, y);
+                } else {
+                    camera.prevX = x;
+                    camera.prevY = y;
+                }
             }
         });
         
@@ -123,7 +125,7 @@ final class Window {
         
         glfwSetScrollCallback(handle, (window, xOffset, yOffset) -> {
             ui.setMouseScroll((int) yOffset);
-            camera.dolly((float) yOffset);
+            if(!ui.getWidgetHovered()) camera.dolly((float) yOffset);
         });
         
         glfwSetKeyCallback(handle, (window, key, scancode, action, mods) -> {

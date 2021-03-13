@@ -208,7 +208,8 @@ class Category extends Element {
         this.parentHeight = parentHeight;
     }
     
-    int getLength() { return length; }
+    int getLength()  { return length; }
+    String getName() { return categoryName; }
     
     boolean onlyBoundsSelected() {
         return hovered && !eyeHovered && !arrowHovered && 

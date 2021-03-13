@@ -68,21 +68,20 @@ public final class App {
             sceneProgram.use();
             
             sceneProgram.addUniform(BufferType.INT,  "uType");
-            sceneProgram.addUniform(BufferType.VEC3,  "uColor");
+            sceneProgram.addUniform(BufferType.VEC3, "uColor");
             sceneProgram.addUniform(BufferType.MAT4, "uModel");
             sceneProgram.addUniform(BufferType.MAT4, "uView");
             sceneProgram.addUniform(BufferType.MAT4, "uProjection");
         }
-        
-        ui     = new UI(window.handle, window.width, window.height);
-        camera = new Camera();
         
         /*
         TODO:
         this will likely be changed/removed once user defined scenes are 
         implemented.
         */
-        scene = new Scene(16, 32, 16, Color.RGME_NAVY);
+        scene  = new Scene(16, 32, 16, Color.RGME_NAVY);
+        ui     = new UI(window.handle, window.width, window.height);
+        camera = new Camera();
     }
     
     void start() {

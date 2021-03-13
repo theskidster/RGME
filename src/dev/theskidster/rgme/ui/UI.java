@@ -4,6 +4,7 @@ import com.mlomb.freetypejni.FreeType;
 import com.mlomb.freetypejni.Library;
 import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.main.Program;
+import dev.theskidster.rgme.scene.Scene;
 import dev.theskidster.rgme.ui.elements.TextInputElement;
 import dev.theskidster.rgme.ui.widgets.SceneGraph;
 import dev.theskidster.rgme.ui.widgets.Widget;
@@ -41,7 +42,6 @@ public final class UI {
         setFont("fnt_karla_regular.ttf", 17);
         
         widgets = new LinkedHashMap<>() {{
-            //put("test", new TestWidget());
             put("scene graph", new SceneGraph());
         }};
     }
@@ -63,8 +63,7 @@ public final class UI {
                         0,  0, -1, 0, 
                        -1,  1,  0, 1);
         
-        if(!widgets.values().stream().anyMatch(widget -> widget.hovered) ||
-           !widgets.values().stream().anyMatch(widget -> widget.hasHoveredElement())) {
+        if(!getWidgetHovered() || !widgets.values().stream().anyMatch(widget -> widget.hasHoveredElement())) {
             mouse.setCursorShape(GLFW_ARROW_CURSOR);
         }
         
@@ -90,8 +89,9 @@ public final class UI {
     }
     
     public static TextInputElement getTextInputElement() { return textInput; } 
-    public static int getViewWidth() { return viewWidth; }
+    public static int getViewWidth()  { return viewWidth; }
     public static int getViewHeight() { return viewHeight; }
+    public boolean getWidgetHovered() { return widgets.values().stream().anyMatch(widget -> widget.hovered); }
     
     public void setFont(String filename, int size) {
         font = new FreeTypeFont(freeType, filename, size);

@@ -70,7 +70,8 @@ class Member {
         
         //detemine member selection eligibility
         {
-            if(!outOfBounds && !topEdge.contains(mouse.cursorPos) && !bottomEdge.contains(mouse.cursorPos) && mouse.button.equals("left")) {
+            if(!outOfBounds && !topEdge.contains(mouse.cursorPos) && !bottomEdge.contains(mouse.cursorPos) && 
+              (mouse.button.equals("left") || mouse.button.equals("right"))) {
                 if(bounds.contains(mouse.cursorPos) && !eyeButton.contains(mouse.cursorPos)) {
                     hovered = true;
                     if(mouse.clicked) clicked = true;
