@@ -87,7 +87,7 @@ public final class UI implements PropertyChangeListener {
     }
     
     public boolean containerHovered() {
-        return containers.stream().anyMatch(container -> container.hovered());
+        return containers.stream().anyMatch(container -> container.hovered(mouse.cursorPos));
     }
     
     public void setFont(String filename, int size) {

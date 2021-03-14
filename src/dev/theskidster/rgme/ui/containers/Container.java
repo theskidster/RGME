@@ -2,6 +2,7 @@ package dev.theskidster.rgme.ui.containers;
 
 import dev.theskidster.rgme.graphics.Icon;
 import dev.theskidster.rgme.ui.widgets.Widget;
+import dev.theskidster.rgme.utils.Mouse;
 import dev.theskidster.rgme.utils.Rectangle;
 import java.util.Map;
 

@@ -19,6 +19,8 @@ public class TestContainer extends Container {
 
     @Override
     public void update(Mouse mouse) {
+        
+        
         if(clickedOnce(bounds, mouse)) {
             System.out.println("test container clicked");
         }

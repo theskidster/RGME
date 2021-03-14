@@ -3,6 +3,7 @@ package dev.theskidster.rgme.ui.widgets;
 import dev.theskidster.rgme.ui.Renderable;
 import dev.theskidster.rgme.utils.Mouse;
 import dev.theskidster.rgme.utils.Rectangle;
+import org.joml.Vector2f;
 
 /**
  * @author J Hoffman
@@ -13,7 +14,6 @@ public abstract class Widget implements Renderable {
     
     private boolean prevPressed;
     private boolean currPressed;
-    protected boolean hovered;
     protected boolean remove;
     
     protected final Rectangle bounds;
@@ -29,8 +29,13 @@ public abstract class Widget implements Renderable {
         return (prevPressed != currPressed && !prevPressed) && rectangle.contains(mouse.cursorPos);
     }
     
-    public boolean removalRequested() { return remove; }
-    public boolean hovered()          { return hovered; }
+    public boolean removalRequested() {
+        return remove;
+    }
+    
+    public boolean hovered(Vector2f cursorPos) {
+        return bounds.contains(cursorPos);
+    }
     
     public void remove() {
         remove = true;
