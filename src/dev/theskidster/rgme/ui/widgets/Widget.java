@@ -7,6 +7,8 @@ import dev.theskidster.rgme.ui.FreeTypeFont;
 import dev.theskidster.rgme.ui.elements.Element;
 import dev.theskidster.rgme.utils.Mouse;
 import dev.theskidster.rgme.utils.Rectangle;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Set;
 
 /**
@@ -14,7 +16,7 @@ import java.util.Set;
  * Created: Feb 26, 2021
  */
 
-public abstract class Widget {
+public abstract class Widget implements PropertyChangeListener {
     
     public boolean hovered;
     public boolean removeRequest;
@@ -49,6 +51,9 @@ public abstract class Widget {
     
     public abstract void update(int viewportWidth, int viewportHeight, Mouse mouse);
     public abstract void render(Program uiProgram, Background background, FreeTypeFont font);
+    
+    @Override
+    public abstract void propertyChange(PropertyChangeEvent evt);
     
     public boolean hasHoveredElement() {
         return elements.stream().anyMatch(element -> element.hovered);

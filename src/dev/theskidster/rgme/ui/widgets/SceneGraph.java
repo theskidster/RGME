@@ -13,6 +13,7 @@ import dev.theskidster.rgme.ui.elements.TextArea;
 import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Mouse;
 import dev.theskidster.rgme.utils.Rectangle;
+import java.beans.PropertyChangeEvent;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -208,6 +209,11 @@ public final class SceneGraph extends Widget {
         background.drawRectangle(seperator, Color.RGME_BLACK, uiProgram);
         
         if(currContextMenu != null) currContextMenu.render(uiProgram, background, font);
+    }
+    
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        
     }
     
     void setCurrCategory(int index, boolean clicked) {

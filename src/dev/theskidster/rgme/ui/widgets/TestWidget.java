@@ -7,6 +7,7 @@ import dev.theskidster.rgme.ui.elements.Scrollbar;
 import dev.theskidster.rgme.ui.elements.TextArea;
 import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Mouse;
+import java.beans.PropertyChangeEvent;
 import java.util.LinkedHashSet;
 
 /**
@@ -35,6 +36,19 @@ public class TestWidget extends Widget {
     public void render(Program uiProgram, Background background, FreeTypeFont font) {
         background.drawRectangle(bounds, Color.RGME_MEDIUM_GRAY, uiProgram);
         elements.forEach(element -> element.render(uiProgram, background, font));
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        switch(evt.getPropertyName()) {
+            case "windowWidth" -> {
+                
+            }
+            
+            case "windowHeight" -> {
+                
+            }
+        }
     }
     
 }

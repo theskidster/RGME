@@ -4,11 +4,11 @@ import com.mlomb.freetypejni.FreeType;
 import com.mlomb.freetypejni.Library;
 import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.main.Program;
-import dev.theskidster.rgme.scene.Scene;
 import dev.theskidster.rgme.ui.elements.TextInputElement;
-import dev.theskidster.rgme.ui.widgets.SceneGraph;
+import dev.theskidster.rgme.ui.widgets.TestWidget;
 import dev.theskidster.rgme.ui.widgets.Widget;
 import dev.theskidster.rgme.utils.Mouse;
+import dev.theskidster.rgme.utils.Observable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.joml.Matrix4f;
@@ -42,7 +42,8 @@ public final class UI {
         setFont("fnt_karla_regular.ttf", 17);
         
         widgets = new LinkedHashMap<>() {{
-            put("scene graph", new SceneGraph());
+            put("test widget", new TestWidget());
+            //put("scene graph", new SceneGraph());
         }};
     }
     
@@ -119,6 +120,10 @@ public final class UI {
     public static void setTextInputElement(TextInputElement currElement) {
         textInput = currElement;
         if(currElement == null) mouse.setCursorShape(GLFW_ARROW_CURSOR);
+    }
+    
+    public void initializeObservers(Observable observable) {
+        widgets.forEach((name, widget) -> observable.addObserver(widget));
     }
     
 }

@@ -2,6 +2,7 @@ package dev.theskidster.rgme.main;
 
 import dev.theskidster.rgme.ui.UI;
 import static dev.theskidster.rgme.ui.widgets.SceneGraph.TOOLBAR_WIDTH;
+import dev.theskidster.rgme.utils.Observable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -32,6 +33,8 @@ final class Window {
     private boolean mouseRightHeld;
     
     final String title;
+    
+    private final Observable observable = new Observable(this);
     
     Window(String title, Monitor monitor) {
         this.title = title;
@@ -92,14 +95,24 @@ final class Window {
         glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         glfwShowWindow(handle);
         
+        observable.properties.put("windowWidth", width);
+        observable.properties.put("windowHeight", height);
+        
+        ui.initializeObservers(observable);
+        
         glfwSetWindowSizeCallback(handle, (window, w, h) -> {
             width  = w;
             height = h;
+            
             glViewport(0, 0, width, height);
+            
+            observable.notifyObservers("windowWidth", width);
+            observable.notifyObservers("windowHeight", height);
         });
         
         glfwSetCursorPosCallback(handle, (window, x, y) -> {
             ui.setMouseCursorPos(x, y);
+            
             camera.castRay((float) ((2f * x) / (width - TOOLBAR_WIDTH) - 1f), (float) (1f - (2f * yPos) / height));
             
             if(!ui.getWidgetHovered()) {
@@ -125,6 +138,7 @@ final class Window {
         
         glfwSetScrollCallback(handle, (window, xOffset, yOffset) -> {
             ui.setMouseScroll((int) yOffset);
+            
             if(!ui.getWidgetHovered()) camera.dolly((float) yOffset);
         });
         
