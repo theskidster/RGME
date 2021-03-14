@@ -1,12 +1,13 @@
 package dev.theskidster.rgme.main;
 
 import dev.theskidster.rgme.ui.UI;
-import static dev.theskidster.rgme.ui.widgets.SceneGraph.TOOLBAR_WIDTH;
+import static dev.theskidster.rgme.ui.UI.TOOLBAR_WIDTH;
 import dev.theskidster.rgme.utils.Observable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import org.joml.Vector2f;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.glfw.GLFWImage;
 import static org.lwjgl.opengl.GL11.glViewport;
@@ -95,9 +96,9 @@ final class Window {
         glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         glfwShowWindow(handle);
         
-        observable.properties.put("windowWidth", width);
-        observable.properties.put("windowHeight", height);
+        observable.properties.put("viewportSize", null);
         observable.addObserver(ui);
+        observable.notifyObservers("viewportSize", new Vector2f(width, height));
         
         glfwSetWindowSizeCallback(handle, (window, w, h) -> {
             width  = w;
@@ -105,8 +106,7 @@ final class Window {
             
             glViewport(0, 0, width, height);
             
-            observable.notifyObservers("windowWidth", width);
-            observable.notifyObservers("windowHeight", height);
+            observable.notifyObservers("viewportSize", new Vector2f(width, height));
         });
         
         glfwSetCursorPosCallback(handle, (window, x, y) -> {
@@ -114,7 +114,7 @@ final class Window {
             
             camera.castRay((float) ((2f * x) / (width - TOOLBAR_WIDTH) - 1f), (float) (1f - (2f * yPos) / height));
             
-            if(!ui.getWidgetHovered()) {
+            if(!ui.containerHovered()) {
                 if(mouseLeftHeld ^ mouseMiddleHeld ^ mouseRightHeld) {
                     if(mouseMiddleHeld) camera.setPosition(x, y);
                     if(mouseRightHeld)  camera.setDirection(x, y);
@@ -138,11 +138,11 @@ final class Window {
         glfwSetScrollCallback(handle, (window, xOffset, yOffset) -> {
             ui.setMouseScroll((int) yOffset);
             
-            if(!ui.getWidgetHovered()) camera.dolly((float) yOffset);
+            if(!ui.containerHovered()) camera.dolly((float) yOffset);
         });
         
         glfwSetKeyCallback(handle, (window, key, scancode, action, mods) -> {
-            ui.captureKeyInput(key, action);
+            //TODO: re-implement text input
         });
     }
     

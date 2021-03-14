@@ -4,15 +4,14 @@ import com.mlomb.freetypejni.FreeType;
 import com.mlomb.freetypejni.Library;
 import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.main.Program;
-import dev.theskidster.rgme.ui.elements.TextInputElement;
-import dev.theskidster.rgme.ui.widgets.TestWidget;
-import dev.theskidster.rgme.ui.widgets.Widget;
+import dev.theskidster.rgme.ui.containers.Container;
+import dev.theskidster.rgme.ui.containers.TestContainer;
 import dev.theskidster.rgme.utils.Mouse;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.LinkedHashSet;
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import static org.lwjgl.glfw.GLFW.*;
 
 /**
@@ -22,75 +21,63 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public final class UI implements PropertyChangeListener {
     
-    private static int viewWidth;
-    private static int viewHeight;
+    public static final int TOOLBAR_WIDTH = 360;
     
     private static Mouse mouse;
-    private static TextInputElement textInput;
     private final Library freeType;
     private FreeTypeFont font;
     private final Background background = new Background();
     private final Matrix4f projMatrix   = new Matrix4f();
     
-    private final Map<String, Widget> widgets;
+    private final LinkedHashSet<Container> containers;
     
-    public UI(long windowHandle, int viewportWidth, int viewportHeight) {
-        mouse      = new Mouse(windowHandle);
-        viewWidth  = viewportWidth;
-        viewHeight = viewportHeight;
+    public UI(long windowHandle) {
+        mouse = new Mouse(windowHandle);
         
         freeType = FreeType.newLibrary();
         setFont("fnt_karla_regular.ttf", 17);
         
-        widgets = new LinkedHashMap<>() {{
-            put("test widget", new TestWidget());
-            //put("scene graph", new SceneGraph());
+        containers = new LinkedHashSet<>() {{
+            add(new TestContainer());
         }};
     }
     
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         switch(evt.getPropertyName()) {
-            case "windowWidth" -> {
+            case "viewportSize" -> {
+                Vector2f windowSize = ((Vector2f) evt.getNewValue());
                 
-            }
-            
-            case "windowHeight" -> {
+                containers.forEach(container -> container.relocate(windowSize.x, windowSize.y));
                 
+                projMatrix.setPerspective((float) Math.toRadians(45), windowSize.x / windowSize.y, 0.1f, Float.POSITIVE_INFINITY);
+                
+                float hw = (2f / windowSize.x);
+                float hh = (-2f / windowSize.y);
+                
+                projMatrix.set(hw,  0,  0, 0, 
+                                0, hh,  0, 0, 
+                                0,  0, -1, 0, 
+                               -1,  1,  0, 1);
             }
         }
     }
     
     public void update(int viewportWidth, int viewportHeight) {
-        viewWidth  = viewportWidth;
-        viewHeight = viewportHeight;
-        
-        projMatrix.setPerspective((float) Math.toRadians(45), 
-                                  (float) viewportWidth / viewportHeight, 
-                                  0.1f, 
-                                  Float.POSITIVE_INFINITY);
-        
-        float hw = (2f / viewportWidth);
-        float hh = (-2f / viewportHeight);
-        
-        projMatrix.set(hw,  0,  0, 0, 
-                        0, hh,  0, 0, 
-                        0,  0, -1, 0, 
-                       -1,  1,  0, 1);
-        
-        if(!getWidgetHovered() || !widgets.values().stream().anyMatch(widget -> widget.hasHoveredElement())) {
+        /*
+        if(!getWidgetHovered() || !containers.values().stream().anyMatch(widget -> widget.hasHoveredElement())) {
             mouse.setCursorShape(GLFW_ARROW_CURSOR);
-        }
+        }*/
         
-        widgets.forEach((name, widget) -> widget.update(mouse));
-        widgets.entrySet().removeIf(widget -> widget.getValue().remove);
+        containers.forEach(container -> container.update(mouse));
+        containers.removeIf(container -> container.removalRequested());
         
         mouse.scrolled = false;
     }
     
     public void render(Program uiProgram) {
         uiProgram.setUniform("uProjection", false, projMatrix);
-        widgets.forEach((name, widget) -> widget.render(uiProgram, background, font));
+        containers.forEach(container -> container.render(uiProgram, background, font));
     }
     
     public void destroy() {
@@ -99,14 +86,9 @@ public final class UI implements PropertyChangeListener {
         background.freeBuffers();
     }
     
-    public void captureKeyInput(int key, int action) {
-        if(textInput != null) textInput.processInput(key, action);
+    public boolean containerHovered() {
+        return containers.stream().anyMatch(container -> container.hovered());
     }
-    
-    public static TextInputElement getTextInputElement() { return textInput; } 
-    public static int getViewWidth()  { return viewWidth; }
-    public static int getViewHeight() { return viewHeight; }
-    public boolean getWidgetHovered() { return widgets.values().stream().anyMatch(widget -> widget.hovered); }
     
     public void setFont(String filename, int size) {
         font = new FreeTypeFont(freeType, filename, size);
@@ -129,11 +111,6 @@ public final class UI implements PropertyChangeListener {
     public void setMouseScroll(double value) {
         mouse.scrollValue = (float) value;
         mouse.scrolled    = true;
-    }
-    
-    public static void setTextInputElement(TextInputElement currElement) {
-        textInput = currElement;
-        if(currElement == null) mouse.setCursorShape(GLFW_ARROW_CURSOR);
     }
     
 }

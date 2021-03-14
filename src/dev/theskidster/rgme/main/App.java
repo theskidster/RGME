@@ -2,7 +2,7 @@ package dev.theskidster.rgme.main;
 
 import dev.theskidster.rgme.scene.Scene;
 import dev.theskidster.rgme.ui.UI;
-import static dev.theskidster.rgme.ui.widgets.SceneGraph.TOOLBAR_WIDTH;
+import static dev.theskidster.rgme.ui.UI.TOOLBAR_WIDTH;
 import dev.theskidster.rgme.utils.Color;
 import java.util.LinkedList;
 import static org.lwjgl.glfw.GLFW.*;
@@ -80,7 +80,7 @@ public final class App {
         implemented.
         */
         scene  = new Scene(16, 32, 16, Color.RGME_NAVY);
-        ui     = new UI(window.handle, window.width, window.height);
+        ui     = new UI(window.handle);
         camera = new Camera();
     }
     
