@@ -24,6 +24,7 @@ class Category extends Element {
     private int length = 1;
     private int maxMemberIndex;
     private int verticalOffset;
+    private int parentPosY;
     
     private float parentWidth;
     private float parentHeight;
@@ -57,6 +58,8 @@ class Category extends Element {
     }
     
     Category(String categoryName) {
+        super(0, 0);
+        
         this.categoryName = categoryName;
         bounds    = new Rectangle(0, 0, 336, 28);
         
@@ -70,10 +73,7 @@ class Category extends Element {
     }
     
     @Override
-    public void update(float parentPosX, float parentPosY, Mouse mouse) {
-        bounds.xPos = xOffset + parentPosX;
-        bounds.yPos = yOffset + (parentPosY + 40) + verticalOffset;
-        
+    public void update(Mouse mouse) {
         hovered = bounds.contains(mouse.cursorPos);
         color   = (selected) ? Color.RGME_YELLOW : Color.RGME_WHITE;
         
@@ -87,14 +87,6 @@ class Category extends Element {
         
         boolean outOfBounds = (bounds.yPos + bounds.height <= parentPosY + 40) || 
                               (bounds.yPos >= parentPosY + parentHeight);
-        
-        parentEdges[0].xPos  = parentPosX;
-        parentEdges[0].yPos  = parentPosY + 12;
-        parentEdges[0].width = parentWidth;
-        
-        parentEdges[1].xPos  = parentPosX;
-        parentEdges[1].yPos  = parentPosY + parentHeight;
-        parentEdges[1].width = parentWidth;
         
         //Toggle category visibility.
         {
@@ -171,6 +163,26 @@ class Category extends Element {
         if(!collapsed && !members.isEmpty()) {
             members.values().forEach(member -> member.render(uiProgram, background, font));
         }
+    }
+    
+    @Override
+    public void updatePosX(int parentPosX) {
+        bounds.xPos = xOffset + parentPosX;
+        
+        parentEdges[0].xPos  = parentPosX;
+        parentEdges[0].width = parentWidth;
+        parentEdges[1].xPos  = parentPosX;
+        parentEdges[1].width = parentWidth;
+    }
+
+    @Override
+    public void updatePosY(int parentPosY) {
+        this.parentPosY = parentPosY;
+        
+        bounds.yPos = yOffset + (parentPosY + 40) + verticalOffset;
+        
+        parentEdges[0].yPos  = parentPosY + 12;
+        parentEdges[1].yPos  = parentPosY + parentHeight;
     }
     
     private void setCurrSelectedMember(int index) {

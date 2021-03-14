@@ -1,16 +1,13 @@
 package dev.theskidster.rgme.ui.elements;
 
-import dev.theskidster.rgme.graphics.Background;
-import dev.theskidster.rgme.main.Program;
-import dev.theskidster.rgme.ui.FreeTypeFont;
-import dev.theskidster.rgme.utils.Mouse;
+import dev.theskidster.rgme.ui.widgets.Renderable;
 
 /**
  * @author J Hoffman
  * Created: Feb 26, 2021
  */
 
-public abstract class Element {
+public abstract class Element implements Renderable {
 
     protected float xOffset;
     protected float yOffset;
@@ -21,7 +18,9 @@ public abstract class Element {
     public boolean clicked;
     public boolean remove;
     
-    public abstract void update(float parentPosX, float parentPosY, Mouse mouse);
-    public abstract void render(Program uiProgram, Background background, FreeTypeFont font);
+    protected Element(float xOffset, float yOffset) {
+        this.xOffset = xOffset;
+        this.yOffset = yOffset;
+    }
     
 }

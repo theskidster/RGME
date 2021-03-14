@@ -84,8 +84,8 @@ public final class SceneGraph extends Widget {
     }
 
     @Override
-    public void update(int viewportWidth, int viewportHeight, Mouse mouse) {
-        bounds.xPos = (int) (viewportWidth - bounds.width);
+    public void update(Mouse mouse) {
+        //bounds.xPos = (int) (viewportWidth - bounds.width);
         bounds.yPos = 28;
         
         hovered = bounds.contains(mouse.cursorPos);
@@ -99,18 +99,17 @@ public final class SceneGraph extends Widget {
         seperator.yPos = bounds.yPos + 40;
         
         scissorBox.xPos   = bounds.xPos;
-        scissorBox.yPos   = viewportHeight - (bounds.yPos + bounds.height);
+        //scissorBox.yPos   = viewportHeight - (bounds.yPos + bounds.height);
         scissorBox.width  = bounds.xPos + bounds.width;
         scissorBox.height = bounds.height - 40;
         
-        updateTitleBarPos(viewportWidth, viewportHeight);
+        //updateTitleBarPos(viewportWidth, viewportHeight);
         
         if(showTextArea) {
-            textArea.update(
-                    selectedMember.bounds.xPos + 80, 
-                    selectedMember.bounds.yPos, 
-                    mouse);
+            textArea.updatePosX((int) selectedMember.bounds.xPos + 80);
+            textArea.updatePosY((int) selectedMember.bounds.yPos);
             
+            textArea.update(mouse);
             textArea.scroll();
             
             textArea.scissorBox.yPos   = scissorBox.yPos;
@@ -128,7 +127,9 @@ public final class SceneGraph extends Widget {
             }
         }
         
-        scrollbar.update(bounds.xPos, bounds.yPos, mouse);
+        scrollbar.updatePosX((int) bounds.xPos);
+        scrollbar.updatePosY((int) bounds.yPos);
+        scrollbar.update(mouse);
         
         int verticalOffset = scrollbar.getContentScrollOffset();
         
@@ -137,7 +138,7 @@ public final class SceneGraph extends Widget {
             
             category.setVerticalOffset(verticalOffset);
             category.setParentDimensions(bounds.width, bounds.height);
-            category.update(bounds.xPos, bounds.yPos, mouse);
+            category.update(mouse);
             
             verticalOffset += 28 * category.getLength();
             
@@ -182,7 +183,9 @@ public final class SceneGraph extends Widget {
         scrollbar.parentHovered = hovered;
         
         if(currContextMenu != null) {
-            currContextMenu.update(contextMenuPos.x, contextMenuPos.y, mouse);
+            currContextMenu.updatePosX((int) contextMenuPos.x);
+            currContextMenu.updatePosY((int) contextMenuPos.y);
+            currContextMenu.update(mouse);
             
             if(!hovered && mouse.clicked) currContextMenu.remove = true;
             if(currContextMenu.remove == true) currContextMenu = null;
@@ -211,7 +214,12 @@ public final class SceneGraph extends Widget {
     }
     
     @Override
-    public void propertyChange(PropertyChangeEvent evt) {
+    public void updatePosX(int parentPosX) {
+        
+    }
+
+    @Override
+    public void updatePosY(int parentPosY) {
         
     }
     

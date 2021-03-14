@@ -35,8 +35,8 @@ public final class Scrollbar extends Element {
     private final Color[] buttonColors   = new Color[2];
     
     public Scrollbar(int xOffset, int yOffset, boolean vertical, int length, int viewportLength) {
-        this.xOffset  = xOffset;
-        this.yOffset  = yOffset;
+        super(xOffset, yOffset);
+        
         this.vertical = vertical;
         this.length   = length;
         
@@ -86,10 +86,7 @@ public final class Scrollbar extends Element {
     }
     
     @Override
-    public void update(float parentPosX, float parentPosY, Mouse mouse) {
-        bounds.xPos = xOffset + parentPosX;
-        bounds.yPos = yOffset + parentPosY;
-        
+    public void update(Mouse mouse) {
         prevPressed = currPressed;
         currPressed = mouse.clicked;
         
@@ -202,6 +199,16 @@ public final class Scrollbar extends Element {
     
     public int getContentScrollOffset() {
         return (int) -(contentOffset);
+    }
+
+    @Override
+    public void updatePosX(int parentPosX) {
+        bounds.xPos = xOffset + parentPosX;
+    }
+
+    @Override
+    public void updatePosY(int parentPosY) {
+        bounds.yPos = yOffset + parentPosY;
     }
     
 }

@@ -7,7 +7,6 @@ import dev.theskidster.rgme.ui.elements.Scrollbar;
 import dev.theskidster.rgme.ui.elements.TextArea;
 import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Mouse;
-import java.beans.PropertyChangeEvent;
 import java.util.LinkedHashMap;
 
 /**
@@ -27,9 +26,9 @@ public class TestWidget extends Widget {
     }
     
     @Override
-    public void update(int viewportWidth, int viewportHeight, Mouse mouse) {
+    public void update(Mouse mouse) {
         hovered = bounds.contains(mouse.cursorPos);
-        elements.values().forEach(element -> element.update(bounds.xPos, bounds.yPos, mouse));
+        elements.values().forEach(element -> element.update(mouse));
     }
 
     @Override
@@ -39,16 +38,16 @@ public class TestWidget extends Widget {
     }
 
     @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        switch(evt.getPropertyName()) {
-            case "windowWidth" -> {
-                
-            }
-            
-            case "windowHeight" -> {
-                
-            }
-        }
+    public void updatePosX(int parentPosX) {
+        /*
+        We'd use this method in the event the bounds of this widget need to be
+        adjusted on account of a viewport/window resize event
+        */
+    }
+
+    @Override
+    public void updatePosY(int parentPosY) {
+        
     }
     
 }

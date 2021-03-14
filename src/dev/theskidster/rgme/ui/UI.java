@@ -8,7 +8,8 @@ import dev.theskidster.rgme.ui.elements.TextInputElement;
 import dev.theskidster.rgme.ui.widgets.TestWidget;
 import dev.theskidster.rgme.ui.widgets.Widget;
 import dev.theskidster.rgme.utils.Mouse;
-import dev.theskidster.rgme.utils.Observable;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.joml.Matrix4f;
@@ -19,7 +20,7 @@ import static org.lwjgl.glfw.GLFW.*;
  * Created: Feb 24, 2021
  */
 
-public final class UI {
+public final class UI implements PropertyChangeListener {
     
     private static int viewWidth;
     private static int viewHeight;
@@ -31,7 +32,7 @@ public final class UI {
     private final Background background = new Background();
     private final Matrix4f projMatrix   = new Matrix4f();
     
-    private Map<String, Widget> widgets;
+    private final Map<String, Widget> widgets;
     
     public UI(long windowHandle, int viewportWidth, int viewportHeight) {
         mouse      = new Mouse(windowHandle);
@@ -45,6 +46,19 @@ public final class UI {
             put("test widget", new TestWidget());
             //put("scene graph", new SceneGraph());
         }};
+    }
+    
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        switch(evt.getPropertyName()) {
+            case "windowWidth" -> {
+                
+            }
+            
+            case "windowHeight" -> {
+                
+            }
+        }
     }
     
     public void update(int viewportWidth, int viewportHeight) {
@@ -68,8 +82,8 @@ public final class UI {
             mouse.setCursorShape(GLFW_ARROW_CURSOR);
         }
         
-        widgets.forEach((name, widget) -> widget.update(viewportWidth, viewportHeight, mouse));
-        widgets.entrySet().removeIf(widget -> widget.getValue().removeRequest);
+        widgets.forEach((name, widget) -> widget.update(mouse));
+        widgets.entrySet().removeIf(widget -> widget.getValue().remove);
         
         mouse.scrolled = false;
     }
@@ -120,10 +134,6 @@ public final class UI {
     public static void setTextInputElement(TextInputElement currElement) {
         textInput = currElement;
         if(currElement == null) mouse.setCursorShape(GLFW_ARROW_CURSOR);
-    }
-    
-    public void initializeObservers(Observable observable) {
-        widgets.forEach((name, widget) -> observable.addObserver(widget));
     }
     
 }

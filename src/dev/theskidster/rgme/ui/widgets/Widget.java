@@ -1,14 +1,8 @@
 package dev.theskidster.rgme.ui.widgets;
 
-import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.graphics.Icon;
-import dev.theskidster.rgme.main.Program;
-import dev.theskidster.rgme.ui.FreeTypeFont;
 import dev.theskidster.rgme.ui.elements.Element;
-import dev.theskidster.rgme.utils.Mouse;
 import dev.theskidster.rgme.utils.Rectangle;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Map;
 
 /**
@@ -16,10 +10,10 @@ import java.util.Map;
  * Created: Feb 26, 2021
  */
 
-public abstract class Widget implements PropertyChangeListener {
+public abstract class Widget implements Renderable {
     
     public boolean hovered;
-    public boolean removeRequest;
+    public boolean remove;
     
     protected String title;
     protected Rectangle bounds;
@@ -48,12 +42,6 @@ public abstract class Widget implements PropertyChangeListener {
         
         icon.position.set(bounds.xPos + 10, bounds.yPos + 30);
     }
-    
-    public abstract void update(int viewportWidth, int viewportHeight, Mouse mouse);
-    public abstract void render(Program uiProgram, Background background, FreeTypeFont font);
-    
-    @Override
-    public abstract void propertyChange(PropertyChangeEvent evt);
     
     public boolean hasHoveredElement() {
         return elements.values().stream().anyMatch(element -> element.hovered);

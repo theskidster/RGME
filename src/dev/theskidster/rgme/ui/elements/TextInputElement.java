@@ -106,9 +106,8 @@ public abstract class TextInputElement extends Element {
     }
     
     public TextInputElement(int xOffset, int yOffset, int width, float parentPosX, float parentPosY) {
-        this.xOffset = xOffset;
-        this.yOffset = yOffset;
-        this.width   = width;
+        super(xOffset, yOffset);
+        this.width = width;
         
         setParentPos(parentPosX, parentPosY);
         

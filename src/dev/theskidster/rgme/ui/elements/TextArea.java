@@ -21,6 +21,9 @@ import static org.lwjgl.opengl.GL11.glScissor;
 
 public final class TextArea extends TextInputElement {
 
+    private int parentPosX;
+    private int parentPosY;
+    
     private final boolean borderVisible;
     
     private final Icon leftBorder;
@@ -131,7 +134,7 @@ public final class TextArea extends TextInputElement {
     }
 
     @Override
-    public void update(float parentPosX, float parentPosY, Mouse mouse) {
+    public void update(Mouse mouse) {
         setParentPos(parentPosX, parentPosY);
         
         rectBack.xPos = parentPosX + xOffset;
@@ -236,6 +239,16 @@ public final class TextArea extends TextInputElement {
             leftBorder.render(uiProgram);
             rightBorder.render(uiProgram);
         }
+    }
+
+    @Override
+    public void updatePosX(int parentPosX) {
+        this.parentPosX = parentPosX;
+    }
+
+    @Override
+    public void updatePosY(int parentPosY) {
+        this.parentPosY = parentPosY;
     }
     
 }

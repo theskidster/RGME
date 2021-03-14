@@ -25,11 +25,15 @@ public final class Menu extends Element {
     private final List<Command> commands;
     
     public Menu(List<Command> commands, float xPos, float yPos, float width) {
+        super(0, 0);
+        
         this.commands = commands;
         init(xPos, yPos, width);
     }
     
     public Menu(String action, Command command, float width) {
+        super(0, 0);
+        
         commands = new ArrayList<Command>() {{
             add(command);
         }};
@@ -47,19 +51,13 @@ public final class Menu extends Element {
     }
     
     @Override
-    public void update(float parentPosX, float parentPosY, Mouse mouse) {
+    public void update(Mouse mouse) {
         prevPressed = currPressed;
         currPressed = mouse.clicked;
         
         hovered = false;
         
-        outline.xPos = parentPosX;
-        outline.yPos = parentPosY;
-        
         for(int c = 0; c < commands.size(); c++) {
-            rectangles[c].xPos = parentPosX + 1;
-            rectangles[c].yPos = parentPosY + (28 * c) + 1;
-            
             if(rectangles[c].contains(mouse.cursorPos)) {
                 currIndex = c;
                 hovered   = true;
@@ -89,6 +87,21 @@ public final class Menu extends Element {
                     1, 
                     Color.RGME_WHITE, 
                     uiProgram);
+        }
+    }
+
+    @Override
+    public void updatePosX(int parentPosX) {
+        outline.xPos = parentPosX;
+        for(Rectangle rectangle : rectangles) rectangle.xPos = parentPosX + 1;
+    }
+
+    @Override
+    public void updatePosY(int parentPosY) {
+        outline.yPos = parentPosY;
+        
+        for(int c = 0; c < commands.size(); c++) {
+            rectangles[c].yPos = parentPosY + (28 * c) + 1;
         }
     }
 

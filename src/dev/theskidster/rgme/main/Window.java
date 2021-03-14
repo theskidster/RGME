@@ -97,8 +97,7 @@ final class Window {
         
         observable.properties.put("windowWidth", width);
         observable.properties.put("windowHeight", height);
-        
-        ui.initializeObservers(observable);
+        observable.addObserver(ui);
         
         glfwSetWindowSizeCallback(handle, (window, w, h) -> {
             width  = w;
