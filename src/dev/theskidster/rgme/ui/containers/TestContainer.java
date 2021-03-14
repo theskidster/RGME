@@ -14,7 +14,7 @@ import dev.theskidster.rgme.utils.Mouse;
 public class TestContainer extends Container {
 
     public TestContainer() {
-        super(200, 200, 400, 400);
+        super(600, 200, 400, 400);
     }
 
     @Override

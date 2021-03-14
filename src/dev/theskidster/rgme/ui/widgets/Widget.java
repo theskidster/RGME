@@ -26,7 +26,7 @@ public abstract class Widget implements Renderable {
         prevPressed = currPressed;
         currPressed = mouse.clicked;
         
-        return prevPressed != currPressed && !prevPressed;
+        return (prevPressed != currPressed && !prevPressed) && rectangle.contains(mouse.cursorPos);
     }
     
     public boolean removalRequested() { return remove; }
