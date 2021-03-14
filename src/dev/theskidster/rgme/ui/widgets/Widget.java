@@ -9,7 +9,7 @@ import dev.theskidster.rgme.utils.Mouse;
 import dev.theskidster.rgme.utils.Rectangle;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * @author J Hoffman
@@ -26,7 +26,7 @@ public abstract class Widget implements PropertyChangeListener {
     protected Rectangle titleBar;
     protected Icon icon;
     
-    protected Set<Element> elements;
+    protected Map<String, Element> elements;
     
     Widget(int xPos, int yPos, int width, int height) {
         bounds = new Rectangle(xPos, yPos, width, height);
@@ -56,7 +56,7 @@ public abstract class Widget implements PropertyChangeListener {
     public abstract void propertyChange(PropertyChangeEvent evt);
     
     public boolean hasHoveredElement() {
-        return elements.stream().anyMatch(element -> element.hovered);
+        return elements.values().stream().anyMatch(element -> element.hovered);
     }
     
 }

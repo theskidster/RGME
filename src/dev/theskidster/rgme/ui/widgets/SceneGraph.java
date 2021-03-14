@@ -15,7 +15,6 @@ import dev.theskidster.rgme.utils.Mouse;
 import dev.theskidster.rgme.utils.Rectangle;
 import java.beans.PropertyChangeEvent;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import org.joml.Vector2f;
 import static org.lwjgl.glfw.GLFW.GLFW_ARROW_CURSOR;
@@ -67,9 +66,9 @@ public final class SceneGraph extends Widget {
         scrollbar = new Scrollbar((int) (bounds.width - 24), 40, true, 176, 224);
         textArea  = new TextArea(0, 1, 200, bounds.xPos, bounds.yPos, false);
         
-        elements = new LinkedHashSet<>() {{
-            add(scrollbar);
-            add(textArea);
+        elements = new HashMap<>() {{
+            put("scrollbar", scrollbar);
+            put("textArea", textArea);
         }};
         
         //TODO: get specified world light or provide default one
