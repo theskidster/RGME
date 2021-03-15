@@ -63,9 +63,11 @@ public final class UI implements PropertyChangeListener {
         }
     }
     
-    public void update(int viewportWidth, int viewportHeight) {
+    public void update() {
         containers.forEach(container -> container.update(mouse));
         containers.removeIf(container -> container.removalRequested());
+        
+        if(!containerHovered()) mouse.setCursorShape(GLFW_ARROW_CURSOR);
         
         mouse.scrolled = false;
     }

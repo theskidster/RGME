@@ -5,8 +5,6 @@ import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.ui.FreeTypeFont;
 import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Mouse;
-import static org.lwjgl.glfw.GLFW.GLFW_ARROW_CURSOR;
-import static org.lwjgl.glfw.GLFW.GLFW_IBEAM_CURSOR;
 
 /**
  * @author J Hoffman
@@ -16,17 +14,11 @@ import static org.lwjgl.glfw.GLFW.GLFW_IBEAM_CURSOR;
 public class TestContainer extends Container {
 
     public TestContainer() {
-        super(600, 200, 400, 400);
+        super(600, 200, 400, 400, "test", 5, 1);
     }
 
     @Override
-    public void update(Mouse mouse) {
-        if(hovered(mouse.cursorPos)) {
-            mouse.setCursorShape(GLFW_IBEAM_CURSOR);
-        } else {
-            mouse.setCursorShape(GLFW_ARROW_CURSOR);
-        }
-        
+    public void update(Mouse mouse) {        
         if(clickedOnce(bounds, mouse)) {
             System.out.println("test container clicked");
         }
@@ -34,12 +26,12 @@ public class TestContainer extends Container {
 
     @Override
     public void render(Program uiProgram, Background background, FreeTypeFont font) {
-        background.drawRectangle(bounds, Color.RGME_MEDIUM_GRAY, uiProgram);
+        renderTitleBar(uiProgram, background, font);
     }
 
     @Override
     public void relocate(float parentPosX, float parentPosY) {
-        
+        relocateTitleBarIcon();
     }
 
 }

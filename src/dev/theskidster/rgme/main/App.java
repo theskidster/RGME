@@ -112,7 +112,7 @@ public final class App {
                 
                 camera.update(window.width - TOOLBAR_WIDTH, window.height);
                 scene.update();
-                ui.update(window.width, window.height);
+                ui.update();
             }
             
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

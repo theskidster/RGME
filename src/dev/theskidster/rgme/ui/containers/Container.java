@@ -1,8 +1,11 @@
 package dev.theskidster.rgme.ui.containers;
 
+import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.graphics.Icon;
+import dev.theskidster.rgme.main.Program;
+import dev.theskidster.rgme.ui.FreeTypeFont;
 import dev.theskidster.rgme.ui.widgets.Widget;
-import dev.theskidster.rgme.utils.Mouse;
+import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Rectangle;
 import java.util.Map;
 
@@ -31,6 +34,20 @@ public abstract class Container extends Widget {
         icon.setSubImage(cellX, cellY);
         
         titleBar = new Rectangle(xPos, yPos, width, 40);
+    }
+    
+    protected void renderTitleBar(Program uiProgram, Background background, FreeTypeFont font) {
+        background.drawRectangle(bounds, Color.RGME_MEDIUM_GRAY, uiProgram);
+        background.drawRectangle(titleBar, Color.RGME_LIGHT_GRAY, uiProgram);
+        
+        icon.render(uiProgram);
+        
+        font.drawString(title, bounds.xPos + 40, bounds.yPos + 26, 1, Color.RGME_WHITE, uiProgram);
+    }
+    
+    protected void relocateTitleBarIcon() {
+        icon.position.set(bounds.xPos + 10, bounds.yPos + 30);
+        
     }
     
 }
