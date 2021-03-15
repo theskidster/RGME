@@ -80,7 +80,7 @@ public final class App {
         implemented.
         */
         scene  = new Scene(16, 32, 16, Color.RGME_NAVY);
-        ui     = new UI(window.handle);
+        ui     = new UI(window);
         camera = new Camera();
     }
     

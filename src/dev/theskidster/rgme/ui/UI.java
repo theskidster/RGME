@@ -4,6 +4,7 @@ import com.mlomb.freetypejni.FreeType;
 import com.mlomb.freetypejni.Library;
 import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.main.Program;
+import dev.theskidster.rgme.main.Window;
 import dev.theskidster.rgme.ui.containers.Container;
 import dev.theskidster.rgme.ui.containers.TestContainer;
 import dev.theskidster.rgme.utils.Mouse;
@@ -23,19 +24,18 @@ public final class UI implements PropertyChangeListener {
     
     public static final int TOOLBAR_WIDTH = 360;
     
-    private static Mouse mouse;
-    private final Library freeType;
-    private FreeTypeFont font;
+    private final FreeTypeFont font;
+    private final Mouse mouse;
+    
+    private final Library freeType      = FreeType.newLibrary();
     private final Background background = new Background();
     private final Matrix4f projMatrix   = new Matrix4f();
     
     private final LinkedHashSet<Container> containers;
     
-    public UI(long windowHandle) {
-        mouse = new Mouse(windowHandle);
-        
-        freeType = FreeType.newLibrary();
-        setFont("fnt_karla_regular.ttf", 17);
+    public UI(Window window) {
+        mouse = new Mouse(window);
+        font  = new FreeTypeFont(freeType, "fnt_karla_regular.ttf", 17);
         
         containers = new LinkedHashSet<>() {{
             add(new TestContainer());
@@ -64,11 +64,6 @@ public final class UI implements PropertyChangeListener {
     }
     
     public void update(int viewportWidth, int viewportHeight) {
-        /*
-        if(!getWidgetHovered() || !containers.values().stream().anyMatch(widget -> widget.hasHoveredElement())) {
-            mouse.setCursorShape(GLFW_ARROW_CURSOR);
-        }*/
-        
         containers.forEach(container -> container.update(mouse));
         containers.removeIf(container -> container.removalRequested());
         
@@ -88,10 +83,6 @@ public final class UI implements PropertyChangeListener {
     
     public boolean containerHovered() {
         return containers.stream().anyMatch(container -> container.hovered(mouse.cursorPos));
-    }
-    
-    public void setFont(String filename, int size) {
-        font = new FreeTypeFont(freeType, filename, size);
     }
     
     public void setMouseCursorPos(double xPos, double yPos) {

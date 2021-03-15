@@ -3,6 +3,8 @@ package dev.theskidster.rgme.main;
 import dev.theskidster.rgme.ui.UI;
 import static dev.theskidster.rgme.ui.UI.TOOLBAR_WIDTH;
 import dev.theskidster.rgme.utils.Observable;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -20,20 +22,21 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  * Created: Feb 23, 2021
  */
 
-final class Window {
+public final class Window implements PropertyChangeListener {
 
     int xPos;
     int yPos;
     int width;
     int height;
     
-    final long handle;
+    public final long handle;
     
     private boolean mouseLeftHeld;
     private boolean mouseMiddleHeld;
     private boolean mouseRightHeld;
     
     final String title;
+    private final Cursor cursor = new Cursor();
     
     private final Observable observable = new Observable(this);
     
@@ -144,6 +147,13 @@ final class Window {
         glfwSetKeyCallback(handle, (window, key, scancode, action, mods) -> {
             //TODO: re-implement text input
         });
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        switch(evt.getPropertyName()) {
+            case "cursorShape" -> cursor.setShape(handle, (int) evt.getNewValue());
+        }
     }
     
 }

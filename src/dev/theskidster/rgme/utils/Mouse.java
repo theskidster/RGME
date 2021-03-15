@@ -1,7 +1,8 @@
 package dev.theskidster.rgme.utils;
 
+import dev.theskidster.rgme.main.Window;
 import org.joml.Vector2f;
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.GLFW_ARROW_CURSOR;
 
 /**
  * @author J Hoffman
@@ -9,11 +10,6 @@ import static org.lwjgl.glfw.GLFW.*;
  */
 
 public final class Mouse {
-    
-    private int prevCursorShape;
-    
-    private final long windowHandle;
-    private long cursorHandle;
     
     public float scrollValue;
     
@@ -23,21 +19,16 @@ public final class Mouse {
     public String button = "";
     public Vector2f cursorPos = new Vector2f();
     
-    public Mouse(long windowHandle) {
-        this.windowHandle = windowHandle;
-        
-        cursorHandle = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
-        glfwSetCursor(windowHandle, cursorHandle);
+    private final Observable observable;
+    
+    public Mouse(Window window) {
+        observable = new Observable(this);
+        observable.properties.put("cursorShape", GLFW_ARROW_CURSOR);
+        observable.addObserver(window);
     }
     
-    public void setCursorShape(int shape) {
-        if(shape != prevCursorShape) {
-            glfwDestroyCursor(cursorHandle);
-            cursorHandle = glfwCreateStandardCursor(shape);
-            glfwSetCursor(windowHandle, cursorHandle);
-            
-            prevCursorShape = shape;
-        }
+    public void setCursorShape(int cursorShape) {
+        observable.notifyObservers("cursorShape", cursorShape);
     }
     
 }

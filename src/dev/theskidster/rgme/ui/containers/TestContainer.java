@@ -5,6 +5,8 @@ import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.ui.FreeTypeFont;
 import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Mouse;
+import static org.lwjgl.glfw.GLFW.GLFW_ARROW_CURSOR;
+import static org.lwjgl.glfw.GLFW.GLFW_IBEAM_CURSOR;
 
 /**
  * @author J Hoffman
@@ -19,7 +21,11 @@ public class TestContainer extends Container {
 
     @Override
     public void update(Mouse mouse) {
-        
+        if(hovered(mouse.cursorPos)) {
+            mouse.setCursorShape(GLFW_IBEAM_CURSOR);
+        } else {
+            mouse.setCursorShape(GLFW_ARROW_CURSOR);
+        }
         
         if(clickedOnce(bounds, mouse)) {
             System.out.println("test container clicked");
