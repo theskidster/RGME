@@ -1,5 +1,6 @@
 package dev.theskidster.rgme.main;
 
+import dev.theskidster.rgme.commands.CommandHistory;
 import dev.theskidster.rgme.ui.UI;
 import static dev.theskidster.rgme.ui.UI.TOOLBAR_WIDTH;
 import dev.theskidster.rgme.utils.Observable;
@@ -34,6 +35,7 @@ public final class Window implements PropertyChangeListener {
     private boolean mouseLeftHeld;
     private boolean mouseMiddleHeld;
     private boolean mouseRightHeld;
+    private boolean ctrlHeld;
     
     final String title;
     private final Cursor cursor = new Cursor();
@@ -91,7 +93,7 @@ public final class Window implements PropertyChangeListener {
         }
     }
     
-    void show(Monitor monitor, UI ui, Camera camera) {
+    void show(Monitor monitor, UI ui, Camera camera, CommandHistory cmdHistory) {
         setIcon("img_logo.png");
         glfwSetWindowMonitor(handle, NULL, xPos, yPos, width, height, monitor.refreshRate);
         glfwSetWindowPos(handle, xPos, yPos);
@@ -145,6 +147,15 @@ public final class Window implements PropertyChangeListener {
         });
         
         glfwSetKeyCallback(handle, (window, key, scancode, action, mods) -> {
+            ctrlHeld = (mods == GLFW_MOD_CONTROL);
+            
+            if(ctrlHeld) {
+                switch(key) {
+                    case GLFW_KEY_Z -> { if(action == GLFW_PRESS) cmdHistory.undoCommand(); }
+                    case GLFW_KEY_Y -> { if(action == GLFW_PRESS) cmdHistory.redoCommand(); }
+                }
+            }
+            
             //TODO: re-implement text input
         });
     }

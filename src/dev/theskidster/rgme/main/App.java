@@ -1,10 +1,13 @@
 package dev.theskidster.rgme.main;
 
+import dev.theskidster.rgme.commands.CommandHistory;
 import dev.theskidster.rgme.scene.Scene;
+import dev.theskidster.rgme.scene.TestObject;
 import dev.theskidster.rgme.ui.UI;
 import static dev.theskidster.rgme.ui.UI.TOOLBAR_WIDTH;
 import dev.theskidster.rgme.utils.Color;
 import java.util.LinkedList;
+import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL20.*;
@@ -30,6 +33,11 @@ public final class App {
     private final UI ui;
     private final Camera camera;
     private final Scene scene;
+    
+    //TODO: delete temp variable
+    public static TestObject testObject;
+    
+    public final CommandHistory cmdHistory = new CommandHistory();
     
     App() {
         glfwInit();
@@ -74,18 +82,15 @@ public final class App {
             sceneProgram.addUniform(BufferType.MAT4, "uProjection");
         }
         
-        /*
-        TODO:
-        this will likely be changed/removed once user defined scenes are 
-        implemented.
-        */
-        scene  = new Scene(16, 32, 16, Color.RGME_NAVY);
         ui     = new UI(window);
         camera = new Camera();
+        
+        testObject = new TestObject(new Vector3f(0, 0, -10));
+        scene      = new Scene(16, 32, 16, Color.RGME_NAVY);
     }
     
     void start() {
-        window.show(monitor, ui, camera);
+        window.show(monitor, ui, camera, cmdHistory);
         Logger.logSystemInfo();
         
         final double TARGET_DELTA = 1 / 60.0;
@@ -112,7 +117,7 @@ public final class App {
                 
                 camera.update(window.width - TOOLBAR_WIDTH, window.height);
                 scene.update();
-                ui.update();
+                ui.update(cmdHistory);
             }
             
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

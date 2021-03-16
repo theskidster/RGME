@@ -1,5 +1,6 @@
 package dev.theskidster.rgme.ui.containers;
 
+import dev.theskidster.rgme.commands.Command;
 import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.ui.FreeTypeFont;
@@ -22,10 +23,12 @@ public class TestContainer extends Container {
     }
 
     @Override
-    public void update(Mouse mouse) {        
+    public Command update(Mouse mouse) {        
         if(clickedOnce(bounds, mouse)) {
             System.out.println("test container clicked");
         }
+        
+        return null;
     }
 
     @Override

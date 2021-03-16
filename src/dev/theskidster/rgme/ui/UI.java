@@ -2,6 +2,8 @@ package dev.theskidster.rgme.ui;
 
 import com.mlomb.freetypejni.FreeType;
 import com.mlomb.freetypejni.Library;
+import dev.theskidster.rgme.commands.Command;
+import dev.theskidster.rgme.commands.CommandHistory;
 import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.main.Window;
@@ -63,8 +65,12 @@ public final class UI implements PropertyChangeListener {
         }
     }
     
-    public void update() {
-        containers.forEach(container -> container.update(mouse));
+    public void update(CommandHistory cmdHistory) {
+        containers.forEach(container -> {
+            Command command = container.update(mouse);
+            if(command != null) cmdHistory.executeCommand(command);
+        });
+        
         containers.removeIf(container -> container.removalRequested());
         
         if(!containerHovered()) mouse.setCursorShape(GLFW_ARROW_CURSOR);

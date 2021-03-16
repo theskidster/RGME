@@ -1,5 +1,6 @@
 package dev.theskidster.rgme.ui;
 
+import dev.theskidster.rgme.commands.Command;
 import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.utils.Mouse;
@@ -11,7 +12,7 @@ import dev.theskidster.rgme.utils.Mouse;
 
 public interface Renderable {
     
-    void update(Mouse mouse);
+    Command update(Mouse mouse);
     void render(Program uiProgram, Background background, FreeTypeFont font);
     void relocate(float parentPosX, float parentPosY);
     
