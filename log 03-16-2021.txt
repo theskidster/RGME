@@ -1,0 +1,22 @@
+INFO: --------------------------------------------------------------------------------
+INFO: OS NAME:		Windows 10
+INFO: JAVA VERSION:	15.0.2
+INFO: GLFW VERSION:	3.4.0 Win32 WGL EGL OSMesa VisualC DLL
+INFO: OPENGL VERSION:	4.5.0 - Build 23.20.16.4973
+INFO: APP VERSION:	0.0.0
+INFO: --------------------------------------------------------------------------------
+
+
+03-16-2021 12:55PM
+ERROR: OpenGL Error: (1281) invalid value
+
+java.lang.RuntimeException
+	dev.theskidster.rgme.main.Logger.logSevere(Logger.java:94)
+	dev.theskidster.rgme.main.App.checkGLError(App.java:167)
+	dev.theskidster.rgme.scene.TestObject.render(TestObject.java:57)
+	dev.theskidster.rgme.scene.Scene.lambda$render$1(Scene.java:44)
+	java.base/java.util.HashMap.forEach(HashMap.java:1425)
+	dev.theskidster.rgme.scene.Scene.render(Scene.java:44)
+	dev.theskidster.rgme.main.App.start(App.java:128)
+	dev.theskidster.rgme.main.Main.main(Main.java:11)
+

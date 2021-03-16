@@ -55,6 +55,8 @@ public class TestObject extends GameObject {
         
         glDrawArrays(GL_TRIANGLES, 0, 3);
         App.checkGLError();
+        
+        //TODO: investigate (1281) invalid value here.
     }
 
 }

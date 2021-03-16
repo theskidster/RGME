@@ -29,7 +29,11 @@ public final class SceneGraph extends Container {
     @Override
     public Command update(Mouse mouse) {
         if(clickedOnce(button, mouse)) {
-            return new MoveShape(App.testObject, (float) Math.random(), (float) Math.random(), (float) Math.random());
+            float x = (float) ((Math.random() > 0.5) ? Math.random() : Math.random() * -1) * 10;
+            float y = (float) (Math.random() * 10);
+            float z = (float) ((Math.random() > 0.5) ? Math.random() : Math.random() * -1) * 10;
+            
+            return new MoveShape(App.testObject, x, y, z);
         } else {
             return null;
         }
