@@ -8,13 +8,14 @@ package dev.theskidster.rgme.commands;
 public class CommandHistory {
 
     private int index;
+    private final int LIMIT = 30;
     
-    private final Command[] history = new Command[5];
+    private final Command[] history = new Command[LIMIT];
     
     public void executeCommand(Command command) {
         command.execute();
         
-        Command[] tempHistory = new Command[5];
+        Command[] tempHistory = new Command[LIMIT];
         
         for(int c = 0; c < history.length; c++) {
             int offset = (c + index) - 1;
@@ -32,17 +33,21 @@ public class CommandHistory {
         history[index] = command;
     }
     
-    public void undoCommand() {     
-        if(history[index] != null) {
-            history[index].undo();
-            if(index < history.length - 1) index++;
+    public void undoCommand() {
+        if(index < history.length) {
+            if(index >= 0 && history[index] != null) {
+                history[index].undo();
+                index++;
+            }
         }
     }
     
     public void redoCommand() {
-        if(index > 0) {
-            index--;
-            history[index].execute();
+        if(index >= 0) {
+            if(index <= history.length && index - 1 != -1) {
+                index--;
+                history[index].execute();
+            }
         }
     }
     
