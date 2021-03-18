@@ -34,9 +34,6 @@ public final class App {
     private final Camera camera;
     private final Scene scene;
     
-    //TODO: delete temp variable
-    public static TestObject testObject;
-    
     public final CommandHistory cmdHistory = new CommandHistory();
     
     App() {
@@ -84,9 +81,7 @@ public final class App {
         
         ui     = new UI(window);
         camera = new Camera();
-        
-        testObject = new TestObject(new Vector3f(0, 0, -10));
-        scene      = new Scene(16, 32, 16, Color.RGME_NAVY);
+        scene  = new Scene(16, 32, 16, Color.RGME_NAVY);
     }
     
     void start() {

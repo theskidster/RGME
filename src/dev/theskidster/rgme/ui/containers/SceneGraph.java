@@ -35,9 +35,7 @@ public final class SceneGraph extends Container {
     @Override
     public void relocate(float parentPosX, float parentPosY) {
         bounds.xPos = parentPosX - bounds.width; //Align right.
-        
         relocateTitleBar();
-        
     }
 
 }

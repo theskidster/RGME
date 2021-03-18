@@ -33,7 +33,7 @@ public final class Scene {
         
         //TODO: include world light
         
-        gameObjects.put("test", App.testObject);
+        gameObjects.put("test", new TestObject(new Vector3f(0, 0, -10)));
     }
     
     public void update() {
