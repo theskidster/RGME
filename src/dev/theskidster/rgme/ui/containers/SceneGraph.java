@@ -41,6 +41,7 @@ public final class SceneGraph extends Container {
 
     @Override
     public void render(Program uiProgram, Background background, FreeTypeFont font) {
+        background.drawRectangle(bounds, Color.RGME_DARK_GRAY, uiProgram);
         renderTitleBar(uiProgram, background, font);
         
         background.drawRectangle(button, Color.RGME_SLATE_GRAY, uiProgram);
@@ -49,7 +50,7 @@ public final class SceneGraph extends Container {
 
     @Override
     public void relocate(float parentPosX, float parentPosY) {
-        relocateTitleBarIcon();
+        relocateTitleBar();
     }
 
 }

@@ -4,6 +4,7 @@ import dev.theskidster.rgme.commands.Command;
 import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.ui.FreeTypeFont;
+import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Mouse;
 import java.util.HashMap;
 
@@ -33,12 +34,13 @@ public class TestContainer extends Container {
 
     @Override
     public void render(Program uiProgram, Background background, FreeTypeFont font) {
+        background.drawRectangle(bounds, Color.RGME_MEDIUM_GRAY, uiProgram);
         renderTitleBar(uiProgram, background, font);
     }
 
     @Override
     public void relocate(float parentPosX, float parentPosY) {
-        relocateTitleBarIcon();
+        relocateTitleBar();
     }
 
 }

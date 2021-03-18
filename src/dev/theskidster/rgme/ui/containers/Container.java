@@ -37,17 +37,17 @@ public abstract class Container extends Widget {
     }
     
     protected void renderTitleBar(Program uiProgram, Background background, FreeTypeFont font) {
-        background.drawRectangle(bounds, Color.RGME_MEDIUM_GRAY, uiProgram);
         background.drawRectangle(titleBar, Color.RGME_LIGHT_GRAY, uiProgram);
-        
         icon.render(uiProgram);
-        
         font.drawString(title, bounds.xPos + 40, bounds.yPos + 26, 1, Color.RGME_WHITE, uiProgram);
     }
     
-    protected void relocateTitleBarIcon() {
-        icon.position.set(bounds.xPos + 10, bounds.yPos + 30);
+    protected void relocateTitleBar() {
+        titleBar.xPos  = bounds.xPos;
+        titleBar.yPos  = bounds.yPos;
+        titleBar.width = bounds.width;
         
+        icon.position.set(bounds.xPos + 10, bounds.yPos + 30);
     }
     
 }
