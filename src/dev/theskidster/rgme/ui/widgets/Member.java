@@ -55,6 +55,8 @@ public class Member {
         if(gameObject.getVisible()) eyeIcon.setSubImage(9, 2);
         else                        eyeIcon.setSubImage(10, 2);
         
+        //TODO: implement individual selection
+        
         if(!typeIconSet) {
             if(gameObject instanceof TestObject) {
                 typeIcon.setSubImage(0, 1);
