@@ -7,13 +7,12 @@ import dev.theskidster.rgme.utils.Mouse;
 
 /**
  * @author J Hoffman
- * Created: Mar 13, 2021
+ * Created: Mar 17, 2021
  */
 
-public interface Renderable {
+public interface LogicLoop {
     
     Command update(Mouse mouse);
     void render(Program uiProgram, Background background, FreeTypeFont font);
-    void relocate(float parentPosX, float parentPosY);
     
 }

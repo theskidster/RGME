@@ -20,7 +20,12 @@ public final class Scene {
     
     private final Origin origin;
     
-    public final Map<String, GameObject> gameObjects = new HashMap<>();
+    public final Map<Integer, GameObject> visibleGeometry = new HashMap<>();
+    public final Map<Integer, GameObject> boundingVolumes = new HashMap<>();
+    public final Map<Integer, GameObject> triggerBoxes    = new HashMap<>();
+    public final Map<Integer, GameObject> lightSources    = new HashMap<>();
+    public final Map<Integer, GameObject> entities        = new HashMap<>();
+    public final Map<Integer, GameObject> instances       = new HashMap<>();
     
     public Scene(int width, int height, int depth, Color clearColor) {
         this.width  = width;
@@ -33,15 +38,15 @@ public final class Scene {
         
         //TODO: include world light
         
-        gameObjects.put("test", new TestObject(new Vector3f(0, 0, -10)));
+        visibleGeometry.put(0, new TestObject(new Vector3f(0, 0, -10)));
     }
     
     public void update() {
-        gameObjects.forEach((name, object) -> object.update());
+        visibleGeometry.forEach((name, object) -> object.update());
     }
     
     public void render(Program sceneProgram, Vector3f camPos, Vector3f camUp) {
-        gameObjects.forEach((name, object) -> object.render(sceneProgram, camPos, camUp));
+        visibleGeometry.forEach((name, object) -> object.render(sceneProgram, camPos, camUp));
         
         origin.render(sceneProgram);
     }

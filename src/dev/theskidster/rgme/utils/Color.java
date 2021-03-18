@@ -54,6 +54,13 @@ public final class Color {
         return new Color(r, g, b);
     }
     
+    public static Color random() {
+        return new Color(
+                (int) (Math.random() * 128),
+                (int) (Math.random() * 128),
+                (int) (Math.random() * 128));
+    }
+    
     public Vector3f asVec3() {
         return conversion;
     }

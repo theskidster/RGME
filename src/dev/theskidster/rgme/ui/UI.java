@@ -7,8 +7,9 @@ import dev.theskidster.rgme.commands.CommandHistory;
 import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.main.Window;
+import dev.theskidster.rgme.scene.Scene;
 import dev.theskidster.rgme.ui.containers.Container;
-import dev.theskidster.rgme.ui.containers.SceneGraph;
+import dev.theskidster.rgme.ui.containers.SceneExplorer;
 import dev.theskidster.rgme.utils.Mouse;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -35,12 +36,12 @@ public final class UI implements PropertyChangeListener {
     
     private final LinkedHashSet<Container> containers;
     
-    public UI(Window window) {
+    public UI(Window window, Scene scene) {
         mouse = new Mouse(window);
         font  = new FreeTypeFont(freeType, "fnt_karla_regular.ttf", 17);
         
         containers = new LinkedHashSet<>() {{
-            add(new SceneGraph());
+            add(new SceneExplorer(scene));
         }};
     }
     

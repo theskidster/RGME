@@ -4,30 +4,24 @@ import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.graphics.Icon;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.ui.FreeTypeFont;
+import dev.theskidster.rgme.ui.LogicLoop;
 import dev.theskidster.rgme.ui.widgets.Widget;
 import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Rectangle;
-import java.util.Map;
 
 /**
  * @author J Hoffman
  * Created: Mar 13, 2021
  */
 
-public abstract class Container extends Widget {
+public abstract class Container extends Widget implements LogicLoop {
     
     protected String title;
     protected Icon icon;
     protected Rectangle titleBar;
     
-    protected Map<String, Widget> widgets;
-    
-    protected Container(float xPos, float yPos, float width, float height) {
-        super(xPos, yPos, width, height); 
-    }
-    
     protected Container(float xPos, float yPos, float width, float height, String title, int cellX, int cellY) {
-        this(xPos, yPos, width, height);
+        super(xPos, yPos, width, height);
         this.title = title;
         
         icon = new Icon(20, 20);
@@ -35,6 +29,8 @@ public abstract class Container extends Widget {
         
         titleBar = new Rectangle(xPos, yPos, width, 40);
     }
+    
+    public abstract void relocate(float parentPosX, float parentPosY);
     
     protected void renderTitleBar(Program uiProgram, Background background, FreeTypeFont font) {
         background.drawRectangle(titleBar, Color.RGME_LIGHT_GRAY, uiProgram);

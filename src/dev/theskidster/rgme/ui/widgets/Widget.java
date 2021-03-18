@@ -1,6 +1,5 @@
 package dev.theskidster.rgme.ui.widgets;
 
-import dev.theskidster.rgme.ui.Renderable;
 import dev.theskidster.rgme.utils.Mouse;
 import dev.theskidster.rgme.utils.Rectangle;
 import org.joml.Vector2f;
@@ -10,10 +9,10 @@ import org.joml.Vector2f;
  * Created: Mar 13, 2021
  */
 
-public abstract class Widget implements Renderable {
+public abstract class Widget {
     
-    private boolean prevPressed;
-    private boolean currPressed;
+    protected boolean prevPressed;
+    protected boolean currPressed;
     protected boolean remove;
     
     protected final Rectangle bounds;
@@ -23,10 +22,12 @@ public abstract class Widget implements Renderable {
     }
     
     protected boolean clickedOnce(Rectangle rectangle, Mouse mouse) {
+        if(!rectangle.contains(mouse.cursorPos)) return false;
+        
         prevPressed = currPressed;
         currPressed = mouse.clicked;
         
-        return (prevPressed != currPressed && !prevPressed) && rectangle.contains(mouse.cursorPos);
+        return (prevPressed != currPressed && !prevPressed);
     }
     
     public boolean removalRequested() {

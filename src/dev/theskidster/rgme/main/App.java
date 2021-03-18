@@ -79,9 +79,9 @@ public final class App {
             sceneProgram.addUniform(BufferType.MAT4, "uProjection");
         }
         
-        ui     = new UI(window);
-        camera = new Camera();
         scene  = new Scene(16, 32, 16, Color.RGME_NAVY);
+        ui     = new UI(window, scene);
+        camera = new Camera();
     }
     
     void start() {

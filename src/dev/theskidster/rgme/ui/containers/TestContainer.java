@@ -17,10 +17,6 @@ public class TestContainer extends Container {
 
     public TestContainer() {
         super(600, 200, 400, 400, "test", 5, 1);
-        
-        widgets = new HashMap<>() {{
-            
-        }};
     }
 
     @Override
