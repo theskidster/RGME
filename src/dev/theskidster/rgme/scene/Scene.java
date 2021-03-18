@@ -39,6 +39,8 @@ public final class Scene {
         //TODO: include world light
         
         visibleGeometry.put(0, new TestObject(new Vector3f(0, 0, -10)));
+        visibleGeometry.put(1, new TestObject(new Vector3f(3, 4, -5)));
+        visibleGeometry.put(2, new TestObject(new Vector3f(-2, 3, 0)));
     }
     
     public void update() {

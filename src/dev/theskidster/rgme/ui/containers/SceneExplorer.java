@@ -20,6 +20,8 @@ import org.joml.Vector2f;
 
 public final class SceneExplorer extends Container {
     
+    public int groupIndex;
+    
     private Scene scene;
     
     private final Rectangle seperator   = new Rectangle(0, 0, 2, 224);
@@ -31,23 +33,27 @@ public final class SceneExplorer extends Container {
         super(0, 28, TOOLBAR_WIDTH, 264, "Scene Explorer", 5, 0);
         this.scene = scene;
         
-        groups[0] = new Group("Visible Geometry", scene.visibleGeometry);
-        groups[1] = new Group("Bounding Volumes", scene.boundingVolumes);
-        groups[2] = new Group("Trigger Boxes",    scene.triggerBoxes);
-        groups[3] = new Group("Light Sources",    scene.lightSources);
-        groups[4] = new Group("Entities",         scene.entities);
-        groups[5] = new Group("Instances",        scene.instances);
+        groups[0] = new Group("Visible Geometry", this, scene.visibleGeometry);
+        groups[1] = new Group("Bounding Volumes", this, scene.boundingVolumes);
+        groups[2] = new Group("Trigger Boxes",    this, scene.triggerBoxes);
+        groups[3] = new Group("Light Sources",    this, scene.lightSources);
+        groups[4] = new Group("Entities",         this, scene.entities);
+        groups[5] = new Group("Instances",        this, scene.instances);
         
         observable.properties.put("viewportSize", null);
-        observable.properties.put("verticalOffset", 0);
         
         for(Group group : groups) observable.addObserver(group);
     }
 
     @Override
     public Command update(Mouse mouse) {
+        int verticalOffset = 0; //TODO: get value from scrollbar.
+        
         for(Group group : groups) {
+            group.setVerticalOffset(verticalOffset);
             Command command = group.update(mouse);
+            verticalOffset += 28 * group.getLength();
+            
             if(command != null) return command;
         }
         
