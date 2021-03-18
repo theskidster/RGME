@@ -96,20 +96,16 @@ public class Group extends Widget implements LogicLoop, PropertyChangeListener {
         if(!collapsed) {
             length = gameObjects.size() + 1;
             
-            /*
-            TODO:
-            remember that the ID numbers used to organize game objects will 
-            increment regardless of whether that game object exists anymore.
-            */
-            
-            int order = 0;
-            
-            for(int i = 0; i <= Collections.max(gameObjects.keySet()); i++) {
-                if(gameObjects.containsKey(i)) {
-                    order++;
-                    
-                    if(members.containsKey(i)) members.get(i).update(gameObjects.get(i), bounds, order, mouse);
-                    else                       members.put(i, new Member());
+            if(length > 1) {
+                int order = 0;
+                
+                for(int i = 0; i <= Collections.max(gameObjects.keySet()); i++) {
+                    if(gameObjects.containsKey(i)) {
+                        order++;
+
+                        if(members.containsKey(i)) members.get(i).update(gameObjects.get(i), bounds, order, mouse);
+                        else                       members.put(i, new Member());
+                    }
                 }
             }
         } else {

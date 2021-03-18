@@ -17,10 +17,11 @@ import org.lwjgl.system.MemoryStack;
 public final class Icon {
 
     private final Atlas atlas;
-    private Color color            = Color.RGME_WHITE;
-    private Vector2f currCell      = new Vector2f();
-    public final Vector2f position = new Vector2f();
-    private final Graphics g       = new Graphics();
+    private Color color             = Color.RGME_WHITE;
+    private Vector2f currCell       = new Vector2f();
+    private final Vector2i tempCell = new Vector2i();
+    public final Vector2f position  = new Vector2f();
+    private final Graphics g        = new Graphics();
     private static final Texture texture;
     
     static { 
@@ -62,10 +63,10 @@ public final class Icon {
     }
     
     public void setSubImage(int cellX, int cellY) {
-        Vector2i cell = new Vector2i(cellX, cellY);
+        tempCell.set(cellX, cellY);
         
-        if(atlas.subImageOffsets.containsKey(cell)) {
-            currCell = atlas.subImageOffsets.get(cell);
+        if(atlas.subImageOffsets.containsKey(tempCell)) {
+            currCell = atlas.subImageOffsets.get(tempCell);
         } else {
             Logger.logWarning(
                     "Failed to set icon sub-image. The cell location: (" + cellX + 

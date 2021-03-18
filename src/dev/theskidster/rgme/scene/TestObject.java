@@ -48,13 +48,15 @@ public class TestObject extends GameObject {
 
     @Override
     void render(Program sceneProgram, Vector3f camPos, Vector3f camUp) {
-        glBindVertexArray(g.vao);
-        
-        sceneProgram.setUniform("uType", 0);
-        sceneProgram.setUniform("uModel", false, g.modelMatrix);
-        
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        App.checkGLError();
+        if(visible) {
+            glBindVertexArray(g.vao);
+            
+            sceneProgram.setUniform("uType", 0);
+            sceneProgram.setUniform("uModel", false, g.modelMatrix);
+
+            glDrawArrays(GL_TRIANGLES, 0, 3);
+            App.checkGLError();
+        }
         
         //TODO: investigate (1281) invalid value here.
     }

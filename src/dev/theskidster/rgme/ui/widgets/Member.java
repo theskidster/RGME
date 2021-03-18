@@ -18,6 +18,9 @@ import dev.theskidster.rgme.utils.Rectangle;
 public class Member {
     
     private boolean typeIconSet;
+    private boolean prevPressed;
+    private boolean currPressed;
+    private boolean prevVisible;
     
     private final Icon typeIcon       = new Icon(20, 20);
     private final Icon eyeIcon        = new Icon(20, 20);
@@ -41,6 +44,16 @@ public class Member {
         eyeIcon.position.set(eyeBounds.xPos + 1, eyeBounds.yPos + 19);
         
         typeIcon.position.set(bounds.xPos + 56, bounds.yPos + 24);
+        
+        prevPressed = currPressed;
+        currPressed = mouse.clicked;
+        
+        if((prevPressed != currPressed && !prevPressed) && eyeBounds.contains(mouse.cursorPos)) {
+            gameObject.setVisible(!gameObject.getVisible());
+        }
+        
+        if(gameObject.getVisible()) eyeIcon.setSubImage(9, 2);
+        else                        eyeIcon.setSubImage(10, 2);
         
         if(!typeIconSet) {
             if(gameObject instanceof TestObject) {
