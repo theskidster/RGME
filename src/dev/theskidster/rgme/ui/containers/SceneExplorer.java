@@ -8,10 +8,13 @@ import dev.theskidster.rgme.scene.Scene;
 import dev.theskidster.rgme.ui.FreeTypeFont;
 import static dev.theskidster.rgme.ui.UI.TOOLBAR_WIDTH;
 import dev.theskidster.rgme.ui.widgets.Group;
+import dev.theskidster.rgme.ui.widgets.Scrollbar;
 import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Mouse;
 import dev.theskidster.rgme.utils.Observable;
 import dev.theskidster.rgme.utils.Rectangle;
+import java.util.HashMap;
+import java.util.Map;
 import org.joml.Vector2f;
 
 /**
@@ -23,12 +26,14 @@ public final class SceneExplorer extends Container {
     
     public int groupIndex;
     
+    public GameObject selectedGameObject;
+    private final Scrollbar scrollbar;
     private final Rectangle seperator   = new Rectangle(0, 0, 2, 224);
     private final Observable observable = new Observable(this);
     
     private final Group[] groups = new Group[6];
     
-    public GameObject selectedGameObject;
+    private final Map<Integer, Float> groupLengths = new HashMap<>();
     
     public SceneExplorer(Scene scene) {
         super(0, 28, TOOLBAR_WIDTH, 264, "Scene Explorer", 5, 0);
@@ -40,22 +45,32 @@ public final class SceneExplorer extends Container {
         groups[4] = new Group("Entities",         this, scene.entities);
         groups[5] = new Group("Instances",        this, scene.instances);
         
-        observable.properties.put("viewportSize", null);
+        scrollbar = new Scrollbar(TOOLBAR_WIDTH - 24, 0, 176, 224);
         
+        observable.properties.put("viewportSize", null);
         for(Group group : groups) observable.addObserver(group);
+        observable.addObserver(scrollbar);
     }
 
     @Override
     public Command update(Mouse mouse) {
-        int verticalOffset = 0; //TODO: get value from scrollbar.
+        int verticalOffset = scrollbar.getContentScrollOffset();
         
-        for(Group group : groups) {
+        for(int i = 0; i < groups.length; i++) {
+            Group group = groups[i];
+            
             group.setVerticalOffset(verticalOffset);
             Command command = group.update(mouse);
+            
             verticalOffset += 28 * group.getLength();
+            groupLengths.put(i, 28f * group.getLength());
             
             if(command != null) return command;
         }
+        
+        scrollbar.setContentLength(groupLengths);
+        scrollbar.parentHovered = hovered(mouse.cursorPos);
+        scrollbar.update(mouse);
         
         return null;
     }
@@ -66,6 +81,7 @@ public final class SceneExplorer extends Container {
         renderTitleBar(uiProgram, background, font);
         
         for(Group group : groups) group.render(uiProgram, background, font);
+        scrollbar.render(uiProgram, background, font);
         
         background.drawRectangle(seperator, Color.RGME_BLACK, uiProgram);
     }
