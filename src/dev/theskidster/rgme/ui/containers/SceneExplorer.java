@@ -27,6 +27,8 @@ public final class SceneExplorer extends Container {
     
     public int groupIndex;
     
+    public boolean outOfBounds;
+    
     public GameObject selectedGameObject;
     private final Scrollbar scrollbar;
     private final Rectangle scissorBox  = new Rectangle();
@@ -56,6 +58,8 @@ public final class SceneExplorer extends Container {
 
     @Override
     public Command update(Mouse mouse) {
+        outOfBounds = titleBar.contains(mouse.cursorPos) || mouse.cursorPos.y > bounds.yPos + bounds.height;
+        
         int verticalOffset = scrollbar.getContentScrollOffset();
         
         for(int i = 0; i < groups.length; i++) {

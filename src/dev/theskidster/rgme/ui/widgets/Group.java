@@ -35,6 +35,7 @@ public class Group extends Widget implements LogicLoop, PropertyChangeListener {
     private boolean selected;
     private boolean visible   = true;
     private boolean collapsed = true;
+    private boolean outOfBounds;
     
     private final String name;
     private final SceneExplorer explorer;
@@ -69,7 +70,8 @@ public class Group extends Widget implements LogicLoop, PropertyChangeListener {
     
     @Override
     public Command update(Mouse mouse) {
-        if(clickedOnce(bounds, mouse) && !eyeBounds.contains(mouse.cursorPos) && !arrowBounds.contains(mouse.cursorPos)) {
+        if(clickedOnce(bounds, mouse) && !eyeBounds.contains(mouse.cursorPos) && 
+           !arrowBounds.contains(mouse.cursorPos) && !explorer.outOfBounds) {
             explorer.groupIndex         = index;
             explorer.selectedGameObject = null;
             
@@ -94,7 +96,7 @@ public class Group extends Widget implements LogicLoop, PropertyChangeListener {
         eyeIcon.setColor(fontColor);
         arrowIcon.setColor(fontColor);
         
-        if(clickedOnce(eyeBounds, mouse)) {
+        if(clickedOnce(eyeBounds, mouse) && !explorer.outOfBounds) {
             visible = !visible;
             gameObjects.values().forEach(gameObject -> gameObject.setVisible(visible));
             
@@ -102,7 +104,7 @@ public class Group extends Widget implements LogicLoop, PropertyChangeListener {
             else        eyeIcon.setSubImage(10, 2);
         }
         
-        if(clickedOnce(arrowBounds, mouse)) {
+        if(clickedOnce(arrowBounds, mouse) && !explorer.outOfBounds) {
             collapsed = !collapsed;
             
             if(collapsed) arrowIcon.setSubImage(7, 1);

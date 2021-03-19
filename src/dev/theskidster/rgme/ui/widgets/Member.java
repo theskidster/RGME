@@ -21,10 +21,10 @@ public class Member {
     
     private final int groupIndex;
     
+    public boolean selected;
     private boolean typeIconSet;
     private boolean prevPressed;
     private boolean currPressed;
-    public boolean selected;
     
     private final Icon typeIcon       = new Icon(20, 20);
     private final Icon eyeIcon        = new Icon(20, 20);
@@ -53,14 +53,15 @@ public class Member {
         prevPressed = currPressed;
         currPressed = mouse.clicked;
         
-        if((prevPressed != currPressed && !prevPressed) && eyeBounds.contains(mouse.cursorPos)) {
+        if((prevPressed != currPressed && !prevPressed) && eyeBounds.contains(mouse.cursorPos) && !explorer.outOfBounds) {
             gameObject.setVisible(!gameObject.getVisible());
         }
         
         if(gameObject.getVisible()) eyeIcon.setSubImage(9, 2);
         else                        eyeIcon.setSubImage(10, 2);
         
-        if((prevPressed != currPressed && !prevPressed) && !eyeBounds.contains(mouse.cursorPos) && bounds.contains(mouse.cursorPos)) {
+        if((prevPressed != currPressed && !prevPressed) && !eyeBounds.contains(mouse.cursorPos) && 
+           bounds.contains(mouse.cursorPos) && !explorer.outOfBounds) {
             explorer.groupIndex         = groupIndex;
             explorer.selectedGameObject = gameObject;
             
