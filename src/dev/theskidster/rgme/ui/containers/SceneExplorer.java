@@ -16,6 +16,7 @@ import dev.theskidster.rgme.utils.Rectangle;
 import java.util.HashMap;
 import java.util.Map;
 import org.joml.Vector2f;
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  * @author J Hoffman
@@ -28,6 +29,7 @@ public final class SceneExplorer extends Container {
     
     public GameObject selectedGameObject;
     private final Scrollbar scrollbar;
+    private final Rectangle scissorBox  = new Rectangle();
     private final Rectangle seperator   = new Rectangle(0, 0, 2, 224);
     private final Observable observable = new Observable(this);
     
@@ -80,7 +82,11 @@ public final class SceneExplorer extends Container {
         background.drawRectangle(bounds, Color.RGME_DARK_GRAY, uiProgram);
         renderTitleBar(uiProgram, background, font);
         
-        for(Group group : groups) group.render(uiProgram, background, font);
+        glEnable(GL_SCISSOR_TEST);
+        glScissor((int) scissorBox.xPos, (int) scissorBox.yPos, (int) scissorBox.width, (int) scissorBox.height);
+            for(Group group : groups) group.render(uiProgram, background, font);
+        glDisable(GL_SCISSOR_TEST);
+        
         scrollbar.render(uiProgram, background, font);
         
         background.drawRectangle(seperator, Color.RGME_BLACK, uiProgram);
@@ -95,6 +101,11 @@ public final class SceneExplorer extends Container {
         
         seperator.xPos = bounds.xPos + 28;
         seperator.yPos = bounds.yPos + titleBar.height;
+        
+        scissorBox.xPos   = bounds.xPos;
+        scissorBox.yPos   = parentPosY - (bounds.yPos + bounds.height);
+        scissorBox.width  = bounds.xPos + bounds.width;
+        scissorBox.height = 224;
         
         observable.notifyObservers("viewportSize", new Vector2f(bounds.xPos, bounds.yPos + titleBar.height));
     }
