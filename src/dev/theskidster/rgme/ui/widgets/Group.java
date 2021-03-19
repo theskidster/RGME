@@ -32,7 +32,7 @@ public class Group extends Widget implements LogicLoop, PropertyChangeListener {
     private float verticalOffset;
     private float parentPosY;
     
-    private boolean highlight;
+    private boolean selected;
     private boolean visible   = true;
     private boolean collapsed = true;
     
@@ -45,7 +45,7 @@ public class Group extends Widget implements LogicLoop, PropertyChangeListener {
     
     private Color fontColor;
     
-    public Map<Integer, GameObject> gameObjects;
+    private Map<Integer, GameObject> gameObjects;
     private final Map<Integer, Member> members = new HashMap<>();
     
     public Group(String name, SceneExplorer explorer, Map<Integer, GameObject> gameObjects) {
@@ -70,10 +70,26 @@ public class Group extends Widget implements LogicLoop, PropertyChangeListener {
     @Override
     public Command update(Mouse mouse) {
         if(clickedOnce(bounds, mouse) && !eyeBounds.contains(mouse.cursorPos) && !arrowBounds.contains(mouse.cursorPos)) {
-            explorer.groupIndex = index;
+            explorer.groupIndex         = index;
+            explorer.selectedGameObject = null;
+            
+            selected = true;
+            
+            members.values().forEach(member -> member.selected = false);
         }
         
-        fontColor = (index == explorer.groupIndex) ? Color.RGME_YELLOW : Color.RGME_WHITE;
+        if(index == explorer.groupIndex) {
+            fontColor = Color.RGME_YELLOW;
+            
+            if(members.values().stream().anyMatch(member -> member.selected)) {
+                selected = false;
+            }
+        } else {
+            fontColor = Color.RGME_WHITE;
+            selected  = false;
+        }
+        
+        if(explorer.selectedGameObject != null) selected = false;
         
         eyeIcon.setColor(fontColor);
         arrowIcon.setColor(fontColor);
@@ -103,8 +119,8 @@ public class Group extends Widget implements LogicLoop, PropertyChangeListener {
                     if(gameObjects.containsKey(i)) {
                         order++;
 
-                        if(members.containsKey(i)) members.get(i).update(gameObjects.get(i), bounds, order, mouse);
-                        else                       members.put(i, new Member());
+                        if(members.containsKey(i)) members.get(i).update(gameObjects.get(i), bounds, order, mouse, explorer);
+                        else                       members.put(i, new Member(index));
                     }
                 }
             }
@@ -127,7 +143,7 @@ public class Group extends Widget implements LogicLoop, PropertyChangeListener {
 
     @Override
     public void render(Program uiProgram, Background background, FreeTypeFont font) {
-        if(highlight) background.drawRectangle(bounds, Color.RGME_BLUE, uiProgram);
+        if(selected) background.drawRectangle(bounds, Color.RGME_BLUE, uiProgram);
         
         eyeIcon.render(uiProgram);
         arrowIcon.render(uiProgram);

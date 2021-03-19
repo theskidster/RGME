@@ -3,6 +3,7 @@ package dev.theskidster.rgme.ui.containers;
 import dev.theskidster.rgme.commands.Command;
 import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.main.Program;
+import dev.theskidster.rgme.scene.GameObject;
 import dev.theskidster.rgme.scene.Scene;
 import dev.theskidster.rgme.ui.FreeTypeFont;
 import static dev.theskidster.rgme.ui.UI.TOOLBAR_WIDTH;
@@ -22,16 +23,15 @@ public final class SceneExplorer extends Container {
     
     public int groupIndex;
     
-    private Scene scene;
-    
     private final Rectangle seperator   = new Rectangle(0, 0, 2, 224);
     private final Observable observable = new Observable(this);
     
-    private Group[] groups = new Group[6];
+    private final Group[] groups = new Group[6];
+    
+    public GameObject selectedGameObject;
     
     public SceneExplorer(Scene scene) {
         super(0, 28, TOOLBAR_WIDTH, 264, "Scene Explorer", 5, 0);
-        this.scene = scene;
         
         groups[0] = new Group("Visible Geometry", this, scene.visibleGeometry);
         groups[1] = new Group("Bounding Volumes", this, scene.boundingVolumes);
