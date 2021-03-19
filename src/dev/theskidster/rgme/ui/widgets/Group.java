@@ -14,6 +14,7 @@ import dev.theskidster.rgme.utils.Mouse;
 import dev.theskidster.rgme.utils.Rectangle;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,10 +36,10 @@ public class Group extends Widget implements LogicLoop, PropertyChangeListener {
     private boolean selected;
     private boolean visible   = true;
     private boolean collapsed = true;
-    private boolean outOfBounds;
     
     private final String name;
     private final SceneExplorer explorer;
+    private final ContextMenu contextMenu;
     private final Icon eyeIcon          = new Icon(20, 20);
     private final Icon arrowIcon        = new Icon(20, 20);
     private final Rectangle eyeBounds   = new Rectangle(0, 0, 22, 18);
@@ -58,26 +59,64 @@ public class Group extends Widget implements LogicLoop, PropertyChangeListener {
         eyeIcon.setSubImage(9, 2);
         arrowIcon.setSubImage(7, 1);
         
+        float contextMenuWidth;
+        var contextMenuCommands = new ArrayList<String>();
+        
         switch(name) {
-            default                 -> index = 0;
-            case "Bounding Volumes" -> index = 1;
-            case "Trigger Boxes"    -> index = 2;
-            case "Light Sources"    -> index = 3;
-            case "Entities"         -> index = 4;
-            case "Instances"        -> index = 5;
+            default -> {
+                index = 0;
+                contextMenuWidth = 250;
+                contextMenuCommands.add("Add New Visible Geometry");
+            }
+            case "Bounding Volumes" -> {
+                index = 1;
+                contextMenuWidth = 250;
+                contextMenuCommands.add("Add New Bounding Volume");
+            }
+            case "Trigger Boxes" -> {
+                index = 2;
+                contextMenuWidth = 210;
+                contextMenuCommands.add("Add New Trigger Box");
+            }
+            case "Light Sources" -> {
+                index = 3;
+                contextMenuWidth = 210;
+                contextMenuCommands.add("Add New Light Source");
+            }
+            case "Entities" -> {
+                index = 4;
+                contextMenuWidth = 170;
+                contextMenuCommands.add("Add New Entity");
+            }
+            case "Instances" -> {
+                index = 5;
+                contextMenuWidth = 170;
+                contextMenuCommands.add("Add New Instance");
+            }
         }
+        
+        contextMenuCommands.add("Expand/Collapse");
+        
+        contextMenu = new ContextMenu(0, 0, contextMenuWidth, contextMenuCommands);
     }
     
     @Override
     public Command update(Mouse mouse) {
-        if(clickedOnce(bounds, mouse) && !eyeBounds.contains(mouse.cursorPos) && 
-           !arrowBounds.contains(mouse.cursorPos) && !explorer.outOfBounds) {
+        boolean contextMenuHovered = explorer.currContextMenu != null && explorer.currContextMenu.hovered(mouse.cursorPos);
+        
+        if(clickedOnce(bounds, mouse) && !eyeBounds.contains(mouse.cursorPos) && !arrowBounds.contains(mouse.cursorPos) && 
+           !explorer.outOfBounds && (mouse.button.equals("left") || mouse.button.equals("right")) && !contextMenuHovered) {
             explorer.groupIndex         = index;
             explorer.selectedGameObject = null;
             
             selected = true;
             
             members.values().forEach(member -> member.selected = false);
+            
+            if(mouse.button.equals("right")) {
+                contextMenu.setPosition(mouse.cursorPos, explorer.windowWidth, explorer.windowHeight);
+                explorer.currContextMenu = contextMenu;
+            }
         }
         
         if(index == explorer.groupIndex) {
@@ -96,20 +135,22 @@ public class Group extends Widget implements LogicLoop, PropertyChangeListener {
         eyeIcon.setColor(fontColor);
         arrowIcon.setColor(fontColor);
         
-        if(clickedOnce(eyeBounds, mouse) && !explorer.outOfBounds) {
-            visible = !visible;
-            gameObjects.values().forEach(gameObject -> gameObject.setVisible(visible));
-            
-            if(visible) eyeIcon.setSubImage(9, 2);
-            else        eyeIcon.setSubImage(10, 2);
+        if(!contextMenu.hovered(mouse.cursorPos)) {
+            if(clickedOnce(eyeBounds, mouse) && !explorer.outOfBounds) {
+                visible = !visible;
+                gameObjects.values().forEach(gameObject -> gameObject.setVisible(visible));
+
+                if(visible) eyeIcon.setSubImage(9, 2);
+                else        eyeIcon.setSubImage(10, 2);
+            }
+
+            if(clickedOnce(arrowBounds, mouse) && !explorer.outOfBounds) {
+                toggleCollapsed();
+            }
         }
         
-        if(clickedOnce(arrowBounds, mouse) && !explorer.outOfBounds) {
-            collapsed = !collapsed;
-            
-            if(collapsed) arrowIcon.setSubImage(7, 1);
-            else          arrowIcon.setSubImage(8, 1);
-        }
+        if(collapsed) arrowIcon.setSubImage(7, 1);
+        else          arrowIcon.setSubImage(8, 1);
         
         if(!collapsed) {
             length = gameObjects.size() + 1;
@@ -166,6 +207,10 @@ public class Group extends Widget implements LogicLoop, PropertyChangeListener {
                 bounds.xPos = size.x;
                 parentPosY  = size.y;
             }
+            
+            case "windowEdge" -> {
+                
+            }
         }
     }
     
@@ -175,6 +220,10 @@ public class Group extends Widget implements LogicLoop, PropertyChangeListener {
     
     public int getLength() {
         return length;
+    }
+    
+    public void toggleCollapsed() {
+        collapsed = !collapsed;
     }
 
 }

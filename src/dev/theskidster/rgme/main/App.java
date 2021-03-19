@@ -62,7 +62,6 @@ public final class App {
             uiProgram.addUniform(BufferType.MAT4, "uProjection");
         }
         
-        //TODO: initialize scene shader
         {
             var shaderSourceFiles = new LinkedList<Shader>() {{
                 add(new Shader("sceneVertex.glsl", GL_VERTEX_SHADER));

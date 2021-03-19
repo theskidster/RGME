@@ -1,12 +1,15 @@
 package dev.theskidster.rgme.ui.containers;
 
+import dev.theskidster.rgme.commands.AddGameObject;
 import dev.theskidster.rgme.commands.Command;
 import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.scene.GameObject;
 import dev.theskidster.rgme.scene.Scene;
+import dev.theskidster.rgme.scene.TestObject;
 import dev.theskidster.rgme.ui.FreeTypeFont;
 import static dev.theskidster.rgme.ui.UI.TOOLBAR_WIDTH;
+import dev.theskidster.rgme.ui.widgets.ContextMenu;
 import dev.theskidster.rgme.ui.widgets.Group;
 import dev.theskidster.rgme.ui.widgets.Scrollbar;
 import dev.theskidster.rgme.utils.Color;
@@ -16,6 +19,7 @@ import dev.theskidster.rgme.utils.Rectangle;
 import java.util.HashMap;
 import java.util.Map;
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -27,9 +31,14 @@ public final class SceneExplorer extends Container {
     
     public int groupIndex;
     
+    public float windowWidth;
+    public float windowHeight;
+    
     public boolean outOfBounds;
     
     public GameObject selectedGameObject;
+    public ContextMenu currContextMenu;
+    private final Scene scene;
     private final Scrollbar scrollbar;
     private final Rectangle scissorBox  = new Rectangle();
     private final Rectangle seperator   = new Rectangle(0, 0, 2, 224);
@@ -41,6 +50,7 @@ public final class SceneExplorer extends Container {
     
     public SceneExplorer(Scene scene) {
         super(0, 28, TOOLBAR_WIDTH, 264, "Scene Explorer", 5, 0);
+        this.scene = scene;
         
         groups[0] = new Group("Visible Geometry", this, scene.visibleGeometry);
         groups[1] = new Group("Bounding Volumes", this, scene.boundingVolumes);
@@ -78,6 +88,30 @@ public final class SceneExplorer extends Container {
         scrollbar.parentHovered = hovered(mouse.cursorPos);
         scrollbar.update(mouse);
         
+        if(currContextMenu != null) {
+            currContextMenu.update(mouse);
+            
+            if(currContextMenu.commandSelected()) {
+                switch(currContextMenu.getSelectedCommandName()) {
+                    case "Expand/Collapse" -> {
+                        currContextMenu = null;
+                        groups[groupIndex].toggleCollapsed();
+                    }
+                    
+                    case "Add New Visible Geometry" -> {
+                        currContextMenu = null;
+                        return new AddGameObject(scene.visibleGeometry, new TestObject(new Vector3f()));
+                    }
+                    
+                    //TODO: provide additional commands for each group.
+                }
+            } else {
+                if(!currContextMenu.hovered(mouse.cursorPos) && mouse.clicked && mouse.button.equals("left")) {
+                    currContextMenu = null;
+                }
+            }
+        }
+        
         return null;
     }
 
@@ -94,10 +128,15 @@ public final class SceneExplorer extends Container {
         scrollbar.render(uiProgram, background, font);
         
         background.drawRectangle(seperator, Color.RGME_BLACK, uiProgram);
+        
+        if(currContextMenu != null) currContextMenu.render(uiProgram, background, font);
     }
 
     @Override
     public void relocate(float parentPosX, float parentPosY) {
+        windowWidth  = parentPosX;
+        windowHeight = parentPosY;
+        
         //Align the scene explorer to the right side of the window.
         bounds.xPos = parentPosX - bounds.width;
         
