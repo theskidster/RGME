@@ -16,10 +16,14 @@ public class TestObject extends GameObject {
 
     private Graphics g = new Graphics();
     
-    public TestObject(Vector3f position) {
+    public TestObject() {
         super("Shape");
         
-        this.position = position;
+        float x = (float) ((Math.random() > 0.5) ? Math.random() * 10 : Math.random() * -10);
+        float y = (float) Math.random() * 5;
+        float z = (float) ((Math.random() > 0.5) ? Math.random() * 10 : Math.random() * -10);
+        
+        this.position = new Vector3f(x, y, z);
         
         try(MemoryStack stack = MemoryStack.stackPush()) {
             g.vertices = stack.mallocFloat(18);

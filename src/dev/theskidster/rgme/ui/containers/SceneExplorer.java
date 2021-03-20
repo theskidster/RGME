@@ -100,7 +100,7 @@ public final class SceneExplorer extends Container {
                     
                     case "Add New Visible Geometry" -> {
                         currContextMenu = null;
-                        return new AddGameObject(scene.visibleGeometry, new TestObject(new Vector3f()));
+                        return new AddGameObject(scene.visibleGeometry, new TestObject());
                     }
                     
                     //TODO: provide additional commands for each group.

@@ -1,7 +1,9 @@
 package dev.theskidster.rgme.commands;
 
 import dev.theskidster.rgme.scene.GameObject;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author J Hoffman
@@ -10,17 +12,22 @@ import java.util.Map;
 
 public class AddGameObject extends Command {
     
+    private Entry<Integer, GameObject> entry;
+    private Map<Integer, GameObject> collection;
+    
     public AddGameObject(Map<Integer, GameObject> collection, GameObject gameObject) {
-        System.out.println("AddGameObject command created");
+        this.collection = collection;
+        entry = new SimpleEntry(collection.size(), gameObject);
     }
     
     @Override
     void execute() {
-        System.out.println("AddGameObject command executed");
+        collection.put(entry.getKey(), entry.getValue());
     }
 
     @Override
     void undo() {
+        collection.remove(entry.getKey());
     }
     
 }

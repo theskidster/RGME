@@ -161,12 +161,15 @@ public class Group extends Widget implements LogicLoop, PropertyChangeListener {
                 for(int i = 0; i <= Collections.max(gameObjects.keySet()); i++) {
                     if(gameObjects.containsKey(i)) {
                         order++;
-
+                        
                         if(members.containsKey(i)) members.get(i).update(gameObjects.get(i), bounds, order, mouse, explorer);
                         else                       members.put(i, new Member(index));
                     }
                 }
             }
+            
+            members.entrySet().removeIf(entry -> !gameObjects.containsKey(entry.getKey()));
+            
         } else {
             length = 1;
         }
@@ -206,10 +209,6 @@ public class Group extends Widget implements LogicLoop, PropertyChangeListener {
                 
                 bounds.xPos = size.x;
                 parentPosY  = size.y;
-            }
-            
-            case "windowEdge" -> {
-                
             }
         }
     }
