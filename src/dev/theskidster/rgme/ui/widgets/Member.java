@@ -4,7 +4,7 @@ import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.graphics.Icon;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.scene.GameObject;
-import dev.theskidster.rgme.scene.TestObject;
+import dev.theskidster.rgme.scene.VisibleGeometry;
 import dev.theskidster.rgme.ui.FreeTypeFont;
 import static dev.theskidster.rgme.ui.UI.TOOLBAR_WIDTH;
 import dev.theskidster.rgme.ui.containers.SceneExplorer;
@@ -80,7 +80,7 @@ public class Member {
         selected = (gameObject == explorer.selectedGameObject);
         
         if(!typeIconSet) {
-            if(gameObject instanceof TestObject) {
+            if(gameObject instanceof VisibleGeometry) {
                 typeIcon.setSubImage(0, 1);
             }
             

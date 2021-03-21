@@ -6,7 +6,7 @@ import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.scene.GameObject;
 import dev.theskidster.rgme.scene.Scene;
-import dev.theskidster.rgme.scene.TestObject;
+import dev.theskidster.rgme.scene.VisibleGeometry;
 import dev.theskidster.rgme.ui.FreeTypeFont;
 import static dev.theskidster.rgme.ui.UI.TOOLBAR_WIDTH;
 import dev.theskidster.rgme.ui.widgets.ContextMenu;
@@ -99,7 +99,8 @@ public final class SceneExplorer extends Container {
                     
                     case "Add New Visible Geometry" -> {
                         currContextMenu = null;
-                        return new AddGameObject(scene.visibleGeometry, new TestObject());
+                        groups[groupIndex].setCollapsed(false);
+                        return new AddGameObject(scene.visibleGeometry, new VisibleGeometry());
                     }
                     
                     //TODO: provide additional commands for each group.

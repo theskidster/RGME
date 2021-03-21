@@ -16,10 +16,12 @@ public class WorldLight extends GameObject {
     
     @Override
     void update() {
+        
     }
 
     @Override
     void render(Program sceneProgram, Vector3f camPos, Vector3f camUp) {
+        
     }
 
 }

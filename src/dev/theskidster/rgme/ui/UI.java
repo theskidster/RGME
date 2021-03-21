@@ -10,7 +10,6 @@ import dev.theskidster.rgme.main.Window;
 import dev.theskidster.rgme.scene.Scene;
 import dev.theskidster.rgme.ui.containers.Container;
 import dev.theskidster.rgme.ui.containers.SceneExplorer;
-import dev.theskidster.rgme.ui.containers.TestContainer;
 import dev.theskidster.rgme.utils.TextInput;
 import dev.theskidster.rgme.utils.Mouse;
 import java.beans.PropertyChangeEvent;
@@ -45,7 +44,6 @@ public final class UI implements PropertyChangeListener {
         
         containers = new LinkedHashSet<>() {{
             add(new SceneExplorer(scene));
-            add(new TestContainer());
         }};
     }
     

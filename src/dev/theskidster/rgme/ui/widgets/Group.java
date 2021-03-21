@@ -221,6 +221,10 @@ public class Group extends Widget implements LogicLoop, PropertyChangeListener {
         return length;
     }
     
+    public void setCollapsed(boolean value) {
+        collapsed = value;
+    }
+    
     public void toggleCollapsed() {
         collapsed = !collapsed;
     }

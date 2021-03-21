@@ -12,8 +12,8 @@ import java.util.Map.Entry;
 
 public class AddGameObject extends Command {
     
-    private Entry<Integer, GameObject> entry;
-    private Map<Integer, GameObject> collection;
+    private final Entry<Integer, GameObject> entry;
+    private final Map<Integer, GameObject> collection;
     
     public AddGameObject(Map<Integer, GameObject> collection, GameObject gameObject) {
         this.collection = collection;

@@ -1,6 +1,6 @@
 package dev.theskidster.rgme.commands;
 
-import dev.theskidster.rgme.scene.TestObject;
+import dev.theskidster.rgme.scene.GameObject;
 
 /**
  * @author J Hoffman
@@ -17,9 +17,9 @@ public class MoveShape extends Command {
     private float prevY;
     private float prevZ;
     
-    private TestObject object;
+    private GameObject object;
     
-    public MoveShape(TestObject object, float x, float y, float z) {
+    public MoveShape(GameObject object, float x, float y, float z) {
         this.object = object;
         this.x      = x;
         this.y      = y;
