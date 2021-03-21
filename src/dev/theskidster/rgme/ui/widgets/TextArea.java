@@ -20,7 +20,7 @@ import static org.lwjgl.opengl.GL11.*;
  */
 
 public class TextArea extends TextInput implements PropertyChangeListener {
-
+    
     private float viewportHeight;
     
     private final boolean borderVisible;
@@ -145,17 +145,19 @@ public class TextArea extends TextInput implements PropertyChangeListener {
             mouse.setCursorShape(GLFW_IBEAM_CURSOR);
             
             if((prevClicked != currClicked && !prevClicked)) {
-                if(hasFocus()) {
+                if(!hasFocus()) {
+                    focus();
+                    prevCursorX = (int) mouse.cursorPos.x;
+                }
+                
+                if(typed.length() > 0) {
                     int newIndex = findClosestIndex(mouse.cursorPos.x - bounds.xPos - PADDING);
                     setIndex(newIndex);
                     scroll();
-                    
+
                     firstIndex      = getIndex();
                     firstIndexSet   = true;
                     highlight.width = 0;
-                } else {
-                    focus();
-                    prevCursorX = (int) mouse.cursorPos.x;
                 }
             } else {
                 if(mouse.cursorPos.x != prevCursorX) highlightText(mouse.cursorPos.x);
@@ -245,9 +247,9 @@ public class TextArea extends TextInput implements PropertyChangeListener {
                 int newIndex = findClosestIndex(cursorPosX - bounds.xPos - PADDING);
                 setIndex(newIndex);
                 scroll();
-
+                
                 lastIndex = getIndex();
-
+                
                 int firstIndexPosX = FreeTypeFont.getLengthInPixels(typed.substring(0, firstIndex), 1);
                 int lastIndexPosX  = FreeTypeFont.getLengthInPixels(typed.substring(0, lastIndex), 1);
 
