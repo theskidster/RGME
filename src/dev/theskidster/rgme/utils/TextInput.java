@@ -20,7 +20,7 @@ import static org.lwjgl.glfw.GLFW.*;
 public abstract class TextInput extends Widget implements LogicLoop, Relocatable {
 
     protected final int HEIGHT  = 30;
-    protected final int PADDING = 4;
+    protected final int PADDING = 6;
     
     private int lengthToIndex;
     private int textOffset;
@@ -126,6 +126,12 @@ public abstract class TextInput extends Widget implements LogicLoop, Relocatable
     
     private int search(int[] values, float cursorX) {
         int n = values.length;
+        
+        //Hack included to avoid IndexOutOfBoundsException.
+        if(n == 0) {
+            textOffset = 0;
+            return 0;
+        }
         
         if(cursorX <= values[0])     return values[0];
         if(cursorX >= values[n - 1]) return values[n - 1];
