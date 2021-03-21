@@ -81,20 +81,14 @@ public class TextArea extends TextInput implements PropertyChangeListener {
                 case GLFW_KEY_BACKSPACE -> {
                     if(getIndex() > 0) {
                         if(highlight.width > 0) {
-                            int min = Math.min(firstIndex, lastIndex);
-                            int max = Math.max(firstIndex, lastIndex);
-                            
-                            typed.replace(min, max, "");
-                            
-                            setIndex(min);
-                            scroll();
-                            
-                            highlight.width = 0;
+                            deleteSection();
                         } else {
                             setIndex(getIndex() - 1);
                             typed.deleteCharAt(getIndex());
                             scroll();
                         }
+                    } else {
+                        if(highlight.width > 0) deleteSection();
                     }
                 }
                     
@@ -264,6 +258,18 @@ public class TextArea extends TextInput implements PropertyChangeListener {
                 highlight.width = (maxX - minX);
             }
         }
+    }
+    
+    public void deleteSection() {
+        int min = Math.min(firstIndex, lastIndex);
+        int max = Math.max(firstIndex, lastIndex);
+
+        typed.replace(min, max, "");
+
+        setIndex(min);
+        scroll();
+
+        highlight.width = 0;
     }
     
 }
