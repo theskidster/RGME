@@ -10,6 +10,8 @@ import dev.theskidster.rgme.main.Window;
 import dev.theskidster.rgme.scene.Scene;
 import dev.theskidster.rgme.ui.containers.Container;
 import dev.theskidster.rgme.ui.containers.SceneExplorer;
+import dev.theskidster.rgme.ui.containers.TestContainer;
+import dev.theskidster.rgme.utils.TextInput;
 import dev.theskidster.rgme.utils.Mouse;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -29,6 +31,7 @@ public final class UI implements PropertyChangeListener {
     
     private final FreeTypeFont font;
     private final Mouse mouse;
+    private static TextInput textInput;
     
     private final Library freeType      = FreeType.newLibrary();
     private final Background background = new Background();
@@ -42,6 +45,7 @@ public final class UI implements PropertyChangeListener {
         
         containers = new LinkedHashSet<>() {{
             add(new SceneExplorer(scene));
+            add(new TestContainer());
         }};
     }
     
@@ -111,6 +115,16 @@ public final class UI implements PropertyChangeListener {
     public void setMouseScroll(double value) {
         mouse.scrollValue = (float) value;
         mouse.scrolled    = true;
+    }
+    
+    public void captureKeyInput(int key, int action) {
+        if(textInput != null && textInput.hasFocus()) {
+            textInput.processKeyInput(key, action);
+        }
+    }
+    
+    public static void setTextInputWidget(TextInput input) {
+        textInput = input;
     }
     
 }

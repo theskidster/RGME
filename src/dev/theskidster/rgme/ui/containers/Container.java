@@ -5,20 +5,25 @@ import dev.theskidster.rgme.graphics.Icon;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.ui.FreeTypeFont;
 import dev.theskidster.rgme.ui.LogicLoop;
+import dev.theskidster.rgme.ui.Relocatable;
 import dev.theskidster.rgme.ui.widgets.Widget;
 import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Rectangle;
+import java.util.List;
+import org.joml.Vector2f;
 
 /**
  * @author J Hoffman
  * Created: Mar 13, 2021
  */
 
-public abstract class Container extends Widget implements LogicLoop {
+public abstract class Container extends Widget implements LogicLoop, Relocatable {
     
     protected String title;
     protected Icon icon;
     protected Rectangle titleBar;
+    
+    protected List<Widget> widgets;
     
     protected Container(float xPos, float yPos, float width, float height, String title, int cellX, int cellY) {
         super(xPos, yPos, width, height);
@@ -29,8 +34,6 @@ public abstract class Container extends Widget implements LogicLoop {
         
         titleBar = new Rectangle(xPos, yPos, width, 40);
     }
-    
-    public abstract void relocate(float parentPosX, float parentPosY);
     
     protected void renderTitleBar(Program uiProgram, Background background, FreeTypeFont font) {
         background.drawRectangle(titleBar, Color.RGME_LIGHT_GRAY, uiProgram);
@@ -44,6 +47,10 @@ public abstract class Container extends Widget implements LogicLoop {
         titleBar.width = bounds.width;
         
         icon.position.set(bounds.xPos + 10, bounds.yPos + 30);
+    }
+    
+    protected boolean widgetHovered(Vector2f cursorPos) {
+        return widgets.stream().anyMatch(widget -> widget.hovered(cursorPos));
     }
     
 }

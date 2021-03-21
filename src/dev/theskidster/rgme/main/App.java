@@ -2,12 +2,10 @@ package dev.theskidster.rgme.main;
 
 import dev.theskidster.rgme.commands.CommandHistory;
 import dev.theskidster.rgme.scene.Scene;
-import dev.theskidster.rgme.scene.TestObject;
 import dev.theskidster.rgme.ui.UI;
 import static dev.theskidster.rgme.ui.UI.TOOLBAR_WIDTH;
 import dev.theskidster.rgme.utils.Color;
 import java.util.LinkedList;
-import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL20.*;

@@ -147,6 +147,8 @@ public final class Window implements PropertyChangeListener {
         });
         
         glfwSetKeyCallback(handle, (window, key, scancode, action, mods) -> {
+            ui.captureKeyInput(key, action);
+            
             ctrlHeld = (mods == GLFW_MOD_CONTROL);
             
             if(ctrlHeld) {

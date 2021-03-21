@@ -19,7 +19,6 @@ import dev.theskidster.rgme.utils.Rectangle;
 import java.util.HashMap;
 import java.util.Map;
 import org.joml.Vector2f;
-import org.joml.Vector3f;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
