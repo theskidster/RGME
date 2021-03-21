@@ -24,6 +24,8 @@ public class TextArea extends TextInput implements PropertyChangeListener {
     private float viewportHeight;
     
     private final boolean borderVisible;
+    private boolean prevClicked;
+    private boolean currClicked;
     
     private final Icon leftBorder  = new Icon(15, 30);
     private final Icon rightBorder = new Icon(15, 30);
@@ -135,69 +137,46 @@ public class TextArea extends TextInput implements PropertyChangeListener {
 
     @Override
     public Command update(Mouse mouse) {
+        prevClicked = currClicked;
+        currClicked = mouse.clicked;
+        
         textPos.set(xOffset + parentPosX + PADDING, 
                     yOffset + parentPosY + 21);
         
         timer.update();
         if(timer.finished()) caratIdle = true;
-        if(App.tick(18) && caratIdle) caratBlink  = !caratBlink;
-        
-        boolean f = false;
+        if(App.tick(18) && caratIdle) caratBlink = !caratBlink;
         
         if(hovered(mouse.cursorPos)) {
             mouse.setCursorShape(GLFW_IBEAM_CURSOR);
             
-            if(mouse.clicked && mouse.button.equals("left")) {
+            if((prevClicked != currClicked && !prevClicked)) {
                 if(hasFocus()) {
-                    if(typed.length() > 0) {
-                        if(prevCursorX != mouse.cursorPos.x) {
-                            if(mouse.cursorPos.x - bounds.xPos - PADDING >= bounds.width - (PADDING * 3)) {
-                                setIndex((getIndex() > typed.length() - 1) ? typed.length() : getIndex() + 1);
-                                scroll();
-                            }
-                            
-                            if(mouse.cursorPos.x - bounds.xPos - PADDING <= (PADDING * 3)) {
-                                setIndex((getIndex() <= 0) ? 0 : getIndex() - 1);
-                                scroll();
-                            }
-                        } else {
-                            int newIndex = findClosestIndex(mouse.cursorPos.x - bounds.xPos - PADDING);
-                            setIndex(newIndex);
-                            scroll();
-                            
-                            if(!firstIndexSet) {
-                                firstIndex    = getIndex();
-                                firstIndexSet = true;
-                            } else {
-                                lastIndex = getIndex();
-
-                                int firstIndexPosX = FreeTypeFont.getLengthInPixels(typed.substring(0, firstIndex), 1);
-                                int lastIndexPosX  = FreeTypeFont.getLengthInPixels(typed.substring(0, lastIndex), 1);
-
-                                int minX = Math.min(firstIndexPosX, lastIndexPosX);
-                                int maxX = Math.max(firstIndexPosX, lastIndexPosX);
-
-                                highlight.xPos  = (minX + bounds.xPos + PADDING) + getTextOffset();
-                                highlight.width = (maxX - minX);
-                            }
-                        }
-                        
-                        prevCursorX = (int) mouse.cursorPos.x;
-                    }
+                    int newIndex = findClosestIndex(mouse.cursorPos.x - bounds.xPos - PADDING);
+                    setIndex(newIndex);
+                    scroll();
+                    
+                    firstIndex      = getIndex();
+                    firstIndexSet   = true;
+                    highlight.width = 0;
                 } else {
                     focus();
                     prevCursorX = (int) mouse.cursorPos.x;
                 }
             } else {
-                firstIndexSet = false;
+                if(mouse.cursorPos.x != prevCursorX) highlightText(mouse.cursorPos.x);
             }
         } else {
-            if(mouse.clicked && hasFocus()) {
-                unfocus();
-                highlight.width = 0;
+            if((prevClicked != currClicked && !prevClicked)) {
+                if(hasFocus()) {
+                    unfocus();
+                    highlight.width = 0;
+                }
+                
+                firstIndexSet = false;
+            } else {
+                highlightText(mouse.cursorPos.x);
             }
-            
-            firstIndexSet = false;
         }
         
         return null;
@@ -253,4 +232,38 @@ public class TextArea extends TextInput implements PropertyChangeListener {
         }
     }
 
+    private void highlightText(float cursorPosX) {
+        if(typed.length() > 0 && currClicked && hasFocus()) {
+            if(cursorPosX - bounds.xPos - PADDING >= bounds.width - (PADDING * 3)) {
+                setIndex((getIndex() > typed.length() - 1) ? typed.length() : getIndex() + 1);
+                scroll();
+            }
+
+            if(cursorPosX - bounds.xPos - PADDING <= (PADDING * 3)) {
+                setIndex((getIndex() <= 0) ? 0 : getIndex() - 1);
+                scroll();
+            }
+
+            if(!firstIndexSet) {
+                firstIndex    = getIndex();
+                firstIndexSet = true;
+            } else {
+                int newIndex = findClosestIndex(cursorPosX - bounds.xPos - PADDING);
+                setIndex(newIndex);
+                scroll();
+
+                lastIndex = getIndex();
+
+                int firstIndexPosX = FreeTypeFont.getLengthInPixels(typed.substring(0, firstIndex), 1);
+                int lastIndexPosX  = FreeTypeFont.getLengthInPixels(typed.substring(0, lastIndex), 1);
+
+                int minX = Math.min(firstIndexPosX, lastIndexPosX);
+                int maxX = Math.max(firstIndexPosX, lastIndexPosX);
+
+                highlight.xPos  = (minX + bounds.xPos + PADDING) + getTextOffset();
+                highlight.width = (maxX - minX);
+            }
+        }
+    }
+    
 }

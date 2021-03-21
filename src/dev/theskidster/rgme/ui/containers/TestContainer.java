@@ -26,22 +26,22 @@ public class TestContainer extends Container {
         super(450, 200, 400, 400, "test", 5, 1);
         
         textArea1 = new TextArea(100, 200, 170, bounds.xPos, bounds.yPos, true);
-        textArea2 = new TextArea(100, 50, 100, bounds.xPos, bounds.yPos, false);
+        //textArea2 = new TextArea(100, 50, 100, bounds.xPos, bounds.yPos, false);
         
         widgets = new ArrayList<>() {{
             add(textArea1);
-            add(textArea2);
+            //add(textArea2);
         }};
         
         observable.properties.put("viewportHeight", 0);
         observable.addObserver(textArea1);
-        observable.addObserver(textArea2);
+        //observable.addObserver(textArea2);
     }
 
     @Override
     public Command update(Mouse mouse) {        
         textArea1.update(mouse);
-        textArea2.update(mouse);
+        //textArea2.update(mouse);
         
         if(!widgetHovered(mouse.cursorPos)) {
             mouse.setCursorShape(GLFW_ARROW_CURSOR);
@@ -56,7 +56,7 @@ public class TestContainer extends Container {
         renderTitleBar(uiProgram, background, font);
         
         textArea1.render(uiProgram, background, font);
-        textArea2.render(uiProgram, background, font);
+        //textArea2.render(uiProgram, background, font);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class TestContainer extends Container {
         
         observable.notifyObservers("viewportHeight", parentPosY);
         textArea1.relocate(bounds.xPos, bounds.yPos);
-        textArea2.relocate(bounds.xPos, bounds.yPos);
+        //textArea2.relocate(bounds.xPos, bounds.yPos);
     }
 
 }
