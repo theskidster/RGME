@@ -1,10 +1,14 @@
 package dev.theskidster.rgme.ui.containers;
 
+import dev.theskidster.rgme.commands.AddGameObject;
 import dev.theskidster.rgme.commands.Command;
+import dev.theskidster.rgme.commands.DeleteGameObject;
 import dev.theskidster.rgme.graphics.Background;
+import dev.theskidster.rgme.graphics.Icon;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.scene.GameObject;
 import dev.theskidster.rgme.scene.Scene;
+import dev.theskidster.rgme.scene.VisibleGeometry;
 import dev.theskidster.rgme.ui.FreeTypeFont;
 import static dev.theskidster.rgme.ui.UI.TOOLBAR_WIDTH;
 import dev.theskidster.rgme.ui.widgets.Group;
@@ -37,6 +41,10 @@ public final class SceneExplorer extends Container {
     private final Scrollbar scrollbar;
     private final Rectangle scissorBox  = new Rectangle();
     private final Rectangle seperator   = new Rectangle(0, 0, 2, 224);
+    private final Rectangle addButton   = new Rectangle(0, 0, 24, 24);
+    private final Rectangle subButton   = new Rectangle(0, 0, 24, 24);
+    private final Icon addIcon          = new Icon(24, 24);
+    private final Icon subIcon          = new Icon(24, 24);
     private final Observable observable = new Observable(this);
     
     private final Group[] groups = new Group[6];
@@ -59,6 +67,9 @@ public final class SceneExplorer extends Container {
         observable.properties.put("viewportSize", null);
         for(Group group : groups) observable.addObserver(group);
         observable.addObserver(scrollbar);
+        
+        addIcon.setSubImage(5, 3);
+        subIcon.setSubImage(5, 4);
     }
 
     @Override
@@ -81,6 +92,44 @@ public final class SceneExplorer extends Container {
         scrollbar.parentHovered = hovered(mouse.cursorPos);
         scrollbar.update(mouse);
         
+        if(addButton.contains(mouse.cursorPos)) {
+            if(clickedOnce(addButton, mouse)) {
+                groups[groupIndex].setCollapsed(false);
+                
+                switch(groupIndex) {
+                    default -> { return new AddGameObject(scene.visibleGeometry, new VisibleGeometry()); }
+                    case 1  -> { return new AddGameObject(scene.boundingVolumes, new VisibleGeometry()); }
+                    case 2  -> { return new AddGameObject(scene.triggerBoxes,    new VisibleGeometry()); }
+                    case 3  -> { return new AddGameObject(scene.lightSources,    new VisibleGeometry()); }
+                    case 4  -> { return new AddGameObject(scene.entities,        new VisibleGeometry()); }
+                    case 5  -> { return new AddGameObject(scene.instances,       new VisibleGeometry()); }
+                }
+            }
+            
+            if(mouse.clicked) addIcon.setColor(Color.RGME_WHITE);
+            else              addIcon.setColor(Color.RGME_SILVER);
+        } else {
+            addIcon.setColor(Color.RGME_SILVER);
+        }
+        
+        if(subButton.contains(mouse.cursorPos) && selectedGameObject != null) {
+            if(clickedOnce(subButton, mouse)) {
+                switch(groupIndex) {
+                    default -> { return new DeleteGameObject(scene.visibleGeometry, selectedGameObject); }
+                    case 1  -> { return new DeleteGameObject(scene.boundingVolumes, selectedGameObject); }
+                    case 2  -> { return new DeleteGameObject(scene.triggerBoxes,    selectedGameObject); }
+                    case 3  -> { return new DeleteGameObject(scene.lightSources,    selectedGameObject); }
+                    case 4  -> { return new DeleteGameObject(scene.entities,        selectedGameObject); }
+                    case 5  -> { return new DeleteGameObject(scene.instances,       selectedGameObject); }
+                }
+            }
+            
+            if(mouse.clicked) subIcon.setColor(Color.RGME_WHITE);
+            else              subIcon.setColor(Color.RGME_SILVER);
+        } else {
+            subIcon.setColor(Color.RGME_SILVER);
+        }
+        
         return null;
     }
 
@@ -97,6 +146,9 @@ public final class SceneExplorer extends Container {
         scrollbar.render(uiProgram, background, font);
         
         background.drawRectangle(seperator, Color.RGME_BLACK, uiProgram);
+        
+        addIcon.render(uiProgram);
+        subIcon.render(uiProgram);
     }
 
     @Override
@@ -116,6 +168,14 @@ public final class SceneExplorer extends Container {
         scissorBox.yPos   = parentPosY - (bounds.yPos + bounds.height);
         scissorBox.width  = bounds.xPos + bounds.width;
         scissorBox.height = 224;
+        
+        addButton.xPos = bounds.xPos + (bounds.width - 64);
+        addButton.yPos = bounds.yPos + 8;
+        subButton.xPos = bounds.xPos + (bounds.width - 32);
+        subButton.yPos = bounds.yPos + 8;
+        
+        addIcon.position.set(addButton.xPos, addButton.yPos + 24);
+        subIcon.position.set(subButton.xPos, subButton.yPos + 24);
         
         observable.notifyObservers("viewportSize", new Vector2f(bounds.xPos, bounds.yPos + titleBar.height));
     }

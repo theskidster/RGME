@@ -14,7 +14,6 @@ import dev.theskidster.rgme.utils.Mouse;
 import dev.theskidster.rgme.utils.Rectangle;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;

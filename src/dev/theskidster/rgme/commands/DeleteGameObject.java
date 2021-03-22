@@ -12,20 +12,24 @@ import java.util.Map.Entry;
 public class DeleteGameObject extends Command {
 
     private Entry<Integer, GameObject> entry;
-    private Map<Integer, GameObject> collection;
+    private final Map<Integer, GameObject> collection;
     
-    public DeleteGameObject(Map<Integer, GameObject> collection) {
+    public DeleteGameObject(Map<Integer, GameObject> collection, GameObject gameObject) {
         this.collection = collection;
+        
+        for(Entry e : collection.entrySet()) {
+            if(gameObject.equals(e.getValue())) entry = e;
+        }
     }
     
     @Override
     void execute() {
-        
+        collection.remove(entry.getKey());
     }
 
     @Override
     void undo() {
-        
+        collection.put(entry.getKey(), entry.getValue());
     }
     
 }
