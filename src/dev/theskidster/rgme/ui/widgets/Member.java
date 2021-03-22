@@ -36,14 +36,6 @@ public class Member {
     public Member(int groupIndex) {
         this.groupIndex = groupIndex;
         eyeIcon.setSubImage(9, 2);
-        
-        /*
-        TODO:
-        menu options:
-        - Rename
-        - Delete
-        - Show/Hide
-        */
     }
     
     public void update(GameObject gameObject, Rectangle groupBounds, int order, Mouse mouse, SceneExplorer explorer) {
@@ -61,21 +53,21 @@ public class Member {
         prevPressed = currPressed;
         currPressed = mouse.clicked;
         
+        if((prevPressed != currPressed && !prevPressed) && !eyeBounds.contains(mouse.cursorPos) && 
+           bounds.contains(mouse.cursorPos) && !explorer.outOfBounds && mouse.button.equals("left")) {
+            explorer.groupIndex         = groupIndex;
+            explorer.selectedGameObject = gameObject;
+            
+            selected = true;
+        }
+        
+
         if((prevPressed != currPressed && !prevPressed) && eyeBounds.contains(mouse.cursorPos) && !explorer.outOfBounds) {
             gameObject.setVisible(!gameObject.getVisible());
         }
         
         if(gameObject.getVisible()) eyeIcon.setSubImage(9, 2);
         else                        eyeIcon.setSubImage(10, 2);
-        
-        if((prevPressed != currPressed && !prevPressed) && !eyeBounds.contains(mouse.cursorPos) && 
-           bounds.contains(mouse.cursorPos) && !explorer.outOfBounds && 
-           (mouse.button.equals("left") || mouse.button.equals("right"))) {
-            explorer.groupIndex         = groupIndex;
-            explorer.selectedGameObject = gameObject;
-            
-            selected = true;
-        }
         
         selected = (gameObject == explorer.selectedGameObject);
         

@@ -39,7 +39,6 @@ public class Group extends Widget implements LogicLoop, PropertyChangeListener {
     
     private final String name;
     private final SceneExplorer explorer;
-    private final ContextMenu contextMenu;
     private final Icon eyeIcon          = new Icon(20, 20);
     private final Icon arrowIcon        = new Icon(20, 20);
     private final Rectangle eyeBounds   = new Rectangle(0, 0, 22, 18);
@@ -59,64 +58,26 @@ public class Group extends Widget implements LogicLoop, PropertyChangeListener {
         eyeIcon.setSubImage(9, 2);
         arrowIcon.setSubImage(7, 1);
         
-        float contextMenuWidth;
-        var contextMenuCommands = new ArrayList<String>();
-        
         switch(name) {
-            default -> {
-                index = 0;
-                contextMenuWidth = 250;
-                contextMenuCommands.add("Add New Visible Geometry");
-            }
-            case "Bounding Volumes" -> {
-                index = 1;
-                contextMenuWidth = 250;
-                contextMenuCommands.add("Add New Bounding Volume");
-            }
-            case "Trigger Boxes" -> {
-                index = 2;
-                contextMenuWidth = 210;
-                contextMenuCommands.add("Add New Trigger Box");
-            }
-            case "Light Sources" -> {
-                index = 3;
-                contextMenuWidth = 210;
-                contextMenuCommands.add("Add New Light Source");
-            }
-            case "Entities" -> {
-                index = 4;
-                contextMenuWidth = 170;
-                contextMenuCommands.add("Add New Entity");
-            }
-            case "Instances" -> {
-                index = 5;
-                contextMenuWidth = 170;
-                contextMenuCommands.add("Add New Instance");
-            }
+            default                 -> index = 0;
+            case "Bounding Volumes" -> index = 1;
+            case "Trigger Boxes"    -> index = 2;
+            case "Light Sources"    -> index = 3;
+            case "Entities"         -> index = 4;
+            case "Instances"        -> index = 5;
         }
-        
-        contextMenuCommands.add("Expand/Collapse");
-        
-        contextMenu = new ContextMenu(0, 0, contextMenuWidth, contextMenuCommands);
     }
     
     @Override
     public Command update(Mouse mouse) {
-        boolean contextMenuHovered = explorer.currContextMenu != null && explorer.currContextMenu.hovered(mouse.cursorPos);
-        
         if(clickedOnce(bounds, mouse) && !eyeBounds.contains(mouse.cursorPos) && !arrowBounds.contains(mouse.cursorPos) && 
-           !explorer.outOfBounds && (mouse.button.equals("left") || mouse.button.equals("right")) && !contextMenuHovered) {
+           !explorer.outOfBounds && mouse.button.equals("left")) {
             explorer.groupIndex         = index;
             explorer.selectedGameObject = null;
             
             selected = true;
             
             members.values().forEach(member -> member.selected = false);
-            
-            if(mouse.button.equals("right")) {
-                contextMenu.setPosition(mouse.cursorPos, explorer.windowWidth, explorer.windowHeight);
-                explorer.currContextMenu = contextMenu;
-            }
         }
         
         if(index == explorer.groupIndex) {
@@ -135,18 +96,16 @@ public class Group extends Widget implements LogicLoop, PropertyChangeListener {
         eyeIcon.setColor(fontColor);
         arrowIcon.setColor(fontColor);
         
-        if(!contextMenu.hovered(mouse.cursorPos)) {
-            if(clickedOnce(eyeBounds, mouse) && !explorer.outOfBounds) {
-                visible = !visible;
-                gameObjects.values().forEach(gameObject -> gameObject.setVisible(visible));
+        if(clickedOnce(eyeBounds, mouse) && !explorer.outOfBounds && mouse.button.equals("left")) {
+            visible = !visible;
+            gameObjects.values().forEach(gameObject -> gameObject.setVisible(visible));
 
-                if(visible) eyeIcon.setSubImage(9, 2);
-                else        eyeIcon.setSubImage(10, 2);
-            }
+            if(visible) eyeIcon.setSubImage(9, 2);
+            else        eyeIcon.setSubImage(10, 2);
+        }
 
-            if(clickedOnce(arrowBounds, mouse) && !explorer.outOfBounds) {
-                toggleCollapsed();
-            }
+        if(clickedOnce(arrowBounds, mouse) && !explorer.outOfBounds && mouse.button.equals("left")) {
+            toggleCollapsed();
         }
         
         if(collapsed) arrowIcon.setSubImage(7, 1);

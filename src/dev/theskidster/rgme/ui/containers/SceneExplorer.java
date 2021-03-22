@@ -1,15 +1,12 @@
 package dev.theskidster.rgme.ui.containers;
 
-import dev.theskidster.rgme.commands.AddGameObject;
 import dev.theskidster.rgme.commands.Command;
 import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.scene.GameObject;
 import dev.theskidster.rgme.scene.Scene;
-import dev.theskidster.rgme.scene.VisibleGeometry;
 import dev.theskidster.rgme.ui.FreeTypeFont;
 import static dev.theskidster.rgme.ui.UI.TOOLBAR_WIDTH;
-import dev.theskidster.rgme.ui.widgets.ContextMenu;
 import dev.theskidster.rgme.ui.widgets.Group;
 import dev.theskidster.rgme.ui.widgets.Scrollbar;
 import dev.theskidster.rgme.utils.Color;
@@ -36,7 +33,6 @@ public final class SceneExplorer extends Container {
     public boolean outOfBounds;
     
     public GameObject selectedGameObject;
-    public ContextMenu currContextMenu;
     private final Scene scene;
     private final Scrollbar scrollbar;
     private final Rectangle scissorBox  = new Rectangle();
@@ -75,42 +71,15 @@ public final class SceneExplorer extends Container {
             Group group = groups[i];
             
             group.setVerticalOffset(verticalOffset);
-            Command command = group.update(mouse);
+            group.update(mouse);
             
             verticalOffset += 28 * group.getLength();
             groupLengths.put(i, 28f * group.getLength());
-            
-            if(command != null) return command;
         }
         
         scrollbar.setContentLength(groupLengths);
         scrollbar.parentHovered = hovered(mouse.cursorPos);
         scrollbar.update(mouse);
-        
-        if(currContextMenu != null) {
-            currContextMenu.update(mouse);
-            
-            if(currContextMenu.commandSelected()) {
-                switch(currContextMenu.getSelectedCommandName()) {
-                    case "Expand/Collapse" -> {
-                        currContextMenu = null;
-                        groups[groupIndex].toggleCollapsed();
-                    }
-                    
-                    case "Add New Visible Geometry" -> {
-                        currContextMenu = null;
-                        groups[groupIndex].setCollapsed(false);
-                        return new AddGameObject(scene.visibleGeometry, new VisibleGeometry());
-                    }
-                    
-                    //TODO: provide additional commands for each group.
-                }
-            } else {
-                if(!currContextMenu.hovered(mouse.cursorPos) && mouse.clicked && mouse.button.equals("left")) {
-                    currContextMenu = null;
-                }
-            }
-        }
         
         return null;
     }
@@ -128,8 +97,6 @@ public final class SceneExplorer extends Container {
         scrollbar.render(uiProgram, background, font);
         
         background.drawRectangle(seperator, Color.RGME_BLACK, uiProgram);
-        
-        if(currContextMenu != null) currContextMenu.render(uiProgram, background, font);
     }
 
     @Override
