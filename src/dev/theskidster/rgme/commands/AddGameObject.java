@@ -17,7 +17,7 @@ public class AddGameObject extends Command {
     
     public AddGameObject(Map<Integer, GameObject> collection, GameObject gameObject) {
         this.collection = collection;
-        entry = new SimpleEntry(collection.size(), gameObject);
+        entry = new SimpleEntry(gameObject.index, gameObject);
     }
     
     @Override

@@ -10,13 +10,17 @@ import org.joml.Vector3f;
 
 public abstract class GameObject {
     
+    private static int indexLimit;
+    public final int index;
+    
     protected boolean visible = true;
     
     protected String name;
     protected Vector3f position;
     
     public GameObject(String name) {
-        this.name = name;
+        this.index = indexLimit++;
+        this.name  = name;
     }
     
     abstract void update();

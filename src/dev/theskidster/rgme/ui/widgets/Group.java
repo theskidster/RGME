@@ -77,6 +77,7 @@ public class Group extends Widget implements LogicLoop, PropertyChangeListener {
             selected = true;
             
             members.values().forEach(member -> member.selected = false);
+            explorer.showTextArea(false, null);
         }
         
         if(index == explorer.groupIndex) {

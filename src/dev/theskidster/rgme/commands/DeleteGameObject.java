@@ -1,6 +1,7 @@
 package dev.theskidster.rgme.commands;
 
 import dev.theskidster.rgme.scene.GameObject;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -11,15 +12,12 @@ import java.util.Map.Entry;
 
 public class DeleteGameObject extends Command {
 
-    private Entry<Integer, GameObject> entry;
+    private final Entry<Integer, GameObject> entry;
     private final Map<Integer, GameObject> collection;
     
     public DeleteGameObject(Map<Integer, GameObject> collection, GameObject gameObject) {
         this.collection = collection;
-        
-        for(Entry e : collection.entrySet()) {
-            if(gameObject.equals(e.getValue())) entry = e;
-        }
+        entry = new SimpleEntry(gameObject.index, gameObject);
     }
     
     @Override

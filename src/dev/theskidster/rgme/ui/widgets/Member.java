@@ -5,6 +5,7 @@ import dev.theskidster.rgme.graphics.Icon;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.scene.GameObject;
 import dev.theskidster.rgme.scene.VisibleGeometry;
+import dev.theskidster.rgme.scene.WorldLight;
 import dev.theskidster.rgme.ui.FreeTypeFont;
 import static dev.theskidster.rgme.ui.UI.TOOLBAR_WIDTH;
 import dev.theskidster.rgme.ui.containers.SceneExplorer;
@@ -20,6 +21,7 @@ import dev.theskidster.rgme.utils.Rectangle;
 public class Member {
     
     private final int groupIndex;
+    private int clickCount;
     
     public boolean selected;
     private boolean typeIconSet;
@@ -29,7 +31,7 @@ public class Member {
     private final Icon typeIcon       = new Icon(20, 20);
     private final Icon eyeIcon        = new Icon(20, 20);
     private final Rectangle eyeBounds = new Rectangle(0, 0, 22, 18);
-    private final Rectangle bounds    = new Rectangle(0, 0, TOOLBAR_WIDTH - 28, 28);
+    public final Rectangle bounds     = new Rectangle(0, 0, TOOLBAR_WIDTH - 28, 28);
     
     public GameObject gameObject;
     
@@ -59,17 +61,22 @@ public class Member {
             explorer.selectedGameObject = gameObject;
             
             selected = true;
+            
+            if(mouse.cursorPos.x > typeIcon.position.x + 20 && !(gameObject instanceof WorldLight)) {
+                clickCount++;
+                explorer.showTextArea(clickCount >= 2, this);
+            }
         }
         
-
+        selected = (gameObject == explorer.selectedGameObject);
+        if(!selected) clickCount = 0;
+        
         if((prevPressed != currPressed && !prevPressed) && eyeBounds.contains(mouse.cursorPos) && !explorer.outOfBounds) {
             gameObject.setVisible(!gameObject.getVisible());
         }
         
         if(gameObject.getVisible()) eyeIcon.setSubImage(9, 2);
         else                        eyeIcon.setSubImage(10, 2);
-        
-        selected = (gameObject == explorer.selectedGameObject);
         
         if(!typeIconSet) {
             if(gameObject instanceof VisibleGeometry) {

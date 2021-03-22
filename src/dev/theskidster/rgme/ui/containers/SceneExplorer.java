@@ -12,14 +12,18 @@ import dev.theskidster.rgme.scene.VisibleGeometry;
 import dev.theskidster.rgme.ui.FreeTypeFont;
 import static dev.theskidster.rgme.ui.UI.TOOLBAR_WIDTH;
 import dev.theskidster.rgme.ui.widgets.Group;
+import dev.theskidster.rgme.ui.widgets.Member;
 import dev.theskidster.rgme.ui.widgets.Scrollbar;
+import dev.theskidster.rgme.ui.widgets.TextArea;
 import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Mouse;
 import dev.theskidster.rgme.utils.Observable;
 import dev.theskidster.rgme.utils.Rectangle;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import org.joml.Vector2f;
+import static org.lwjgl.glfw.GLFW.GLFW_ARROW_CURSOR;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
@@ -35,10 +39,14 @@ public final class SceneExplorer extends Container {
     public float windowHeight;
     
     public boolean outOfBounds;
+    private boolean showTextArea;
     
     public GameObject selectedGameObject;
+    private Rectangle memberBounds;
+    
     private final Scene scene;
     private final Scrollbar scrollbar;
+    private final TextArea textArea;
     private final Rectangle scissorBox  = new Rectangle();
     private final Rectangle seperator   = new Rectangle(0, 0, 2, 224);
     private final Rectangle addButton   = new Rectangle(0, 0, 24, 24);
@@ -63,13 +71,20 @@ public final class SceneExplorer extends Container {
         groups[5] = new Group("Instances",        this, scene.instances);
         
         scrollbar = new Scrollbar(TOOLBAR_WIDTH - 24, 0, 176, 224);
+        textArea  = new TextArea(0, 1, 200, bounds.xPos, bounds.yPos, false);
         
         observable.properties.put("viewportSize", null);
+        observable.properties.put("viewportHeight", 0);
+        
         for(Group group : groups) observable.addObserver(group);
         observable.addObserver(scrollbar);
+        observable.addObserver(textArea);
         
         addIcon.setSubImage(5, 3);
         subIcon.setSubImage(5, 4);
+        
+        widgets = new ArrayList<>();
+        widgets.add(textArea);
     }
 
     @Override
@@ -92,9 +107,31 @@ public final class SceneExplorer extends Container {
         scrollbar.parentHovered = hovered(mouse.cursorPos);
         scrollbar.update(mouse);
         
+        if(showTextArea) {
+            textArea.relocate(memberBounds.xPos + 80, memberBounds.yPos);
+            textArea.update(mouse);
+            
+            textArea.scissorBox.yPos   = scissorBox.yPos;
+            textArea.scissorBox.height = scissorBox.height;
+            
+            if(!textArea.hasFocus()) {
+                if(!(textArea.getText().length() == 0)) {
+                    selectedGameObject.setName(textArea.getText());
+                }
+                
+                showTextArea = false;
+            }
+        }
+        
+        if(!widgetHovered(mouse.cursorPos)) mouse.setCursorShape(GLFW_ARROW_CURSOR);
+        
         if(addButton.contains(mouse.cursorPos)) {
+            if(mouse.clicked) addIcon.setColor(Color.RGME_WHITE);
+            else              addIcon.setColor(Color.RGME_SILVER);
+            
             if(clickedOnce(addButton, mouse)) {
                 groups[groupIndex].setCollapsed(false);
+                showTextArea = false;
                 
                 switch(groupIndex) {
                     default -> { return new AddGameObject(scene.visibleGeometry, new VisibleGeometry()); }
@@ -105,15 +142,17 @@ public final class SceneExplorer extends Container {
                     case 5  -> { return new AddGameObject(scene.instances,       new VisibleGeometry()); }
                 }
             }
-            
-            if(mouse.clicked) addIcon.setColor(Color.RGME_WHITE);
-            else              addIcon.setColor(Color.RGME_SILVER);
         } else {
             addIcon.setColor(Color.RGME_SILVER);
         }
         
-        if(subButton.contains(mouse.cursorPos) && selectedGameObject != null) {
-            if(clickedOnce(subButton, mouse)) {
+        if(subButton.contains(mouse.cursorPos)) {
+            if(mouse.clicked) subIcon.setColor(Color.RGME_WHITE);
+            else              subIcon.setColor(Color.RGME_SILVER);
+            
+            if(clickedOnce(subButton, mouse) && selectedGameObject != null) {
+                showTextArea   = false;
+                
                 switch(groupIndex) {
                     default -> { return new DeleteGameObject(scene.visibleGeometry, selectedGameObject); }
                     case 1  -> { return new DeleteGameObject(scene.boundingVolumes, selectedGameObject); }
@@ -123,9 +162,6 @@ public final class SceneExplorer extends Container {
                     case 5  -> { return new DeleteGameObject(scene.instances,       selectedGameObject); }
                 }
             }
-            
-            if(mouse.clicked) subIcon.setColor(Color.RGME_WHITE);
-            else              subIcon.setColor(Color.RGME_SILVER);
         } else {
             subIcon.setColor(Color.RGME_SILVER);
         }
@@ -141,6 +177,7 @@ public final class SceneExplorer extends Container {
         glEnable(GL_SCISSOR_TEST);
         glScissor((int) scissorBox.xPos, (int) scissorBox.yPos, (int) scissorBox.width, (int) scissorBox.height);
             for(Group group : groups) group.render(uiProgram, background, font);
+            if(showTextArea) textArea.render(uiProgram, background, font);
         glDisable(GL_SCISSOR_TEST);
         
         scrollbar.render(uiProgram, background, font);
@@ -178,6 +215,17 @@ public final class SceneExplorer extends Container {
         subIcon.position.set(subButton.xPos, subButton.yPos + 24);
         
         observable.notifyObservers("viewportSize", new Vector2f(bounds.xPos, bounds.yPos + titleBar.height));
+        observable.notifyObservers("viewportHeight", parentPosY);
+    }
+    
+    public void showTextArea(boolean value, Member member) {
+        showTextArea = value;
+        
+        if(showTextArea) {
+            memberBounds = member.bounds;
+            textArea.setText(member.gameObject.getName());
+            textArea.focus();
+        }
     }
 
 }

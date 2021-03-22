@@ -220,7 +220,7 @@ public abstract class TextInput extends Widget implements LogicLoop, Relocatable
                 (yOffset + parentPosY) + HEIGHT - 5);
     }
     
-    protected void focus() {
+    public void focus() {
         hasFocus = true;
         UI.setTextInputWidget(this);
         timer.start();
