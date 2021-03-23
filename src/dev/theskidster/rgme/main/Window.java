@@ -125,6 +125,10 @@ public final class Window implements PropertyChangeListener {
                 if(mouseLeftHeld ^ mouseMiddleHeld ^ mouseRightHeld) {
                     if(mouseMiddleHeld) camera.setPosition(x, y);
                     if(mouseRightHeld)  camera.setDirection(x, y);
+                    
+                    if(mouseLeftHeld) {
+                        scene.stretchShape(camera.rayChange.y, ctrlHeld);
+                    }
                 } else {
                     camera.prevX = x;
                     camera.prevY = y;
@@ -136,7 +140,13 @@ public final class Window implements PropertyChangeListener {
             ui.setMouseAction(button, action);
             
             switch(button) {
-                case GLFW_MOUSE_BUTTON_LEFT   -> mouseLeftHeld = (action == GLFW_PRESS);
+                case GLFW_MOUSE_BUTTON_LEFT   -> {
+                    mouseLeftHeld = (action == GLFW_PRESS);
+                    
+                    if(mouseLeftHeld) scene.addShape();
+                    else              scene.finalizeShape();
+                }
+                
                 case GLFW_MOUSE_BUTTON_MIDDLE -> mouseMiddleHeld = (action == GLFW_PRESS);
                 case GLFW_MOUSE_BUTTON_RIGHT  -> mouseRightHeld = (action == GLFW_PRESS);
             }

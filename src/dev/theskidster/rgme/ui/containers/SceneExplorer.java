@@ -6,6 +6,7 @@ import dev.theskidster.rgme.commands.DeleteGameObject;
 import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.graphics.Icon;
 import dev.theskidster.rgme.main.Program;
+import dev.theskidster.rgme.scene.BoundingVolume;
 import dev.theskidster.rgme.scene.GameObject;
 import dev.theskidster.rgme.scene.Scene;
 import dev.theskidster.rgme.scene.VisibleGeometry;
@@ -89,6 +90,8 @@ public final class SceneExplorer extends Container {
 
     @Override
     public Command update(Mouse mouse) {
+        scene.selectedGameObject = selectedGameObject;
+        
         outOfBounds = titleBar.contains(mouse.cursorPos) || mouse.cursorPos.y > bounds.yPos + bounds.height;
         
         int verticalOffset = scrollbar.getContentScrollOffset();
@@ -135,7 +138,7 @@ public final class SceneExplorer extends Container {
                 
                 switch(groupIndex) {
                     default -> { return new AddGameObject(scene.visibleGeometry, new VisibleGeometry()); }
-                    case 1  -> { return new AddGameObject(scene.boundingVolumes, new VisibleGeometry()); }
+                    case 1  -> { return new AddGameObject(scene.boundingVolumes, new BoundingVolume()); }
                     case 2  -> { return new AddGameObject(scene.triggerBoxes,    new VisibleGeometry()); }
                     case 3  -> { return new AddGameObject(scene.lightSources,    new VisibleGeometry()); }
                     case 4  -> { return new AddGameObject(scene.entities,        new VisibleGeometry()); }

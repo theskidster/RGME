@@ -9,9 +9,6 @@ public class VisibleGeometry extends GameObject {
 
     public VisibleGeometry() {
         super("Shape");
-        
-        //TODO: create polytope superclass that this, bounding volumes, and 
-        //trigger boxes will use.
     }
 
 }

@@ -30,10 +30,15 @@ void main() {
             gl_Position = uProjection * uView * uModel * vec4(aPosition, 1);
             break;
 
-        case 2: //Used drawing the grid of tiles which comprise the scene floor.
+        case 2: //Used for drawing the grid of tiles which comprise the scene floor.
             ioColor     = aColOffset;
             ioTexCoords = aTexCoords;
             gl_Position = uProjection * uView * uModel * vec4(aPosition + aPosOffset, 1);
+            break;
+
+        case 3: //Used for rendering bounding volumes.
+            ioColor     = uColor;
+            gl_Position = uProjection * uView * uModel * vec4(aPosition, 1);
             break;
     }
 }

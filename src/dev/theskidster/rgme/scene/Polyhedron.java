@@ -1,5 +1,6 @@
 package dev.theskidster.rgme.scene;
 
+import dev.theskidster.rgme.main.Program;
 import static dev.theskidster.rgme.scene.Scene.CELL_SIZE;
 import java.util.LinkedHashMap;
 import org.joml.Intersectionf;
@@ -21,12 +22,12 @@ abstract class Polyhedron extends GameObject {
     protected final int floatsPerVertex;
     protected int numVertices;
     protected int bufferSizeInBytes;
-    private int vpOffset;
+    protected int vpOffset;
     protected int fOffset;
     
     private final int[] offsets = new int[8];
     
-    private float shapeHeight;
+    protected float shapeHeight;
     
     protected boolean updateData;
     
@@ -42,7 +43,7 @@ abstract class Polyhedron extends GameObject {
         this.floatsPerVertex = floatsPerVertex;
     }
     
-    protected void findBufferSize() {
+    protected final void findBufferSize() {
         numVertices       = faces.size() * 3;
         bufferSizeInBytes = numVertices * floatsPerVertex * Float.BYTES;
         
@@ -71,7 +72,7 @@ abstract class Polyhedron extends GameObject {
         }
     }
     
-    protected void strechShape(float verticalChange, boolean ctrlHeld, Scene scene) {
+    void stretchShape(float verticalChange, boolean ctrlHeld, Scene scene) {
         if(ctrlHeld) {
             shapeHeight += verticalChange;
             shapeHeight = (shapeHeight > scene.height) ? scene.height : shapeHeight;
@@ -215,6 +216,8 @@ abstract class Polyhedron extends GameObject {
     }
     
     abstract void addShape(float x, float y, float z);
+    abstract void update();
+    abstract void draw(Program sceneProgram);
     
     void selectVertices(Vector3f camPos, Vector3f camRay) {
         vertexPositions.forEach((id, pos) -> {
@@ -257,7 +260,7 @@ abstract class Polyhedron extends GameObject {
     }
     
     void selectAll() {
-        vertexPositions.forEach((index, position) -> selector.addVertex(index));
+        vertexPositions.keySet().forEach(id -> selector.addVertex(id));
     }
     
 }

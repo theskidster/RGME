@@ -12,6 +12,10 @@ final class Face {
     
     int n;
     
+    Face(int[] vp) {
+        this.vp = vp;
+    }
+    
     Face(int[] vp, int[] tc, int n) {
         this.vp = vp;
         this.tc = tc;

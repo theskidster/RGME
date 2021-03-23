@@ -6,6 +6,7 @@ import dev.theskidster.rgme.ui.UI;
 import static dev.theskidster.rgme.ui.UI.TOOLBAR_WIDTH;
 import dev.theskidster.rgme.utils.Color;
 import java.util.LinkedList;
+import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.opengl.GL20.*;
@@ -32,6 +33,7 @@ public final class App {
     private final Camera camera;
     private final Scene scene;
     
+    private static final Vector3f noValue = new Vector3f();
     public final CommandHistory cmdHistory = new CommandHistory();
     
     App() {
@@ -166,6 +168,10 @@ public final class App {
     
     public static void setClearColor(Color color) {
         glClearColor(color.r, color.g, color.b, 0);
+    }
+    
+    public static Vector3f noValue() {
+        return noValue;
     }
     
 }

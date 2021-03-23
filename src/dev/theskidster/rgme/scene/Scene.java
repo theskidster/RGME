@@ -2,6 +2,7 @@ package dev.theskidster.rgme.scene;
 
 import dev.theskidster.rgme.main.App;
 import dev.theskidster.rgme.main.Program;
+import dev.theskidster.rgme.ui.UI;
 import dev.theskidster.rgme.utils.Color;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +33,8 @@ public final class Scene {
     private final Origin origin;
     private final Floor floor = new Floor();
     
+    public GameObject selectedGameObject;
+    
     public final Map<Integer, GameObject> visibleGeometry = new HashMap<>();
     public final Map<Integer, GameObject> boundingVolumes = new HashMap<>();
     public final Map<Integer, GameObject> triggerBoxes    = new HashMap<>();
@@ -58,11 +61,14 @@ public final class Scene {
     }
     
     public void update() {
-        
+        boundingVolumes.values().forEach(volume -> ((BoundingVolume) volume).update());
     }
     
     public void render(Program sceneProgram, Vector3f camPos, Vector3f camUp) {
         floor.draw(sceneProgram, tiles);
+        
+        boundingVolumes.values().forEach(volume -> ((BoundingVolume) volume).draw(sceneProgram));
+        
         origin.render(sceneProgram);
     }
     
@@ -73,6 +79,28 @@ public final class Scene {
             Vector2i location = entry.getKey();
             entry.setValue(rayTest.test(location.x, 0, location.y, location.x + CELL_SIZE, 0, location.y + CELL_SIZE));
         });
+    }
+    
+    public void addShape() {
+        if(tiles.containsValue(true) && selectedGameObject != null && selectedGameObject instanceof Polyhedron) {
+            Vector2i tileLocation = tiles.entrySet().stream().filter(entry -> entry.getValue()).findAny().get().getKey();
+            cursorLocation.set(tileLocation.x, 0, tileLocation.y);
+            initialLocation.set(cursorLocation);
+            
+            ((Polyhedron) selectedGameObject).addShape(cursorLocation.x, 0, cursorLocation.z);
+        }
+    }
+    
+    public void stretchShape(float verticalChange, boolean ctrlHeld) {
+        if(selectedGameObject != null && selectedGameObject instanceof Polyhedron) {
+            ((Polyhedron) selectedGameObject).stretchShape(verticalChange, ctrlHeld, this);
+        }
+    }
+    
+    public void finalizeShape() {
+        if(selectedGameObject != null && selectedGameObject instanceof Polyhedron) {
+            ((Polyhedron) selectedGameObject).shapeHeight = 0;
+        }
     }
     
 }

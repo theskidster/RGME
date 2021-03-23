@@ -3,6 +3,7 @@ package dev.theskidster.rgme.ui.widgets;
 import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.graphics.Icon;
 import dev.theskidster.rgme.main.Program;
+import dev.theskidster.rgme.scene.BoundingVolume;
 import dev.theskidster.rgme.scene.GameObject;
 import dev.theskidster.rgme.scene.VisibleGeometry;
 import dev.theskidster.rgme.scene.WorldLight;
@@ -81,6 +82,8 @@ public class Member {
         if(!typeIconSet) {
             if(gameObject instanceof VisibleGeometry) {
                 typeIcon.setSubImage(0, 1);
+            } else if(gameObject instanceof BoundingVolume) {
+                typeIcon.setSubImage(1, 1);
             }
             
             typeIconSet = true;

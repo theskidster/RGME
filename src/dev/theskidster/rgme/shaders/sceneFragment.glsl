@@ -14,7 +14,7 @@ void makeTransparent(float a) {
 
 void main() {
     switch(uType) {
-        case 0: case 1:
+        case 0: case 1: case 3:
             ioResult = vec4(ioColor, 0);
             break;
 
