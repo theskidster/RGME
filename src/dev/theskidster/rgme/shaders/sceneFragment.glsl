@@ -14,13 +14,8 @@ void makeTransparent(float a) {
 
 void main() {
     switch(uType) {
-        case 0: case 1:
+        case 0: case 1: case 2:
             ioResult = vec4(ioColor, 0);
-            break;
-
-        case 2:
-            makeTransparent(texture(uTexture, ioTexCoords).a);
-            ioResult = texture(uTexture, ioTexCoords) * vec4(ioColor, 1);
             break;
     }
 }
