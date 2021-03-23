@@ -8,6 +8,7 @@ import java.util.Map;
 import org.joml.RayAabIntersection;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 /**
  * @author J Hoffman
@@ -22,10 +23,14 @@ public final class Scene {
     int height;
     int depth;
     
+    private final RayAabIntersection rayTest = new RayAabIntersection();
+    
+    final Vector3i initialLocation = new Vector3i();
+    final Vector3i cursorLocation  = new Vector3i();
+    final Map<Vector2i, Boolean> tiles;
+    
     private final Origin origin;
     private final Floor floor = new Floor();
-    
-    private final RayAabIntersection rayTest = new RayAabIntersection();
     
     public final Map<Integer, GameObject> visibleGeometry = new HashMap<>();
     public final Map<Integer, GameObject> boundingVolumes = new HashMap<>();
@@ -33,8 +38,6 @@ public final class Scene {
     public final Map<Integer, GameObject> lightSources    = new HashMap<>();
     public final Map<Integer, GameObject> entities        = new HashMap<>();
     public final Map<Integer, GameObject> instances       = new HashMap<>();
-    
-    private final Map<Vector2i, Boolean> tiles;
     
     public Scene(int width, int height, int depth, Color clearColor) {
         this.width  = width;
@@ -69,9 +72,6 @@ public final class Scene {
         tiles.entrySet().forEach((entry) -> {
             Vector2i location = entry.getKey();
             entry.setValue(rayTest.test(location.x, 0, location.y, location.x + CELL_SIZE, 0, location.y + CELL_SIZE));
-            if(entry.getValue()) {
-                //System.out.println(entry.getKey());
-            }
         });
     }
     
