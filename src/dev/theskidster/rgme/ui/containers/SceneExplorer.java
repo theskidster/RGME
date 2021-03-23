@@ -237,5 +237,9 @@ public final class SceneExplorer extends Container {
             textArea.focus();
         }
     }
+    
+    float getTotalLength() {
+        return bounds.height + 28;
+    }
 
 }

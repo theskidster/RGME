@@ -10,6 +10,7 @@ import dev.theskidster.rgme.main.Window;
 import dev.theskidster.rgme.scene.Scene;
 import dev.theskidster.rgme.ui.containers.Container;
 import dev.theskidster.rgme.ui.containers.SceneExplorer;
+import dev.theskidster.rgme.ui.containers.ToolBox;
 import dev.theskidster.rgme.utils.TextInput;
 import dev.theskidster.rgme.utils.Mouse;
 import java.beans.PropertyChangeEvent;
@@ -36,14 +37,19 @@ public final class UI implements PropertyChangeListener {
     private final Background background = new Background();
     private final Matrix4f projMatrix   = new Matrix4f();
     
+    private final ToolBox toolBox;
     private final LinkedHashSet<Container> containers;
     
     public UI(Window window, Scene scene) {
         mouse = new Mouse(window);
         font  = new FreeTypeFont(freeType, "fnt_karla_regular.ttf", 17);
         
+        SceneExplorer explorer = new SceneExplorer(scene);
+        toolBox = new ToolBox(explorer);
+        
         containers = new LinkedHashSet<>() {{
-            add(new SceneExplorer(scene));
+            add(explorer);
+            add(toolBox);
         }};
     }
     

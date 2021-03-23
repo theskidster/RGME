@@ -33,6 +33,7 @@ public final class Window implements PropertyChangeListener {
     
     public final long handle;
     
+    boolean minimized;
     private boolean mouseLeftHeld;
     private boolean mouseMiddleHeld;
     private boolean mouseRightHeld;
@@ -113,6 +114,7 @@ public final class Window implements PropertyChangeListener {
             width  = w;
             height = h;
             
+            minimized = (w == 0) && (h == 0);
             glViewport(0, 0, width, height);
             
             observable.notifyObservers("viewportSize", new Vector2f(width, height));
