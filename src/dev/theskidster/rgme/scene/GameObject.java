@@ -18,8 +18,8 @@ public abstract class GameObject {
     protected Vector3f position;
     
     public GameObject(String name) {
-        this.index = indexLimit++;
-        this.name  = name;
+        index = indexLimit++;
+        this.name = name + " (" + index + ")";
     }
     
     public boolean getVisible()   { return visible; }

@@ -36,7 +36,7 @@ void main() {
             gl_Position = uProjection * uView * uModel * vec4(aPosition + aPosOffset, 1);
             break;
 
-        case 3: //Used for rendering bounding volumes.
+        case 3: //Used for rendering visible geometry.
             ioColor     = uColor;
             gl_Position = uProjection * uView * uModel * vec4(aPosition, 1);
             break;
