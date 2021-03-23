@@ -3,6 +3,7 @@ package dev.theskidster.rgme.scene;
 import dev.theskidster.rgme.main.App;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.utils.Color;
+import static dev.theskidster.rgme.utils.Light.NOON;
 import java.util.HashMap;
 import java.util.Map;
 import org.joml.RayAabIntersection;
@@ -57,17 +58,25 @@ public final class Scene {
                 }
             }
         }};
+        
+        LightSource worldLight = new LightSource(NOON);
+        lightSources.put(worldLight.index, worldLight);
     }
     
     public void update() {
-        visibleGeometry.values().forEach(volume -> ((VisibleGeometry) volume).update());
+        visibleGeometry.values().forEach(geometry -> ((VisibleGeometry) geometry).update());
+        lightSources.values().forEach(light -> ((LightSource) light).update());
     }
     
     public void render(Program sceneProgram, Vector3f camPos, Vector3f camUp) {
         floor.draw(sceneProgram, tiles);
         
-        visibleGeometry.values().forEach(volume -> {
-            if(volume.visible) ((VisibleGeometry) volume).render(sceneProgram);
+        visibleGeometry.values().forEach(geometry -> {
+            if(geometry.visible) ((VisibleGeometry) geometry).render(sceneProgram);
+        });
+        
+        lightSources.values().forEach(light -> {
+            if(light.visible) ((LightSource) light).render(sceneProgram, camPos, camUp);
         });
         
         origin.render(sceneProgram);

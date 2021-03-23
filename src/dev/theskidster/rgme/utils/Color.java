@@ -64,4 +64,8 @@ public final class Color {
         return conversion;
     }
     
+    public static Vector3f convert(Color color) {
+        return new Vector3f(color.r, color.g, color.b);
+    }
+    
 }

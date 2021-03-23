@@ -40,5 +40,11 @@ void main() {
             ioColor     = uColor;
             gl_Position = uProjection * uView * uModel * vec4(aPosition, 1);
             break;
+
+        case 4: //Used for displaying light source icons.
+            ioColor     = uColor;
+            ioTexCoords = aTexCoords;
+            gl_Position = uProjection * uView * uModel * vec4(aPosition, 1);
+            break;
     }
 }

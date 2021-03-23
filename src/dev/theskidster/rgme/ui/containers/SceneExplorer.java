@@ -8,6 +8,7 @@ import dev.theskidster.rgme.graphics.Icon;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.scene.BoundingVolume;
 import dev.theskidster.rgme.scene.GameObject;
+import dev.theskidster.rgme.scene.LightSource;
 import dev.theskidster.rgme.scene.Scene;
 import dev.theskidster.rgme.scene.VisibleGeometry;
 import dev.theskidster.rgme.ui.FreeTypeFont;
@@ -118,7 +119,7 @@ public final class SceneExplorer extends Container {
             textArea.scissorBox.height = scissorBox.height;
             
             if(!textArea.hasFocus()) {
-                if(!(textArea.getText().length() == 0)) {
+                if(!(textArea.getText().length() == 0) && !textArea.getText().equals("World Light")) {
                     selectedGameObject.setName(textArea.getText());
                 }
                 
@@ -140,7 +141,7 @@ public final class SceneExplorer extends Container {
                     default -> { return new AddGameObject(scene.visibleGeometry, new VisibleGeometry()); }
                     case 1  -> { return new AddGameObject(scene.boundingVolumes, new BoundingVolume()); }
                     case 2  -> { return new AddGameObject(scene.triggerBoxes,    new VisibleGeometry()); }
-                    case 3  -> { return new AddGameObject(scene.lightSources,    new VisibleGeometry()); }
+                    case 3  -> { return new AddGameObject(scene.lightSources,    new LightSource()); }
                     case 4  -> { return new AddGameObject(scene.entities,        new VisibleGeometry()); }
                     case 5  -> { return new AddGameObject(scene.instances,       new VisibleGeometry()); }
                 }
@@ -153,7 +154,7 @@ public final class SceneExplorer extends Container {
             if(mouse.clicked) subIcon.setColor(Color.RGME_WHITE);
             else              subIcon.setColor(Color.RGME_SILVER);
             
-            if(clickedOnce(subButton, mouse) && selectedGameObject != null) {
+            if(clickedOnce(subButton, mouse) && selectedGameObject != null && !selectedGameObject.getName().equals("World Light")) {
                 showTextArea   = false;
                 
                 switch(groupIndex) {

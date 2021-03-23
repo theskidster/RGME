@@ -5,8 +5,8 @@ import dev.theskidster.rgme.graphics.Icon;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.scene.BoundingVolume;
 import dev.theskidster.rgme.scene.GameObject;
+import dev.theskidster.rgme.scene.LightSource;
 import dev.theskidster.rgme.scene.VisibleGeometry;
-import dev.theskidster.rgme.scene.WorldLight;
 import dev.theskidster.rgme.ui.FreeTypeFont;
 import static dev.theskidster.rgme.ui.UI.TOOLBAR_WIDTH;
 import dev.theskidster.rgme.ui.containers.SceneExplorer;
@@ -63,7 +63,7 @@ public class Member {
             
             selected = true;
             
-            if(mouse.cursorPos.x > typeIcon.position.x + 20 && !(gameObject instanceof WorldLight)) {
+            if(mouse.cursorPos.x > typeIcon.position.x + 20 && !(gameObject.getName().equals("World Light"))) {
                 clickCount++;
                 explorer.showTextArea(clickCount >= 2, this);
             }
@@ -84,6 +84,8 @@ public class Member {
                 typeIcon.setSubImage(0, 1);
             } else if(gameObject instanceof BoundingVolume) {
                 typeIcon.setSubImage(1, 1);
+            } else if(gameObject instanceof LightSource) {
+                typeIcon.setSubImage(gameObject.getName().equals("World Light") ? 3 : 4, 1);
             }
             
             typeIconSet = true;
