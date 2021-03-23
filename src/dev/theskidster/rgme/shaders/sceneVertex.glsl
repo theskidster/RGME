@@ -32,6 +32,7 @@ void main() {
 
         case 2: //Used drawing the grid of tiles which comprise the scene floor.
             ioColor     = aColOffset;
+            ioTexCoords = aTexCoords;
             gl_Position = uProjection * uView * uModel * vec4(aPosition + aPosOffset, 1);
             break;
     }

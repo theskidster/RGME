@@ -1,6 +1,8 @@
 package dev.theskidster.rgme.scene;
 
+import dev.theskidster.rgme.graphics.Atlas;
 import dev.theskidster.rgme.graphics.Graphics;
+import dev.theskidster.rgme.graphics.Texture;
 import dev.theskidster.rgme.main.App;
 import dev.theskidster.rgme.main.Program;
 import static dev.theskidster.rgme.scene.Scene.CELL_SIZE;
@@ -22,17 +24,29 @@ class Floor {
     private final int vboColOffset = glGenBuffers();
     
     private final Graphics g = new Graphics();
+    private final Texture texture;
+    private final Atlas atlas;
     
-    Floor() {        
+    Floor() {
+        //TODO: could allow users to provide their own tileset for floors that can render in-game.
+        texture = new Texture("spr_icons.png");
+        
+        glBindTexture(GL_TEXTURE_2D, texture.handle);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        
+        atlas = new Atlas(texture, 60, 60);
+        
         try(MemoryStack stack = MemoryStack.stackPush()) {
-            g.vertices = stack.mallocFloat(12);
+            g.vertices = stack.mallocFloat(20);
             g.indices  = stack.mallocInt(6);
             
             //(vec3 position), (vec2 texCoords)
-            g.vertices.put(0)        .put(0).put(CELL_SIZE);
-            g.vertices.put(CELL_SIZE).put(0).put(CELL_SIZE);
-            g.vertices.put(CELL_SIZE).put(0).put(0);
-            g.vertices.put(0)        .put(0).put(0);
+            g.vertices.put(0)        .put(0).put(CELL_SIZE)     .put(atlas.subImageWidth * 2).put(atlas.subImageHeight);
+            g.vertices.put(CELL_SIZE).put(0).put(CELL_SIZE)     .put(atlas.subImageWidth * 3).put(atlas.subImageHeight);
+            g.vertices.put(CELL_SIZE).put(0).put(0)             .put(atlas.subImageWidth * 3).put(atlas.subImageHeight * 2);
+            g.vertices.put(0)        .put(0).put(0)             .put(atlas.subImageWidth * 2).put(atlas.subImageHeight * 2);
             
             g.indices.put(0).put(1).put(2);
             g.indices.put(2).put(3).put(0);
@@ -43,8 +57,11 @@ class Floor {
         
         g.bindBuffers();
         
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, (3 * Float.BYTES), 0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, (5 * Float.BYTES), 0);
+        glVertexAttribPointer(2, 2, GL_FLOAT, false, (5 * Float.BYTES), (3 * Float.BYTES));
+        
         glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(2);
     }
     
     private void offsetPosition(Map<Vector2i, Boolean> tiles) {
@@ -71,8 +88,8 @@ class Floor {
             FloatBuffer colors = stack.mallocFloat(tiles.size() * Float.BYTES);
             
             tiles.forEach((location, hovered) -> {
-                if(hovered) colors.put(Color.RGME_PINK.r).put(Color.RGME_PINK.g).put(Color.RGME_PINK.b);
-                else        colors.put(Color.RGME_PURPLE.r).put(Color.RGME_PURPLE.g).put(Color.RGME_PURPLE.b);
+                if(hovered) colors.put(Color.RGME_SILVER.r).put(Color.RGME_SILVER.g).put(Color.RGME_SILVER.b);
+                else        colors.put(Color.RGME_DARK_GRAY.r).put(Color.RGME_DARK_GRAY.g).put(Color.RGME_DARK_GRAY.b);
             });
             
             colors.flip();
@@ -88,6 +105,7 @@ class Floor {
     
     public void draw(Program sceneProgram, Map<Vector2i, Boolean> tiles) {
         glBindVertexArray(g.vao);
+        glBindTexture(GL_TEXTURE_2D, texture.handle);
         
         offsetPosition(tiles);
         offsetColor(tiles);
