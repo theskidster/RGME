@@ -88,7 +88,7 @@ class Floor {
             FloatBuffer colors = stack.mallocFloat(tiles.size() * Float.BYTES);
             
             tiles.forEach((location, hovered) -> {
-                if(hovered) colors.put(Color.RGME_MEDIUM_GRAY.r).put(Color.RGME_MEDIUM_GRAY.g).put(Color.RGME_MEDIUM_GRAY.b);
+                if(hovered) colors.put(Color.RGME_SILVER.r).put(Color.RGME_SILVER.g).put(Color.RGME_SILVER.b);
                 else        colors.put(Color.RGME_DARK_GRAY.r).put(Color.RGME_DARK_GRAY.g).put(Color.RGME_DARK_GRAY.b);
             });
             

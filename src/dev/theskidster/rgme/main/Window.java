@@ -1,6 +1,7 @@
 package dev.theskidster.rgme.main;
 
 import dev.theskidster.rgme.commands.CommandHistory;
+import dev.theskidster.rgme.scene.Scene;
 import dev.theskidster.rgme.ui.UI;
 import static dev.theskidster.rgme.ui.UI.TOOLBAR_WIDTH;
 import dev.theskidster.rgme.utils.Observable;
@@ -93,7 +94,7 @@ public final class Window implements PropertyChangeListener {
         }
     }
     
-    void show(Monitor monitor, UI ui, Camera camera, CommandHistory cmdHistory) {
+    void show(Monitor monitor, Scene scene, UI ui, Camera camera, CommandHistory cmdHistory) {
         setIcon("img_logo.png");
         glfwSetWindowMonitor(handle, NULL, xPos, yPos, width, height, monitor.refreshRate);
         glfwSetWindowPos(handle, xPos, yPos);
@@ -117,7 +118,8 @@ public final class Window implements PropertyChangeListener {
         glfwSetCursorPosCallback(handle, (window, x, y) -> {
             ui.setMouseCursorPos(x, y);
             
-            camera.castRay((float) ((2f * x) / (width - TOOLBAR_WIDTH) - 1f), (float) (1f - (2f * yPos) / height));
+            camera.castRay((float) ((2f * x) / (width - TOOLBAR_WIDTH) - 1f), (float) (1f - (2f * y) / height));
+            scene.selectTile(camera.position, camera.ray);
             
             if(!ui.containerHovered()) {
                 if(mouseLeftHeld ^ mouseMiddleHeld ^ mouseRightHeld) {

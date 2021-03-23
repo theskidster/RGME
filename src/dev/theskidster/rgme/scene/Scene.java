@@ -5,6 +5,7 @@ import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.utils.Color;
 import java.util.HashMap;
 import java.util.Map;
+import org.joml.RayAabIntersection;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
 
@@ -23,6 +24,8 @@ public final class Scene {
     
     private final Origin origin;
     private final Floor floor = new Floor();
+    
+    private final RayAabIntersection rayTest = new RayAabIntersection();
     
     public final Map<Integer, GameObject> visibleGeometry = new HashMap<>();
     public final Map<Integer, GameObject> boundingVolumes = new HashMap<>();
@@ -58,6 +61,18 @@ public final class Scene {
     public void render(Program sceneProgram, Vector3f camPos, Vector3f camUp) {
         floor.draw(sceneProgram, tiles);
         origin.render(sceneProgram);
+    }
+    
+    public void selectTile(Vector3f camPos, Vector3f camRay) {
+        rayTest.set(camPos.x, camPos.y, camPos.z, camRay.x, camRay.y, camRay.z);
+        
+        tiles.entrySet().forEach((entry) -> {
+            Vector2i location = entry.getKey();
+            entry.setValue(rayTest.test(location.x, 0, location.y, location.x + CELL_SIZE, 0, location.y + CELL_SIZE));
+            if(entry.getValue()) {
+                //System.out.println(entry.getKey());
+            }
+        });
     }
     
 }

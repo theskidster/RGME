@@ -82,7 +82,7 @@ public final class App {
     }
     
     void start() {
-        window.show(monitor, ui, camera, cmdHistory);
+        window.show(monitor, scene, ui, camera, cmdHistory);
         Logger.logSystemInfo();
         
         final double TARGET_DELTA = 1 / 60.0;
