@@ -5,6 +5,7 @@ import dev.theskidster.rgme.commands.Command;
 import dev.theskidster.rgme.commands.DeleteGameObject;
 import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.graphics.Icon;
+import dev.theskidster.rgme.main.App;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.scene.BoundingVolume;
 import dev.theskidster.rgme.scene.GameObject;
@@ -142,7 +143,11 @@ public final class SceneExplorer extends Container {
                     default -> { return new AddGameObject(scene.visibleGeometry, new VisibleGeometry()); }
                     case 1  -> { return new AddGameObject(scene.boundingVolumes, new BoundingVolume()); }
                     case 2  -> { return new AddGameObject(scene.triggerBoxes,    new VisibleGeometry()); }
-                    case 3  -> { return new AddGameObject(scene.lightSources,    new LightSource()); }
+                    case 3  -> {
+                        if(scene.lightSources.size() < App.MAX_LIGHTS) {
+                            return new AddGameObject(scene.lightSources, new LightSource());
+                        }
+                    }
                     case 4  -> { return new AddGameObject(scene.entities,        new VisibleGeometry()); }
                     case 5  -> { return new AddGameObject(scene.instances,       new VisibleGeometry()); }
                 }
