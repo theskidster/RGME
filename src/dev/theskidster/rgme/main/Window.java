@@ -157,8 +157,6 @@ public final class Window implements PropertyChangeListener {
                     case GLFW_KEY_Y -> { if(action == GLFW_PRESS) cmdHistory.redoCommand(); }
                 }
             }
-            
-            //TODO: re-implement text input
         });
     }
 

@@ -1,6 +1,7 @@
 package dev.theskidster.rgme.commands;
 
 import dev.theskidster.rgme.scene.GameObject;
+import dev.theskidster.rgme.scene.VisibleGeometry;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
 import java.util.Map.Entry;

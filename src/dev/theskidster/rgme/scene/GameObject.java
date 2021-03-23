@@ -1,6 +1,5 @@
 package dev.theskidster.rgme.scene;
 
-import dev.theskidster.rgme.main.Program;
 import org.joml.Vector3f;
 
 /**
@@ -22,9 +21,6 @@ public abstract class GameObject {
         this.index = indexLimit++;
         this.name  = name;
     }
-    
-    abstract void update();
-    abstract void render(Program sceneProgram, Vector3f camPos, Vector3f camUp);
     
     public boolean getVisible()   { return visible; }
     public String getName()       { return name; }

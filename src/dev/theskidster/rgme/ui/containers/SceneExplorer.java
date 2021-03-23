@@ -80,8 +80,8 @@ public final class SceneExplorer extends Container {
         observable.addObserver(scrollbar);
         observable.addObserver(textArea);
         
-        addIcon.setSubImage(5, 3);
-        subIcon.setSubImage(5, 4);
+        addIcon.setSubImage(8, 3);
+        subIcon.setSubImage(8, 4);
         
         widgets = new ArrayList<>();
         widgets.add(textArea);

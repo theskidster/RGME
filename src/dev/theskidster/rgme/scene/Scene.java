@@ -4,9 +4,8 @@ import dev.theskidster.rgme.main.App;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.utils.Color;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
+import org.joml.Vector2i;
 import org.joml.Vector3f;
 
 /**
@@ -16,11 +15,14 @@ import org.joml.Vector3f;
 
 public final class Scene {
     
+    public static final int CELL_SIZE = 1;
+    
     int width;
     int height;
     int depth;
     
     private final Origin origin;
+    private final Floor floor = new Floor();
     
     public final Map<Integer, GameObject> visibleGeometry = new HashMap<>();
     public final Map<Integer, GameObject> boundingVolumes = new HashMap<>();
@@ -29,7 +31,7 @@ public final class Scene {
     public final Map<Integer, GameObject> entities        = new HashMap<>();
     public final Map<Integer, GameObject> instances       = new HashMap<>();
     
-    private final Set<GameObject> allObjects = new LinkedHashSet<>();
+    private final Map<Vector2i, Boolean> tiles;
     
     public Scene(int width, int height, int depth, Color clearColor) {
         this.width  = width;
@@ -40,26 +42,21 @@ public final class Scene {
         
         origin = new Origin(width, height, depth);
         
-        //TODO: include world light
+        tiles = new HashMap<>() {{
+            for(int w = -(width / 2); w < width / 2; w++) {
+                for(int d = -(depth / 2); d < depth / 2; d++) {
+                    put(new Vector2i(w, d), false);
+                }
+            }
+        }};
     }
     
     public void update() {
-        //TODO: might be better off using an observer instead
-        allObjects.clear();
         
-        allObjects.addAll(visibleGeometry.values());
-        allObjects.addAll(boundingVolumes.values());
-        allObjects.addAll(triggerBoxes.values());
-        allObjects.addAll(lightSources.values());
-        allObjects.addAll(entities.values());
-        allObjects.addAll(instances.values());
-        
-        allObjects.forEach(object -> object.update());
     }
     
     public void render(Program sceneProgram, Vector3f camPos, Vector3f camUp) {
-        allObjects.forEach(object -> object.render(sceneProgram, camPos, camUp));
-        
+        floor.draw(sceneProgram, tiles);
         origin.render(sceneProgram);
     }
     
