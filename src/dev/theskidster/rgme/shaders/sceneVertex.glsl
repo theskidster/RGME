@@ -4,6 +4,7 @@
 layout (location = 0) in vec3 aPosition;
 layout (location = 1) in vec3 aColor;
 layout (location = 2) in vec2 aTexCoords;
+layout (location = 3) in vec3 aNormal;
 
 //Instanced attributes
 layout (location = 4) in vec3 aPosOffset;
@@ -14,9 +15,12 @@ uniform vec3 uColor;
 uniform mat4 uModel;
 uniform mat4 uView;
 uniform mat4 uProjection;
+uniform mat3 uNormal;
 
 out vec3 ioColor;
 out vec2 ioTexCoords;
+out vec3 ioNormal;
+out vec3 ioFragPos;
 
 void main() {
     switch(uType) {
@@ -37,7 +41,8 @@ void main() {
             break;
 
         case 3: //Used for rendering visible geometry.
-            ioColor     = uColor;
+            ioNormal    = uNormal * aNormal;
+            ioFragPos   = vec3(uModel * vec4(aPosition, 1));
             gl_Position = uProjection * uView * uModel * vec4(aPosition, 1);
             break;
 

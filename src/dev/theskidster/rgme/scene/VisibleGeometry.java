@@ -49,12 +49,11 @@ public final class VisibleGeometry extends GameObject {
     
     private Texture texture;
     
-    private Map<Integer, Vector2f> texCoords;
-    private Map<Integer, Vector3f> normals;
-    private LinkedHashMap<Integer, Vector3f> initialVPs      = new LinkedHashMap<>();
-    private LinkedHashMap<Integer, Vector3f> vertexPositions = new LinkedHashMap<>();
-    private LinkedHashMap<Integer, Face> faces               = new LinkedHashMap<>();
-    private LinkedHashMap<Integer, Vector3f> positionSubMap  = new LinkedHashMap<>();
+    private final Map<Integer, Vector2f> texCoords;
+    private final Map<Integer, Vector3f> normals;
+    private final LinkedHashMap<Integer, Vector3f> initialVPs      = new LinkedHashMap<>();
+    private final LinkedHashMap<Integer, Vector3f> vertexPositions = new LinkedHashMap<>();
+    private final LinkedHashMap<Integer, Face> faces               = new LinkedHashMap<>();
     
     public VisibleGeometry() {
         super("Shape");
@@ -80,12 +79,12 @@ public final class VisibleGeometry extends GameObject {
         findBufferSize();
         
         glVertexAttribPointer(0, 3, GL_FLOAT, false, (FLOATS_PER_VERTEX * Float.BYTES), 0);
-        glVertexAttribPointer(1, 2, GL_FLOAT, false, (FLOATS_PER_VERTEX * Float.BYTES), (3 * Float.BYTES));
-        glVertexAttribPointer(2, 3, GL_FLOAT, false, (FLOATS_PER_VERTEX * Float.BYTES), (5 * Float.BYTES));
+        glVertexAttribPointer(2, 2, GL_FLOAT, false, (FLOATS_PER_VERTEX * Float.BYTES), (3 * Float.BYTES));
+        glVertexAttribPointer(3, 3, GL_FLOAT, false, (FLOATS_PER_VERTEX * Float.BYTES), (5 * Float.BYTES));
         
         glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
+        glEnableVertexAttribArray(3);
         
         texture = new Texture("img_null.png");
         
@@ -111,7 +110,7 @@ public final class VisibleGeometry extends GameObject {
         modelMatrix.translation(position);
     }
     
-    void render(Program sceneProgram) {
+    void render(Program sceneProgram, GameObject[] lights, int numLights) {
         if(updateData) {
             findBufferSize();
 
@@ -138,13 +137,40 @@ public final class VisibleGeometry extends GameObject {
             updateData = false;
         }
         
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_DEPTH_TEST);
+        
         glBindVertexArray(vao);
+        glBindTexture(GL_TEXTURE_2D, texture.handle);
         
         sceneProgram.setUniform("uType", 3);
-        sceneProgram.setUniform("uColor", Color.RGME_BLUE.asVec3());
         sceneProgram.setUniform("uModel", false, modelMatrix);
+        sceneProgram.setUniform("uNormal", true, normal);
+        sceneProgram.setUniform("uNumLights", numLights);
+        
+        for(int i = 0; i < numLights; i++) {
+            LightSource light = (LightSource) lights[i];
+            
+            if(light != null) {
+                if(light.enabled) {
+                    sceneProgram.setUniform("uLights[" + i + "].brightness", light.getBrightness());
+                    sceneProgram.setUniform("uLights[" + i + "].contrast",   light.getContrast());
+                    sceneProgram.setUniform("uLights[" + i + "].position",   light.getPosition());
+                    sceneProgram.setUniform("uLights[" + i + "].ambient",    light.getAmbientColor());
+                    sceneProgram.setUniform("uLights[" + i + "].diffuse",    light.getDiffuseColor());
+                } else {
+                    sceneProgram.setUniform("uLights[" + i + "].brightness", 0);
+                    sceneProgram.setUniform("uLights[" + i + "].contrast",   0);
+                    sceneProgram.setUniform("uLights[" + i + "].position",   App.noValue());
+                    sceneProgram.setUniform("uLights[" + i + "].ambient",    App.noValue());
+                    sceneProgram.setUniform("uLights[" + i + "].diffuse",    App.noValue());
+                }
+            }
+        }
         
         glDrawArrays(GL_TRIANGLES, 0, numVertices);
+        glDisable(GL_CULL_FACE);
+        glDisable(GL_DEPTH_TEST);
         
         App.checkGLError();
     }

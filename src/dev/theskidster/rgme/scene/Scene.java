@@ -4,6 +4,7 @@ import dev.theskidster.rgme.main.App;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.utils.Color;
 import static dev.theskidster.rgme.utils.Light.NOON;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import org.joml.RayAabIntersection;
@@ -72,7 +73,12 @@ public final class Scene {
         floor.draw(sceneProgram, tiles);
         
         visibleGeometry.values().forEach(geometry -> {
-            if(geometry.visible) ((VisibleGeometry) geometry).render(sceneProgram);
+            if(geometry.visible) {
+                ((VisibleGeometry) geometry).render(
+                        sceneProgram, 
+                        lightSources.values().toArray(new GameObject[lightSources.size()]), 
+                        lightSources.size());
+            }
         });
         
         lightSources.values().forEach(light -> {

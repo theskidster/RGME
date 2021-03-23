@@ -146,6 +146,7 @@ public final class Window implements PropertyChangeListener {
                 case GLFW_MOUSE_BUTTON_LEFT   -> {
                     mouseLeftHeld = (action == GLFW_PRESS);
                     
+                    //TODO: provide as command
                     if(mouseLeftHeld) scene.addShape();
                     else              scene.finalizeShape();
                 }

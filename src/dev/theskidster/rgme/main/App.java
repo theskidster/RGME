@@ -18,6 +18,8 @@ import static org.lwjgl.opengl.GL20.*;
 
 public final class App {
 
+    public static final int MAX_LIGHTS = 32;
+    
     private static int tickCount = 0;
     
     private static boolean vSync = true;
@@ -72,10 +74,20 @@ public final class App {
             sceneProgram.use();
             
             sceneProgram.addUniform(BufferType.INT,  "uType");
+            sceneProgram.addUniform(BufferType.INT,  "uNumLights");
             sceneProgram.addUniform(BufferType.VEC3, "uColor");
+            sceneProgram.addUniform(BufferType.MAT3, "uNormal");
             sceneProgram.addUniform(BufferType.MAT4, "uModel");
             sceneProgram.addUniform(BufferType.MAT4, "uView");
             sceneProgram.addUniform(BufferType.MAT4, "uProjection");
+            
+            for(int i = 0; i < MAX_LIGHTS; i++) {
+                sceneProgram.addUniform(BufferType.FLOAT, "uLights[" + i + "].brightness");
+                sceneProgram.addUniform(BufferType.FLOAT, "uLights[" + i + "].contrast");
+                sceneProgram.addUniform(BufferType.VEC3,  "uLights[" + i + "].position");
+                sceneProgram.addUniform(BufferType.VEC3,  "uLights[" + i + "].ambient");
+                sceneProgram.addUniform(BufferType.VEC3,  "uLights[" + i + "].diffuse");
+            }
         }
         
         scene  = new Scene(16, 32, 16, Color.RGME_BLACK);
