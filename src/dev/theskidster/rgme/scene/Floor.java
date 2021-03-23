@@ -89,7 +89,7 @@ class Floor {
             
             tiles.forEach((location, hovered) -> {
                 if(hovered) colors.put(Color.RGME_SILVER.r).put(Color.RGME_SILVER.g).put(Color.RGME_SILVER.b);
-                else        colors.put(Color.RGME_DARK_GRAY.r).put(Color.RGME_DARK_GRAY.g).put(Color.RGME_DARK_GRAY.b);
+                else        colors.put(Color.RGME_SLATE_GRAY.r).put(Color.RGME_SLATE_GRAY.g).put(Color.RGME_SLATE_GRAY.b);
             });
             
             colors.flip();
