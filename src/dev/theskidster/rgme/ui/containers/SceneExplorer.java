@@ -119,7 +119,8 @@ public final class SceneExplorer extends Container {
             textArea.scissorBox.height = scissorBox.height;
             
             if(!textArea.hasFocus()) {
-                if(!(textArea.getText().length() == 0) && !textArea.getText().equals("World Light")) {
+                if(!(textArea.getText().length() == 0) && !textArea.getText().equals("World Light") && 
+                   !selectedGameObject.getName().equals("World Light")) {
                     selectedGameObject.setName(textArea.getText());
                 }
                 
