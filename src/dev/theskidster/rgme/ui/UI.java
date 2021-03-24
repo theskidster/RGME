@@ -37,15 +37,14 @@ public final class UI implements PropertyChangeListener {
     private final Background background = new Background();
     private final Matrix4f projMatrix   = new Matrix4f();
     
-    private final ToolBox toolBox;
     private final LinkedHashSet<Container> containers;
     
     public UI(Window window, Scene scene) {
         mouse = new Mouse(window);
         font  = new FreeTypeFont(freeType, "fnt_karla_regular.ttf", 17);
         
-        SceneExplorer explorer = new SceneExplorer(scene);
-        toolBox = new ToolBox(explorer);
+        ToolBox toolBox        = new ToolBox();
+        SceneExplorer explorer = new SceneExplorer(scene, toolBox);
         
         containers = new LinkedHashSet<>() {{
             add(explorer);

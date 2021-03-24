@@ -4,7 +4,6 @@ import dev.theskidster.rgme.main.App;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.utils.Color;
 import static dev.theskidster.rgme.utils.Light.NOON;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import org.joml.RayAabIntersection;

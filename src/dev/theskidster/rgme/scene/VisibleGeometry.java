@@ -4,7 +4,6 @@ import dev.theskidster.rgme.graphics.Texture;
 import dev.theskidster.rgme.main.App;
 import dev.theskidster.rgme.main.Program;
 import static dev.theskidster.rgme.scene.Scene.CELL_SIZE;
-import dev.theskidster.rgme.utils.Color;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.LinkedHashMap;

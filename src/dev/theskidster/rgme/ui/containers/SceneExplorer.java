@@ -62,7 +62,7 @@ public final class SceneExplorer extends Container {
     
     private final Map<Integer, Float> groupLengths = new HashMap<>();
     
-    public SceneExplorer(Scene scene) {
+    public SceneExplorer(Scene scene, ToolBox toolBox) {
         super(0, 28, TOOLBAR_WIDTH, 264, "Scene Explorer", 5, 0);
         this.scene = scene;
         
@@ -78,10 +78,13 @@ public final class SceneExplorer extends Container {
         
         observable.properties.put("viewportSize", null);
         observable.properties.put("viewportHeight", 0);
+        observable.properties.put("totalLength", 0);
+        observable.properties.put("gameObject", null);
         
         for(Group group : groups) observable.addObserver(group);
         observable.addObserver(scrollbar);
         observable.addObserver(textArea);
+        observable.addObserver(toolBox);
         
         addIcon.setSubImage(8, 3);
         subIcon.setSubImage(8, 4);
@@ -93,6 +96,7 @@ public final class SceneExplorer extends Container {
     @Override
     public Command update(Mouse mouse) {
         scene.selectedGameObject = selectedGameObject;
+        observable.notifyObservers("gameObject", selectedGameObject);
         
         outOfBounds = titleBar.contains(mouse.cursorPos) || mouse.cursorPos.y > bounds.yPos + bounds.height;
         
@@ -226,6 +230,7 @@ public final class SceneExplorer extends Container {
         
         observable.notifyObservers("viewportSize", new Vector2f(bounds.xPos, bounds.yPos + titleBar.height));
         observable.notifyObservers("viewportHeight", parentPosY);
+        observable.notifyObservers("totalLength", bounds.height + 28);
     }
     
     public void showTextArea(boolean value, Member member) {
@@ -236,10 +241,6 @@ public final class SceneExplorer extends Container {
             textArea.setText(member.gameObject.getName());
             textArea.focus();
         }
-    }
-    
-    float getTotalLength() {
-        return bounds.height + 28;
     }
 
 }
