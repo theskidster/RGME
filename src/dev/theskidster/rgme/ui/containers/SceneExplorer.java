@@ -80,6 +80,7 @@ public final class SceneExplorer extends Container {
         observable.properties.put("viewportHeight", 0);
         observable.properties.put("totalLength", 0);
         observable.properties.put("gameObject", null);
+        observable.properties.put("textAreaVisible", false);
         
         for(Group group : groups) observable.addObserver(group);
         observable.addObserver(scrollbar);
@@ -97,6 +98,7 @@ public final class SceneExplorer extends Container {
     public Command update(Mouse mouse) {
         scene.selectedGameObject = selectedGameObject;
         observable.notifyObservers("gameObject", selectedGameObject);
+        observable.notifyObservers("textAreaVisible", showTextArea);
         
         outOfBounds = titleBar.contains(mouse.cursorPos) || mouse.cursorPos.y > bounds.yPos + bounds.height;
         
@@ -165,15 +167,18 @@ public final class SceneExplorer extends Container {
             else              subIcon.setColor(Color.RGME_SILVER);
             
             if(clickedOnce(subButton, mouse) && selectedGameObject != null && !selectedGameObject.getName().equals("World Light")) {
-                showTextArea   = false;
+                showTextArea = false;
+                
+                GameObject gameObject = selectedGameObject;
+                selectedGameObject    = null;
                 
                 switch(groupIndex) {
-                    default -> { return new DeleteGameObject(scene.visibleGeometry, selectedGameObject); }
-                    case 1  -> { return new DeleteGameObject(scene.boundingVolumes, selectedGameObject); }
-                    case 2  -> { return new DeleteGameObject(scene.triggerBoxes,    selectedGameObject); }
-                    case 3  -> { return new DeleteGameObject(scene.lightSources,    selectedGameObject); }
-                    case 4  -> { return new DeleteGameObject(scene.entities,        selectedGameObject); }
-                    case 5  -> { return new DeleteGameObject(scene.instances,       selectedGameObject); }
+                    default -> { return new DeleteGameObject(scene.visibleGeometry, gameObject); }
+                    case 1  -> { return new DeleteGameObject(scene.boundingVolumes, gameObject); }
+                    case 2  -> { return new DeleteGameObject(scene.triggerBoxes,    gameObject); }
+                    case 3  -> { return new DeleteGameObject(scene.lightSources,    gameObject); }
+                    case 4  -> { return new DeleteGameObject(scene.entities,        gameObject); }
+                    case 5  -> { return new DeleteGameObject(scene.instances,       gameObject); }
                 }
             }
         } else {
@@ -185,7 +190,7 @@ public final class SceneExplorer extends Container {
 
     @Override
     public void render(Program uiProgram, Background background, FreeTypeFont font) {
-        background.drawRectangle(bounds, Color.RGME_DARK_GRAY, uiProgram);
+        background.drawRectangle(bounds, Color.RGME_SLATE_GRAY, uiProgram);
         renderTitleBar(uiProgram, background, font);
         
         glEnable(GL_SCISSOR_TEST);

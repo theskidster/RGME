@@ -23,7 +23,7 @@ public abstract class Container extends Widget implements LogicLoop, Relocatable
     protected Icon icon;
     protected Rectangle titleBar;
     
-    protected List<Widget> widgets;
+    public List<Widget> widgets;
     
     protected Container(float xPos, float yPos, float width, float height, String title, int cellX, int cellY) {
         super(xPos, yPos, width, height);
