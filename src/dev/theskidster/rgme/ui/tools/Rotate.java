@@ -5,23 +5,26 @@ import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.scene.GameObject;
 import dev.theskidster.rgme.ui.FreeTypeFont;
-import dev.theskidster.rgme.utils.Color;
+import dev.theskidster.rgme.ui.containers.ToolBox;
 import dev.theskidster.rgme.utils.Mouse;
+import java.util.LinkedList;
 
 /**
  * @author J Hoffman
  * Created: Mar 24, 2021
  */
 
-public class TranslationTool extends Tool {
+public class Rotate extends Tool {
 
-    public TranslationTool() {
-        super("Translate", 0, 2);
+    public Rotate() {
+        super("Rotate", 1, 2);
+        
+        widgets = new LinkedList<>();
     }
 
     @Override
-    public Command update(Mouse mouse, GameObject selectedGameObject, float parentPosX, float parentPosY, int order) {
-        updateButton(mouse.cursorPos, parentPosX, parentPosY, order);
+    public Command update(Mouse mouse, ToolBox toolBox, GameObject selectedGameObject, float parentPosX, float parentPosY, int order) {
+        updateButton(mouse, toolBox, parentPosX, parentPosY, order);
         
         return null;
     }

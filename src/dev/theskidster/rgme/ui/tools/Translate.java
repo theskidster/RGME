@@ -6,6 +6,7 @@ import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.scene.GameObject;
 import dev.theskidster.rgme.ui.FreeTypeFont;
 import dev.theskidster.rgme.ui.containers.ToolBox;
+import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Mouse;
 import java.util.LinkedList;
 
@@ -14,10 +15,10 @@ import java.util.LinkedList;
  * Created: Mar 24, 2021
  */
 
-public class Paintbrush extends Tool {
+public class Translate extends Tool {
 
-    public Paintbrush() {
-        super("Mesh Paintbrush", 5, 2);
+    public Translate() {
+        super("Translate", 0, 2);
         
         widgets = new LinkedList<>();
     }
@@ -33,5 +34,5 @@ public class Paintbrush extends Tool {
     public void render(Program uiProgram, Background background, FreeTypeFont font) {
         renderButton(uiProgram, background);
     }
-    
+
 }

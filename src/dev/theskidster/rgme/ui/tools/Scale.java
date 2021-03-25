@@ -14,10 +14,10 @@ import java.util.LinkedList;
  * Created: Mar 24, 2021
  */
 
-public class Paintbrush extends Tool {
+public class Scale extends Tool {
 
-    public Paintbrush() {
-        super("Mesh Paintbrush", 5, 2);
+    public Scale() {
+        super("Scale", 2, 2);
         
         widgets = new LinkedList<>();
     }
@@ -33,5 +33,5 @@ public class Paintbrush extends Tool {
     public void render(Program uiProgram, Background background, FreeTypeFont font) {
         renderButton(uiProgram, background);
     }
-    
+
 }

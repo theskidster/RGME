@@ -14,10 +14,10 @@ import java.util.LinkedList;
  * Created: Mar 24, 2021
  */
 
-public class Paintbrush extends Tool {
+public class FaceTool extends Tool {
 
-    public Paintbrush() {
-        super("Mesh Paintbrush", 5, 2);
+    public FaceTool() {
+        super("Face Manipulator", 3, 2);
         
         widgets = new LinkedList<>();
     }
