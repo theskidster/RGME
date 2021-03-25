@@ -124,7 +124,13 @@ public final class Window implements PropertyChangeListener {
             ui.setMouseCursorPos(x, y);
             
             camera.castRay((float) ((2f * x) / (width - TOOLBAR_WIDTH) - 1f), (float) (1f - (2f * y) / height));
-            scene.selectTile(camera.position, camera.ray);
+            
+            switch(ui.getCurrTool()) {
+                case "Mesh Paintbrush" -> {
+                    if(!ui.containerHovered()) scene.selectTile(camera.position, camera.ray);
+                    else                       scene.unselectTiles();
+                }
+            }
             
             if(!ui.containerHovered()) {
                 if(mouseLeftHeld ^ mouseMiddleHeld ^ mouseRightHeld) {
@@ -132,7 +138,11 @@ public final class Window implements PropertyChangeListener {
                     if(mouseRightHeld)  camera.setDirection(x, y);
                     
                     if(mouseLeftHeld) {
-                        scene.stretchShape(camera.rayChange.y, ctrlHeld);
+                        switch(ui.getCurrTool()) {
+                            case "Mesh Paintbrush" -> {
+                                scene.stretchShape(camera.rayChange.y, ctrlHeld);
+                            }
+                        }
                     }
                 } else {
                     camera.prevX = x;
@@ -149,8 +159,15 @@ public final class Window implements PropertyChangeListener {
                     mouseLeftHeld = (action == GLFW_PRESS);
                     
                     //TODO: provide as command
-                    if(mouseLeftHeld) scene.addShape();
-                    else              scene.finalizeShape();
+                    if(mouseLeftHeld) {
+                        switch(ui.getCurrTool()) {
+                            case "Mesh Paintbrush" -> scene.addShape();
+                        }
+                    } else {
+                        switch(ui.getCurrTool()) {
+                            case "Mesh Paintbrush" -> scene.finalizeShape();
+                        }
+                    }
                 }
                 
                 case GLFW_MOUSE_BUTTON_MIDDLE -> mouseMiddleHeld = (action == GLFW_PRESS);

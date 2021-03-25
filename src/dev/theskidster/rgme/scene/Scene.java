@@ -96,6 +96,12 @@ public final class Scene {
         });
     }
     
+    public void unselectTiles() {
+        tiles.entrySet().forEach((entry) -> {
+            entry.setValue(false);
+        });
+    }
+    
     public void addShape() {
         if(tiles.containsValue(true) && selectedGameObject != null && selectedGameObject instanceof VisibleGeometry) {
             Vector2i tileLocation = tiles.entrySet().stream().filter(entry -> entry.getValue()).findAny().get().getKey();

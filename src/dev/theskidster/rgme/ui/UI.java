@@ -32,6 +32,7 @@ public final class UI implements PropertyChangeListener {
     private final FreeTypeFont font;
     private final Mouse mouse;
     private static TextInput textInput;
+    private final ToolBox toolBox = new ToolBox();
     
     private final Library freeType      = FreeType.newLibrary();
     private final Background background = new Background();
@@ -43,7 +44,6 @@ public final class UI implements PropertyChangeListener {
         mouse = new Mouse(window);
         font  = new FreeTypeFont(freeType, "fnt_karla_regular.ttf", 17);
         
-        ToolBox toolBox        = new ToolBox();
         SceneExplorer explorer = new SceneExplorer(scene, toolBox);
         
         containers = new LinkedHashSet<>() {{
@@ -128,6 +128,10 @@ public final class UI implements PropertyChangeListener {
     
     public static void setTextInputWidget(TextInput input) {
         textInput = input;
+    }
+    
+    public String getCurrTool() {
+        return (toolBox.currTool != null) ? toolBox.currTool : "n/a";
     }
     
 }

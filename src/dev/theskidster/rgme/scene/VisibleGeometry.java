@@ -120,7 +120,7 @@ public final class VisibleGeometry extends GameObject {
                     Vector3f pos    = vertexPositions.get(face.vp[i]);
                     Vector2f coords = texCoords.get(face.tc[i]);
                     Vector3f norm   = normals.get(face.n);
-
+                    
                     vertices.put(pos.x).put(pos.y).put(pos.z)
                             .put(coords.x).put(coords.y)
                             .put(norm.x).put(norm.y).put(norm.z);
