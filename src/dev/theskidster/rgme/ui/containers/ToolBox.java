@@ -30,7 +30,8 @@ import static org.lwjgl.glfw.GLFW.GLFW_ARROW_CURSOR;
 
 public class ToolBox extends Container implements PropertyChangeListener {
     
-    public String currTool;
+    private float viewportWidth;
+    private float viewportHeight;
     
     private float totalLengthOfExplorer;
     
@@ -38,6 +39,7 @@ public class ToolBox extends Container implements PropertyChangeListener {
     
     private GameObject prevGameObject;
     private GameObject selectedGameObject;
+    public String currTool;
     
     private final Rectangle sidebar = new Rectangle(0, 0, 38, 0);
     
@@ -57,7 +59,7 @@ public class ToolBox extends Container implements PropertyChangeListener {
         }
         
         tools.forEach(tool -> {
-            tool.update(mouse, this, selectedGameObject, tools.indexOf(tool));
+            tool.update(mouse, this, selectedGameObject);
             if(tool.selected) currTool = tool.name;
         });
         
@@ -80,6 +82,9 @@ public class ToolBox extends Container implements PropertyChangeListener {
 
     @Override
     public void relocate(float parentPosX, float parentPosY) {
+        viewportWidth  = parentPosX;
+        viewportHeight = parentPosX;
+        
         bounds.xPos   = parentPosX - bounds.width;
         bounds.yPos   = totalLengthOfExplorer;
         bounds.height = parentPosY - totalLengthOfExplorer;
@@ -89,6 +94,8 @@ public class ToolBox extends Container implements PropertyChangeListener {
         sidebar.height = bounds.height;
         
         relocateTitleBar();
+        
+        tools.forEach(tool -> tool.relocate(bounds.xPos, sidebar.yPos));
     }
 
     @Override
@@ -100,7 +107,11 @@ public class ToolBox extends Container implements PropertyChangeListener {
             case "gameObject" ->  {
                 prevGameObject     = selectedGameObject;
                 selectedGameObject = (GameObject) evt.getNewValue();
-                if(prevGameObject != selectedGameObject) setAvailableTools();
+                
+                if(prevGameObject != selectedGameObject) {
+                    setAvailableTools();
+                    relocate(viewportWidth, viewportHeight);
+                }
             }
         }
     }
@@ -110,13 +121,13 @@ public class ToolBox extends Container implements PropertyChangeListener {
         
         if(selectedGameObject != null) {
             if(selectedGameObject instanceof VisibleGeometry) {
-                tools.add(new Paintbrush());
-                tools.add(new Translate(bounds.xPos, bounds.yPos));
-                tools.add(new Rotate());
-                tools.add(new Scale());
-                tools.add(new VertexTool());
-                tools.add(new FaceTool());
-                tools.add(new Properties());
+                tools.add(new Paintbrush(1));
+                tools.add(new Translate(bounds.xPos, bounds.yPos, 2));
+                tools.add(new Rotate(3));
+                tools.add(new Scale(4));
+                tools.add(new VertexTool(5));
+                tools.add(new FaceTool(6));
+                tools.add(new Properties(7));
             }
         }
     }

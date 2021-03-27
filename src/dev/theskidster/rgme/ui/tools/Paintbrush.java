@@ -16,21 +16,15 @@ import java.util.LinkedList;
 
 public class Paintbrush extends Tool {
 
-    public Paintbrush() {
-        super("Mesh Paintbrush", 5, 2);
+    public Paintbrush(int order) {
+        super("Mesh Paintbrush", 5, 2, order);
         
         widgets = new LinkedList<>();
     }
-
-    @Override
-    public Command update(Mouse mouse) {
-        //Unused.
-        return null;
-    }
     
     @Override
-    public Command update(Mouse mouse, ToolBox toolBox, GameObject selectedGameObject, int order) {
-        updateButton(mouse, toolBox, order);
+    public Command update(Mouse mouse, ToolBox toolBox, GameObject selectedGameObject) {
+        updateButton(mouse, toolBox);
         
         return null;
     }
@@ -42,6 +36,7 @@ public class Paintbrush extends Tool {
 
     @Override
     public void relocate(float parentPosX, float parentPosY) {
+        relocateButton(parentPosX, parentPosY);
     }
     
 }

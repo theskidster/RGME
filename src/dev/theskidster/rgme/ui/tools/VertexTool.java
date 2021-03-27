@@ -16,21 +16,15 @@ import java.util.LinkedList;
 
 public class VertexTool extends Tool {
 
-    public VertexTool() {
-        super("Vertex Manipulator", 4, 2);
+    public VertexTool(int order) {
+        super("Vertex Manipulator", 4, 2, order);
         
         widgets = new LinkedList<>();
     }
-
-    @Override
-    public Command update(Mouse mouse) {
-        //Unused.
-        return null;
-    }
     
     @Override
-    public Command update(Mouse mouse, ToolBox toolBox, GameObject selectedGameObject, int order) {
-        updateButton(mouse, toolBox, order);
+    public Command update(Mouse mouse, ToolBox toolBox, GameObject selectedGameObject) {
+        updateButton(mouse, toolBox);
         
         return null;
     }

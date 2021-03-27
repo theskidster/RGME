@@ -17,14 +17,11 @@ import java.util.LinkedList;
  */
 
 public class Translate extends Tool {
-
-    float parentPosX;
-    float parentPosY;
     
     private SpinBox xPosInput;
     
-    public Translate(float parentPosX, float parentPosY) {
-        super("Translate", 0, 2);
+    public Translate(float parentPosX, float parentPosY, int order) {
+        super("Translate", 0, 2, order);
         
         xPosInput = new SpinBox(20, 100, 50, parentPosX, parentPosY);
         
@@ -32,19 +29,10 @@ public class Translate extends Tool {
             add(xPosInput);
         }};
     }
-
-    @Override
-    public Command update(Mouse mouse) {
-        //Unused.
-        return null;
-    }
     
     @Override
-    public Command update(Mouse mouse, ToolBox toolBox, GameObject selectedGameObject, int order) {
-        updateButton(mouse, toolBox, order);
-        
-        this.parentPosX = parentPosX;
-        this.parentPosY = parentPosY;
+    public Command update(Mouse mouse, ToolBox toolBox, GameObject selectedGameObject) {
+        updateButton(mouse, toolBox);
         
         return null;
     }
@@ -54,9 +42,9 @@ public class Translate extends Tool {
         renderButton(uiProgram, background);
         
         if(selected) {
-            font.drawString("Position X:", parentPosX + 45, parentPosY + 20, 1, Color.RGME_WHITE, uiProgram);
-            font.drawString("Y:", parentPosX + 110, parentPosY + 40, 1, Color.RGME_WHITE, uiProgram);
-            font.drawString("Z:", parentPosX + 110, parentPosY + 60, 1, Color.RGME_WHITE, uiProgram);
+            font.drawString("Position X:", 45, 20, 1, Color.RGME_WHITE, uiProgram);
+            font.drawString("Y:", 110, 40, 1, Color.RGME_WHITE, uiProgram);
+            font.drawString("Z:", 110, 60, 1, Color.RGME_WHITE, uiProgram);
             
             xPosInput.render(uiProgram, background, font);
         }

@@ -16,21 +16,15 @@ import java.util.LinkedList;
 
 public class Properties extends Tool {
 
-    public Properties() {
-        super("Object Properties", 10, 0);
+    public Properties(int order) {
+        super("Object Properties", 10, 0, order);
         
         widgets = new LinkedList<>();
     }
-
-    @Override
-    public Command update(Mouse mouse) {
-        //Unused.
-        return null;
-    }
     
     @Override
-    public Command update(Mouse mouse, ToolBox toolBox, GameObject selectedGameObject, int order) {
-        updateButton(mouse, toolBox, order);
+    public Command update(Mouse mouse, ToolBox toolBox, GameObject selectedGameObject) {
+        updateButton(mouse, toolBox);
         
         return null;
     }

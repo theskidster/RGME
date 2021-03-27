@@ -16,15 +16,15 @@ import java.util.LinkedList;
 
 public class Scale extends Tool {
 
-    public Scale() {
-        super("Scale", 2, 2);
+    public Scale(int order) {
+        super("Scale", 2, 2, order);
         
         widgets = new LinkedList<>();
     }
     
     @Override
-    public Command update(Mouse mouse, ToolBox toolBox, GameObject selectedGameObject, int order) {
-        updateButton(mouse, toolBox, order);
+    public Command update(Mouse mouse, ToolBox toolBox, GameObject selectedGameObject) {
+        updateButton(mouse, toolBox);
         
         return null;
     }

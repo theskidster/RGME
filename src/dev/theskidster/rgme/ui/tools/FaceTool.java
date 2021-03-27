@@ -16,15 +16,15 @@ import java.util.LinkedList;
 
 public class FaceTool extends Tool {
 
-    public FaceTool() {
-        super("Face Manipulator", 3, 2);
+    public FaceTool(int order) {
+        super("Face Manipulator", 3, 2, order);
         
         widgets = new LinkedList<>();
     }
 
     @Override
-    public Command update(Mouse mouse, ToolBox toolBox, GameObject selectedGameObject, float parentPosX, float parentPosY, int order) {
-        updateButton(mouse, toolBox, parentPosX, parentPosY, order);
+    public Command update(Mouse mouse, ToolBox toolBox, GameObject selectedGameObject) {
+        updateButton(mouse, toolBox);
         
         return null;
     }
@@ -32,6 +32,11 @@ public class FaceTool extends Tool {
     @Override
     public void render(Program uiProgram, Background background, FreeTypeFont font) {
         renderButton(uiProgram, background);
+    }
+
+    @Override
+    public void relocate(float parentPosX, float parentPosY) {
+        relocateButton(parentPosX, parentPosY);
     }
     
 }

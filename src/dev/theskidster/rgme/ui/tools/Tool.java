@@ -20,7 +20,7 @@ import java.util.LinkedList;
 
 public abstract class Tool extends Widget implements Renderable, Relocatable {
     
-    private int order;
+    private final int order;
     public final int cellX;
     public final int cellY;
     
@@ -34,18 +34,17 @@ public abstract class Tool extends Widget implements Renderable, Relocatable {
     
     protected LinkedList<Widget> widgets;
     
-    public Tool(String name, int cellX, int cellY) {
+    public Tool(String name, int cellX, int cellY, int order) {
         super(0, 0, 30, 30);
         this.name  = name;
         this.cellX = cellX;
         this.cellY = cellY;
+        this.order = order;
         
         icon.setSubImage(cellX, cellY);
     }
     
-    protected void updateButton(Mouse mouse, ToolBox toolBox, int order) {
-        this.order = order + 1;
-                
+    protected void updateButton(Mouse mouse, ToolBox toolBox) {
         if(clickedOnce(bounds, mouse)) {
             toolBox.widgets = widgets;
             selected = true;
@@ -71,6 +70,6 @@ public abstract class Tool extends Widget implements Renderable, Relocatable {
         icon.position.set(bounds.xPos + 5, bounds.yPos + 25);
     }
     
-    public abstract Command update(Mouse mouse, ToolBox toolBox, GameObject selectedGameObject, int order);
+    public abstract Command update(Mouse mouse, ToolBox toolBox, GameObject selectedGameObject);
     
 }
