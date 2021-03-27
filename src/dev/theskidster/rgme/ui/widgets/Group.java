@@ -6,7 +6,9 @@ import dev.theskidster.rgme.graphics.Icon;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.scene.GameObject;
 import dev.theskidster.rgme.ui.FreeTypeFont;
+import dev.theskidster.rgme.ui.Renderable;
 import static dev.theskidster.rgme.ui.UI.TOOLBAR_WIDTH;
+import dev.theskidster.rgme.ui.Updatable;
 import dev.theskidster.rgme.ui.containers.SceneExplorer;
 import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Mouse;
@@ -23,7 +25,7 @@ import org.joml.Vector2f;
  * Created: Mar 17, 2021
  */
 
-public class Group extends Widget implements PropertyChangeListener {
+public class Group extends Widget implements Updatable, Renderable, PropertyChangeListener {
 
     private final int index;
     private int length;
@@ -169,11 +171,6 @@ public class Group extends Widget implements PropertyChangeListener {
                 parentPosY  = size.y;
             }
         }
-    }
-    
-    @Override
-    public void relocate(float parentPosX, float parentPosY) {
-        //Unused.
     }
     
     public void setVerticalOffset(float verticalOffset) {

@@ -5,7 +5,8 @@ import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.graphics.Icon;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.scene.GameObject;
-import dev.theskidster.rgme.ui.FreeTypeFont;
+import dev.theskidster.rgme.ui.Relocatable;
+import dev.theskidster.rgme.ui.Renderable;
 import dev.theskidster.rgme.ui.containers.ToolBox;
 import dev.theskidster.rgme.ui.widgets.Widget;
 import dev.theskidster.rgme.utils.Color;
@@ -17,7 +18,7 @@ import java.util.LinkedList;
  * Created: Mar 24, 2021
  */
 
-public abstract class Tool extends Widget {
+public abstract class Tool extends Widget implements Renderable, Relocatable {
     
     private int order;
     public final int cellX;
@@ -31,7 +32,7 @@ public abstract class Tool extends Widget {
     private Color btnColor;
     private final Icon icon = new Icon(20, 20);
     
-    public LinkedList<Widget> widgets;
+    protected LinkedList<Widget> widgets;
     
     public Tool(String name, int cellX, int cellY) {
         super(0, 0, 30, 30);
@@ -70,7 +71,6 @@ public abstract class Tool extends Widget {
         icon.position.set(bounds.xPos + 5, bounds.yPos + 25);
     }
     
-    public abstract Command update(Mouse mouse, ToolBox toolBox, GameObject selectedGameObject, float parentPosX, float parentPosY, int order);
-    public abstract void render(Program uiProgram, Background background, FreeTypeFont font);
+    public abstract Command update(Mouse mouse, ToolBox toolBox, GameObject selectedGameObject, int order);
     
 }

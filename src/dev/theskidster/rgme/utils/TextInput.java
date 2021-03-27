@@ -2,9 +2,10 @@ package dev.theskidster.rgme.utils;
 
 import dev.theskidster.rgme.graphics.Icon;
 import dev.theskidster.rgme.ui.FreeTypeFont;
-import dev.theskidster.rgme.ui.LogicLoop;
 import dev.theskidster.rgme.ui.Relocatable;
+import dev.theskidster.rgme.ui.Renderable;
 import dev.theskidster.rgme.ui.UI;
+import dev.theskidster.rgme.ui.Updatable;
 import dev.theskidster.rgme.ui.widgets.Widget;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +18,7 @@ import static org.lwjgl.glfw.GLFW.*;
  * Created: Mar 20, 2021
  */
 
-public abstract class TextInput extends Widget implements LogicLoop, Relocatable {
+public abstract class TextInput extends Widget implements Updatable, Renderable, Relocatable {
 
     protected final int HEIGHT  = 30;
     protected final int PADDING = 6;

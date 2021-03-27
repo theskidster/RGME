@@ -5,7 +5,8 @@ import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.graphics.Icon;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.ui.FreeTypeFont;
-import dev.theskidster.rgme.ui.LogicLoop;
+import dev.theskidster.rgme.ui.Renderable;
+import dev.theskidster.rgme.ui.Updatable;
 import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Mouse;
 import dev.theskidster.rgme.utils.Rectangle;
@@ -19,7 +20,7 @@ import org.joml.Vector2f;
  * Created: Mar 18, 2021
  */
 
-public class Scrollbar extends Widget implements LogicLoop, PropertyChangeListener {
+public class Scrollbar extends Widget implements Updatable, Renderable, PropertyChangeListener {
 
     private final int MARGIN = 24;
     private final int length;
@@ -153,11 +154,6 @@ public class Scrollbar extends Widget implements LogicLoop, PropertyChangeListen
                 rectangles[4].yPos = (int) (bounds.yPos + bounds.height - MARGIN);
             }
         }
-    }
-    
-    @Override
-    public void relocate(float parentPosX, float parentPosY) {
-        //Unused.
     }
     
     private void scroll(float change, float contentScale) {

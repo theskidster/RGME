@@ -57,12 +57,7 @@ public class ToolBox extends Container implements PropertyChangeListener {
         }
         
         tools.forEach(tool -> {
-            tool.update(mouse, 
-                        this, 
-                        selectedGameObject, 
-                        bounds.xPos, bounds.yPos + titleBar.height, 
-                        tools.indexOf(tool));
-            
+            tool.update(mouse, this, selectedGameObject, tools.indexOf(tool));
             if(tool.selected) currTool = tool.name;
         });
         

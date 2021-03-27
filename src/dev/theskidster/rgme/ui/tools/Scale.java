@@ -21,10 +21,10 @@ public class Scale extends Tool {
         
         widgets = new LinkedList<>();
     }
-
+    
     @Override
-    public Command update(Mouse mouse, ToolBox toolBox, GameObject selectedGameObject, float parentPosX, float parentPosY, int order) {
-        updateButton(mouse, toolBox, parentPosX, parentPosY, order);
+    public Command update(Mouse mouse, ToolBox toolBox, GameObject selectedGameObject, int order) {
+        updateButton(mouse, toolBox, order);
         
         return null;
     }
@@ -32,6 +32,11 @@ public class Scale extends Tool {
     @Override
     public void render(Program uiProgram, Background background, FreeTypeFont font) {
         renderButton(uiProgram, background);
+    }
+
+    @Override
+    public void relocate(float parentPosX, float parentPosY) {
+        relocateButton(parentPosX, parentPosY);
     }
 
 }

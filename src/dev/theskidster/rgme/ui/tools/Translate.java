@@ -34,18 +34,18 @@ public class Translate extends Tool {
     }
 
     @Override
-    public Command update(Mouse mouse, ToolBox toolBox, GameObject selectedGameObject, float parentPosX, float parentPosY, int order) {
-        updateButton(mouse, toolBox, parentPosX, parentPosY, order);
-        
-        this.parentPosX = parentPosX;
-        this.parentPosY = parentPosY;
-        
+    public Command update(Mouse mouse) {
+        //Unused.
         return null;
     }
     
     @Override
-    public Command update(Mouse mouse) {
-        //Unused.
+    public Command update(Mouse mouse, ToolBox toolBox, GameObject selectedGameObject, int order) {
+        updateButton(mouse, toolBox, order);
+        
+        this.parentPosX = parentPosX;
+        this.parentPosY = parentPosY;
+        
         return null;
     }
 
@@ -64,6 +64,7 @@ public class Translate extends Tool {
 
     @Override
     public void relocate(float parentPosX, float parentPosY) {
+        relocateButton(parentPosX, parentPosY);
     }
 
 }
