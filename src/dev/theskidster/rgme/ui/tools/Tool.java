@@ -12,6 +12,7 @@ import dev.theskidster.rgme.ui.widgets.Widget;
 import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Mouse;
 import java.util.LinkedList;
+import org.joml.Vector2f;
 
 /**
  * @author J Hoffman
@@ -25,6 +26,8 @@ public abstract class Tool extends Widget implements Renderable, Relocatable {
     public final int cellY;
     
     private final float PADDING = 4;
+    protected float parentPosX;
+    protected float parentPosY;
     
     public boolean selected;
     
@@ -64,6 +67,9 @@ public abstract class Tool extends Widget implements Renderable, Relocatable {
     }
     
     protected void relocateButton(float parentPosX, float parentPosY) {
+        this.parentPosX = parentPosX;
+        this.parentPosY = parentPosY;
+        
         bounds.xPos = parentPosX + PADDING;
         bounds.yPos = (parentPosY + ((bounds.height + PADDING) * order)) - bounds.height;
         
