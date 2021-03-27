@@ -35,6 +35,7 @@ public class ToolBox extends Container implements PropertyChangeListener {
     private float totalLengthOfExplorer;
     
     private boolean explorerTextAreaVisible;
+    private boolean widgetsAdded;
     
     private GameObject prevGameObject;
     private GameObject selectedGameObject;
@@ -52,7 +53,6 @@ public class ToolBox extends Container implements PropertyChangeListener {
 
     @Override
     public Command update(Mouse mouse) {
-        //TODO: maybe just move renaming capabilities into properties tool?
         if(!widgetHovered(mouse.cursorPos) && !explorerTextAreaVisible) {
             mouse.setCursorShape(GLFW_ARROW_CURSOR);
         }
@@ -117,13 +117,15 @@ public class ToolBox extends Container implements PropertyChangeListener {
         if(selectedGameObject != null) {
             if(selectedGameObject instanceof VisibleGeometry) {
                 tools.add(new Paintbrush());
-                tools.add(new Translate());
+                tools.add(new Translate(bounds.xPos, bounds.yPos));
                 tools.add(new Rotate());
                 tools.add(new Scale());
                 tools.add(new VertexTool());
                 tools.add(new FaceTool());
                 tools.add(new Properties());
             }
+            
+            widgetsAdded = false;
         }
     }
 

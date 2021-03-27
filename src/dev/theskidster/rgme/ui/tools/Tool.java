@@ -31,7 +31,7 @@ public abstract class Tool extends Widget {
     private Color btnColor;
     private final Icon icon = new Icon(20, 20);
     
-    protected LinkedList<Widget> widgets;
+    public LinkedList<Widget> widgets;
     
     public Tool(String name, int cellX, int cellY) {
         super(0, 0, 30, 30);

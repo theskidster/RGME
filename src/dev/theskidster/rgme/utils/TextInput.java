@@ -40,6 +40,8 @@ public abstract class TextInput extends Widget implements LogicLoop, Relocatable
     protected boolean caratBlink;
     protected boolean firstIndexSet;
     protected boolean shiftHeld;
+    protected boolean prevPressed;
+    protected boolean currPressed;
     
     protected final StringBuilder typed = new StringBuilder();
     protected final Vector2f textPos    = new Vector2f();
@@ -234,6 +236,52 @@ public abstract class TextInput extends Widget implements LogicLoop, Relocatable
     protected void setIndex(int index) {
         prevIndex = currIndex;
         currIndex = index;
+    }
+    
+    protected void highlightText(float cursorPosX) {
+        if(typed.length() > 0 && currPressed && hasFocus) {
+            if(cursorPosX - bounds.xPos - PADDING >= bounds.width - (PADDING * 3)) {
+                setIndex((getIndex() > typed.length() - 1) ? typed.length() : getIndex() + 1);
+                scroll();
+            }
+
+            if(cursorPosX - bounds.xPos - PADDING <= (PADDING * 3)) {
+                setIndex((getIndex() <= 0) ? 0 : getIndex() - 1);
+                scroll();
+            }
+
+            if(!firstIndexSet) {
+                firstIndex    = getIndex();
+                firstIndexSet = true;
+            } else {
+                int newIndex = findClosestIndex(cursorPosX - bounds.xPos - PADDING);
+                setIndex(newIndex);
+                scroll();
+                
+                lastIndex = getIndex();
+                
+                int firstIndexPosX = FreeTypeFont.getLengthInPixels(typed.substring(0, firstIndex), 1);
+                int lastIndexPosX  = FreeTypeFont.getLengthInPixels(typed.substring(0, lastIndex), 1);
+
+                int minX = Math.min(firstIndexPosX, lastIndexPosX);
+                int maxX = Math.max(firstIndexPosX, lastIndexPosX);
+
+                highlight.xPos  = (minX + bounds.xPos + PADDING) + getTextOffset();
+                highlight.width = (maxX - minX);
+            }
+        }
+    }
+    
+    public void deleteSection() {
+        int min = Math.min(firstIndex, lastIndex);
+        int max = Math.max(firstIndex, lastIndex);
+
+        typed.replace(min, max, "");
+
+        setIndex(min);
+        scroll();
+
+        highlight.width = 0;
     }
     
     public void setText(String text) {

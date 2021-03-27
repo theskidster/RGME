@@ -9,40 +9,30 @@ import dev.theskidster.rgme.ui.FreeTypeFont;
 import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Mouse;
 import dev.theskidster.rgme.utils.TextInput;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
  * @author J Hoffman
- * Created: Mar 21, 2021
+ * Created: Mar 26, 2021
  */
 
-public class TextArea extends TextInput implements PropertyChangeListener {
+public class SpinBox extends TextInput {
+
+    private final Icon leftBorder    = new Icon(15, 30);
+    private final Icon middleSection = new Icon(15, 30);
+    private final Icon rightBorder   = new Icon(15, 30);
+    private final Icon upArrow       = new Icon(20, 20);
+    private final Icon downArrow     = new Icon(20, 20);
     
-    private float viewportHeight;
-    
-    private final boolean borderVisible;
-    
-    private final Icon leftBorder  = new Icon(15, 30);
-    private final Icon rightBorder = new Icon(15, 30);
-    
-    public TextArea(float xOffset, float yOffset, float width, float parentPosX, float parentPosY, boolean borderVisible) {
+    public SpinBox(float xOffset, float yOffset, float width, float parentPosX, float parentPosY) {
         super(xOffset, yOffset, width, parentPosX, parentPosY);
         
-        this.borderVisible = borderVisible;
+        leftBorder.setSubImage(2, 2);
+        leftBorder.setColor(Color.WHITE);
         
-        if(!borderVisible) {
-            front.height     = 24;
-            highlight.height = 24;
-        } else {
-            leftBorder.setSubImage(2, 2);
-            leftBorder.setColor(Color.WHITE);
-
-            rightBorder.setSubImage(3, 2);
-            rightBorder.setColor(Color.WHITE);
-        }
+        rightBorder.setSubImage(3, 2);
+        rightBorder.setColor(Color.WHITE);
     }
 
     @Override
@@ -178,7 +168,7 @@ public class TextArea extends TextInput implements PropertyChangeListener {
 
     @Override
     public void render(Program uiProgram, Background background, FreeTypeFont font) {
-        if(borderVisible) background.drawRectangle(bounds, Color.RGME_LIGHT_GRAY, uiProgram);
+        background.drawRectangle(bounds, Color.RGME_LIGHT_GRAY, uiProgram);
         background.drawRectangle(front, Color.RGME_DARK_GRAY, uiProgram);
         
         glEnable(GL_SCISSOR_TEST);
@@ -188,42 +178,13 @@ public class TextArea extends TextInput implements PropertyChangeListener {
             if(hasFocus() && caratBlink) carat.render(uiProgram);
         glDisable(GL_SCISSOR_TEST);
         
-        if(borderVisible) {
-            leftBorder.render(uiProgram);
-            rightBorder.render(uiProgram);
-        }
+        leftBorder.render(uiProgram);
+        rightBorder.render(uiProgram);
     }
 
     @Override
     public void relocate(float parentPosX, float parentPosY) {
-        this.parentPosX = parentPosX;
-        this.parentPosY = parentPosY;
         
-        bounds.xPos = xOffset + parentPosX;
-        bounds.yPos = yOffset + parentPosY;
-        front.xPos  = bounds.xPos + 1;
-        front.yPos  = bounds.yPos + 1;
-        
-        highlight.yPos = front.yPos;
-        
-        scissorBox.xPos   = front.xPos;
-        scissorBox.yPos   = Math.abs(viewportHeight - (bounds.yPos + HEIGHT));
-        scissorBox.width  = bounds.width;
-        scissorBox.height = HEIGHT;
-        
-        if(borderVisible) {
-            leftBorder.position.set(bounds.xPos, bounds.yPos + HEIGHT);
-            rightBorder.position.set(bounds.xPos + (bounds.width - 14), leftBorder.position.y);
-        }
     }
 
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        switch(evt.getPropertyName()) {
-            case "viewportHeight" -> {
-                viewportHeight = (Float) evt.getNewValue();
-            }
-        }
-    }
-    
 }

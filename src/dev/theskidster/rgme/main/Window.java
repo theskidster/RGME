@@ -108,7 +108,7 @@ public final class Window implements PropertyChangeListener {
         observable.notifyObservers("viewportSize", new Vector2f(width, height));
         
         camera.position.set(6, 4, 6);
-        camera.setDirection(-130, 50);
+        camera.setDirection(-128.5f, 50);
         
         glfwSetWindowSizeCallback(handle, (window, w, h) -> {
             width  = w;
