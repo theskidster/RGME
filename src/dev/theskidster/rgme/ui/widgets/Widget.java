@@ -1,5 +1,7 @@
 package dev.theskidster.rgme.ui.widgets;
 
+import dev.theskidster.rgme.ui.LogicLoop;
+import dev.theskidster.rgme.ui.Relocatable;
 import dev.theskidster.rgme.utils.Mouse;
 import dev.theskidster.rgme.utils.Rectangle;
 import org.joml.Vector2f;
@@ -9,7 +11,7 @@ import org.joml.Vector2f;
  * Created: Mar 13, 2021
  */
 
-public abstract class Widget {
+public abstract class Widget implements LogicLoop, Relocatable {
     
     private final boolean[] prevClicked = new boolean[2];
     private final boolean[] currClicked = new boolean[2];

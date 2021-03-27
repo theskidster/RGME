@@ -4,8 +4,6 @@ import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.graphics.Icon;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.ui.FreeTypeFont;
-import dev.theskidster.rgme.ui.LogicLoop;
-import dev.theskidster.rgme.ui.Relocatable;
 import dev.theskidster.rgme.ui.widgets.Widget;
 import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Rectangle;
@@ -17,7 +15,7 @@ import org.joml.Vector2f;
  * Created: Mar 13, 2021
  */
 
-public abstract class Container extends Widget implements LogicLoop, Relocatable {
+public abstract class Container extends Widget {
     
     protected String title;
     protected Icon icon;

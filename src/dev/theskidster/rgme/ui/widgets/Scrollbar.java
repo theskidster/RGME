@@ -155,6 +155,11 @@ public class Scrollbar extends Widget implements LogicLoop, PropertyChangeListen
         }
     }
     
+    @Override
+    public void relocate(float parentPosX, float parentPosY) {
+        //Unused.
+    }
+    
     private void scroll(float change, float contentScale) {
         boolean minLimitReached = rectangles[2].yPos + change < rectangles[0].yPos;
         boolean maxLimitReached = (rectangles[2].yPos + rectangles[2].height) + change > rectangles[0].yPos + length;

@@ -37,7 +37,7 @@ public class SpinBox extends TextInput {
 
     @Override
     protected void validate() {
-        
+        System.out.println("validate spinbox input");
     }
 
     @Override

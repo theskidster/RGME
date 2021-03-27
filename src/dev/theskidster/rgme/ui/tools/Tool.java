@@ -42,12 +42,8 @@ public abstract class Tool extends Widget {
         icon.setSubImage(cellX, cellY);
     }
     
-    protected void updateButton(Mouse mouse, ToolBox toolBox, float parentPosX, float parentPosY, int order) {
-        this.order  = order + 1;
-        bounds.xPos = parentPosX + PADDING;
-        bounds.yPos = (parentPosY + ((bounds.height + PADDING) * this.order)) - bounds.height;
-        
-        icon.position.set(bounds.xPos + 5, bounds.yPos + 25);
+    protected void updateButton(Mouse mouse, ToolBox toolBox, int order) {
+        this.order = order + 1;
                 
         if(clickedOnce(bounds, mouse)) {
             toolBox.widgets = widgets;
@@ -65,6 +61,13 @@ public abstract class Tool extends Widget {
     protected void renderButton(Program uiProgram, Background background) {
         background.drawRectangle(bounds, btnColor, uiProgram);
         icon.render(uiProgram);
+    }
+    
+    protected void relocateButton(float parentPosX, float parentPosY) {
+        bounds.xPos = parentPosX + PADDING;
+        bounds.yPos = (parentPosY + ((bounds.height + PADDING) * order)) - bounds.height;
+        
+        icon.position.set(bounds.xPos + 5, bounds.yPos + 25);
     }
     
     public abstract Command update(Mouse mouse, ToolBox toolBox, GameObject selectedGameObject, float parentPosX, float parentPosY, int order);

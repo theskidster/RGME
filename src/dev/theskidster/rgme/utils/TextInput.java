@@ -109,12 +109,16 @@ public abstract class TextInput extends Widget implements LogicLoop, Relocatable
     
     public TextInput(float xOffset, float yOffset, float width, float parentPosX, float parentPosY) {
         super(0, 0, width, 30);
+        
+        bounds.xPos = xOffset + parentPosX;
+        bounds.yPos = yOffset + parentPosY;
+        
         this.xOffset    = xOffset;
         this.yOffset    = yOffset;
         this.parentPosX = parentPosX;
         this.parentPosY = parentPosY;
         
-        front = new Rectangle(0, 0, width, HEIGHT - 2);
+        front = new Rectangle(bounds.xPos + 1, bounds.yPos + 1, width, HEIGHT - 2);
         
         carat.setSubImage(5, 2);
         carat.position.set(

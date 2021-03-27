@@ -35,7 +35,6 @@ public class ToolBox extends Container implements PropertyChangeListener {
     private float totalLengthOfExplorer;
     
     private boolean explorerTextAreaVisible;
-    private boolean widgetsAdded;
     
     private GameObject prevGameObject;
     private GameObject selectedGameObject;
@@ -124,8 +123,6 @@ public class ToolBox extends Container implements PropertyChangeListener {
                 tools.add(new FaceTool());
                 tools.add(new Properties());
             }
-            
-            widgetsAdded = false;
         }
     }
 
