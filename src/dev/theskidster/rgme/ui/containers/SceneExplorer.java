@@ -77,14 +77,12 @@ public final class SceneExplorer extends Container {
         textArea  = new TextArea(0, 1, 200, bounds.xPos, bounds.yPos, false);
         
         observable.properties.put("viewportSize", null);
-        observable.properties.put("viewportHeight", 0);
         observable.properties.put("totalLength", 0);
         observable.properties.put("gameObject", null);
         observable.properties.put("textAreaVisible", false);
         
         for(Group group : groups) observable.addObserver(group);
         observable.addObserver(scrollbar);
-        observable.addObserver(textArea);
         observable.addObserver(toolBox);
         
         addIcon.setSubImage(8, 3);
@@ -119,6 +117,8 @@ public final class SceneExplorer extends Container {
         scrollbar.update(mouse);
         
         if(showTextArea) {
+            if(!widgetHovered(mouse.cursorPos)) mouse.setCursorShape(GLFW_ARROW_CURSOR);
+            
             textArea.relocate(memberBounds.xPos + 80, memberBounds.yPos);
             textArea.update(mouse);
             
@@ -134,8 +134,6 @@ public final class SceneExplorer extends Container {
                 showTextArea = false;
             }
         }
-        
-        if(!widgetHovered(mouse.cursorPos)) mouse.setCursorShape(GLFW_ARROW_CURSOR);
         
         if(addButton.contains(mouse.cursorPos)) {
             if(mouse.clicked) addIcon.setColor(Color.RGME_WHITE);
@@ -234,7 +232,6 @@ public final class SceneExplorer extends Container {
         subIcon.position.set(subButton.xPos, subButton.yPos + 24);
         
         observable.notifyObservers("viewportSize", new Vector2f(bounds.xPos, bounds.yPos + titleBar.height));
-        observable.notifyObservers("viewportHeight", parentPosY);
         observable.notifyObservers("totalLength", bounds.height + 28);
     }
     

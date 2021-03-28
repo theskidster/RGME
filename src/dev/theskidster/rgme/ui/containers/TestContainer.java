@@ -33,8 +33,6 @@ public class TestContainer extends Container {
             //add(textArea2);
         }};
         
-        observable.properties.put("viewportHeight", 0);
-        observable.addObserver(textArea1);
         //observable.addObserver(textArea2);
     }
 
@@ -63,7 +61,6 @@ public class TestContainer extends Container {
     public void relocate(float parentPosX, float parentPosY) {
         relocateTitleBar();
         
-        observable.notifyObservers("viewportHeight", parentPosY);
         textArea1.relocate(bounds.xPos, bounds.yPos);
         //textArea2.relocate(bounds.xPos, bounds.yPos);
     }

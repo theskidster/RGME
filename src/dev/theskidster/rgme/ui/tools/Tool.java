@@ -12,7 +12,6 @@ import dev.theskidster.rgme.ui.widgets.Widget;
 import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Mouse;
 import java.util.LinkedList;
-import org.joml.Vector2f;
 
 /**
  * @author J Hoffman

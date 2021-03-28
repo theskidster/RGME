@@ -6,6 +6,7 @@ import dev.theskidster.rgme.graphics.Icon;
 import dev.theskidster.rgme.main.App;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.ui.FreeTypeFont;
+import dev.theskidster.rgme.ui.UI;
 import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Mouse;
 import dev.theskidster.rgme.utils.TextInput;
@@ -18,26 +19,23 @@ import static org.lwjgl.opengl.GL11.*;
  */
 
 public class SpinBox extends TextInput {
-
-    private final Icon leftBorder    = new Icon(15, 30);
-    private final Icon middleSection = new Icon(15, 30);
-    private final Icon rightBorder   = new Icon(15, 30);
-    private final Icon upArrow       = new Icon(20, 20);
-    private final Icon downArrow     = new Icon(20, 20);
+    
+    private final Icon leftBorder  = new Icon(15, 30);
+    private final Icon rightBorder = new Icon(15, 30);
     
     public SpinBox(float xOffset, float yOffset, float width, float parentPosX, float parentPosY) {
         super(xOffset, yOffset, width, parentPosX, parentPosY);
         
         leftBorder.setSubImage(2, 2);
         leftBorder.setColor(Color.WHITE);
-        
+
         rightBorder.setSubImage(3, 2);
         rightBorder.setColor(Color.WHITE);
     }
 
     @Override
     protected void validate() {
-        System.out.println("validate spinbox input");
+        
     }
 
     @Override
@@ -141,12 +139,13 @@ public class SpinBox extends TextInput {
                 if(typed.length() > 0) {
                     int newIndex = findClosestIndex(mouse.cursorPos.x - bounds.xPos - PADDING);
                     setIndex(newIndex);
-                    scroll();
 
                     firstIndex      = getIndex();
                     firstIndexSet   = true;
                     highlight.width = 0;
                 }
+                
+                scroll();
             } else {
                 if(mouse.cursorPos.x != prevCursorX) highlightText(mouse.cursorPos.x);
             }
@@ -184,7 +183,23 @@ public class SpinBox extends TextInput {
 
     @Override
     public void relocate(float parentPosX, float parentPosY) {
-        //TODO: implement dynamic relocation.
+        this.parentPosX = parentPosX;
+        this.parentPosY = parentPosY;
+        
+        bounds.xPos = xOffset + parentPosX;
+        bounds.yPos = yOffset + parentPosY;
+        front.xPos  = bounds.xPos + 1;
+        front.yPos  = bounds.yPos + 1;
+        
+        highlight.yPos = front.yPos;
+        
+        scissorBox.xPos   = front.xPos;
+        scissorBox.yPos   = Math.abs(UI.getViewportHeight() - (bounds.yPos + HEIGHT));
+        scissorBox.width  = bounds.width;
+        scissorBox.height = HEIGHT;
+        
+        leftBorder.position.set(bounds.xPos, bounds.yPos + HEIGHT);
+        rightBorder.position.set(bounds.xPos + (bounds.width - 14), leftBorder.position.y);
     }
 
 }

@@ -29,6 +29,8 @@ public final class UI implements PropertyChangeListener {
     
     public static final int TOOLBAR_WIDTH = 360;
     
+    private static float viewportHeight;
+    
     private final FreeTypeFont font;
     private final Mouse mouse;
     private static TextInput textInput;
@@ -57,6 +59,7 @@ public final class UI implements PropertyChangeListener {
         switch(evt.getPropertyName()) {
             case "viewportSize" -> {
                 Vector2f windowSize = ((Vector2f) evt.getNewValue());
+                viewportHeight      = windowSize.y;
                 
                 containers.forEach(container -> container.relocate(windowSize.x, windowSize.y));
                 
@@ -128,6 +131,10 @@ public final class UI implements PropertyChangeListener {
     
     public static void setTextInputWidget(TextInput input) {
         textInput = input;
+    }
+    
+    public static float getViewportHeight() {
+        return viewportHeight;
     }
     
     public String getCurrTool() {

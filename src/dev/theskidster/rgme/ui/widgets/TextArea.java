@@ -6,11 +6,10 @@ import dev.theskidster.rgme.graphics.Icon;
 import dev.theskidster.rgme.main.App;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.ui.FreeTypeFont;
+import dev.theskidster.rgme.ui.UI;
 import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Mouse;
 import dev.theskidster.rgme.utils.TextInput;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
@@ -19,9 +18,7 @@ import static org.lwjgl.opengl.GL11.*;
  * Created: Mar 21, 2021
  */
 
-public class TextArea extends TextInput implements PropertyChangeListener {
-    
-    private float viewportHeight;
+public class TextArea extends TextInput {
     
     private final boolean borderVisible;
     
@@ -151,12 +148,13 @@ public class TextArea extends TextInput implements PropertyChangeListener {
                 if(typed.length() > 0) {
                     int newIndex = findClosestIndex(mouse.cursorPos.x - bounds.xPos - PADDING);
                     setIndex(newIndex);
-                    scroll();
 
                     firstIndex      = getIndex();
                     firstIndexSet   = true;
                     highlight.width = 0;
                 }
+                
+                scroll();
             } else {
                 if(mouse.cursorPos.x != prevCursorX) highlightText(mouse.cursorPos.x);
             }
@@ -207,22 +205,13 @@ public class TextArea extends TextInput implements PropertyChangeListener {
         highlight.yPos = front.yPos;
         
         scissorBox.xPos   = front.xPos;
-        scissorBox.yPos   = Math.abs(viewportHeight - (bounds.yPos + HEIGHT));
+        scissorBox.yPos   = Math.abs(UI.getViewportHeight() - (bounds.yPos + HEIGHT));
         scissorBox.width  = bounds.width;
         scissorBox.height = HEIGHT;
         
         if(borderVisible) {
             leftBorder.position.set(bounds.xPos, bounds.yPos + HEIGHT);
             rightBorder.position.set(bounds.xPos + (bounds.width - 14), leftBorder.position.y);
-        }
-    }
-
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        switch(evt.getPropertyName()) {
-            case "viewportHeight" -> {
-                viewportHeight = (Float) evt.getNewValue();
-            }
         }
     }
     

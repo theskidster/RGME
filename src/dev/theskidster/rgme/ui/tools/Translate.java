@@ -7,6 +7,7 @@ import dev.theskidster.rgme.scene.GameObject;
 import dev.theskidster.rgme.ui.FreeTypeFont;
 import dev.theskidster.rgme.ui.containers.ToolBox;
 import dev.theskidster.rgme.ui.widgets.SpinBox;
+import dev.theskidster.rgme.ui.widgets.TextArea;
 import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Mouse;
 import java.util.LinkedList;
@@ -19,20 +20,25 @@ import java.util.LinkedList;
 public class Translate extends Tool {
     
     private SpinBox xPosInput;
+    private TextArea textArea;
     
     public Translate(float parentPosX, float parentPosY, int order) {
         super("Translate", 0, 2, order);
         
-        xPosInput = new SpinBox(50, 100, 50, parentPosX, parentPosY);
+        xPosInput = new SpinBox(50, 100, 120, bounds.xPos, bounds.yPos);
+        textArea = new TextArea(200, 100, 140, bounds.xPos, bounds.yPos, false);
         
         widgets = new LinkedList<>() {{
             add(xPosInput);
+            add(textArea);
         }};
     }
     
     @Override
     public Command update(Mouse mouse, ToolBox toolBox, GameObject selectedGameObject) {
         updateButton(mouse, toolBox);
+        xPosInput.update(mouse);
+        textArea.update(mouse);
         
         return null;
     }
@@ -47,13 +53,18 @@ public class Translate extends Tool {
             font.drawString("Z:", parentPosX + 110, parentPosY + 60, 1, Color.RGME_WHITE, uiProgram);
             
             xPosInput.render(uiProgram, background, font);
+            textArea.render(uiProgram, background, font);
         }
     }
 
     @Override
     public void relocate(float parentPosX, float parentPosY) {
         relocateButton(parentPosX, parentPosY);
-        xPosInput.relocate(parentPosX, parentPosY);
+        
+        System.out.println(bounds.xPos + ", " + bounds.yPos + ", " + bounds.width + " " + bounds.height);
+        
+        xPosInput.relocate(bounds.xPos, bounds.yPos);
+        textArea.relocate(bounds.xPos, bounds.yPos);
     }
 
 }
