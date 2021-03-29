@@ -21,6 +21,10 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class SpinBox extends TextInput {
     
+    private float value;
+    
+    private final boolean asInt;
+    
     private final Rectangle topButton    = new Rectangle(0, 0, 23, 15);
     private final Rectangle bottomButton = new Rectangle(0, 0, 23, 15);
     
@@ -30,11 +34,16 @@ public class SpinBox extends TextInput {
     private final Icon upArrow       = new Icon(20, 20);
     private final Icon downArrow     = new Icon(20, 20);
     
-    private Color topColor;
-    private Color bottomColor;
+    private Color topColor    = Color.RGME_MEDIUM_GRAY;;
+    private Color bottomColor = Color.RGME_MEDIUM_GRAY;;
     
-    public SpinBox(float xOffset, float yOffset, float width, float parentPosX, float parentPosY) {
+    public SpinBox(float xOffset, float yOffset, float width, float parentPosX, float parentPosY, float value, boolean asInt) {
         super(xOffset, yOffset, width, parentPosX, parentPosY);
+        
+        this.value = value;
+        this.asInt = asInt;
+        
+        setTextToValue();
         
         leftBorder.setSubImage(2, 2);
         leftBorder.setColor(Color.WHITE);
@@ -54,7 +63,7 @@ public class SpinBox extends TextInput {
 
     @Override
     protected void validate() {
-        
+        setTextToValue();
     }
 
     @Override
@@ -79,6 +88,7 @@ public class SpinBox extends TextInput {
                     }
                     
                     insertChar(c.getChar(shiftHeld));
+                    parseValue();
                 }
             });
             
@@ -92,6 +102,8 @@ public class SpinBox extends TextInput {
                             typed.deleteCharAt(getIndex());
                             scroll();
                         }
+                        
+                        parseValue();
                     } else {
                         if(highlight.width > 0) deleteSection();
                     }
@@ -119,6 +131,18 @@ public class SpinBox extends TextInput {
                     }
                     
                     scroll();
+                }
+                
+                case GLFW_KEY_UP -> {
+                    if(asInt) value++;
+                    else      value += 0.1f;
+                    setTextToValue();
+                }
+                
+                case GLFW_KEY_DOWN -> {
+                    if(asInt) value--;
+                    else      value -= 0.1f;
+                    setTextToValue();
                 }
                 
                 case GLFW_KEY_ENTER -> {
@@ -184,6 +208,16 @@ public class SpinBox extends TextInput {
         topColor    = getButtonColor(mouse, topButton);
         bottomColor = getButtonColor(mouse, bottomButton);
         
+        if(clickedOnce(topButton, mouse)) {
+            value++;
+            setTextToValue();
+        }
+        
+        if(clickedOnce(bottomButton, mouse)) {
+            value--;
+            setTextToValue();
+        }
+        
         return null;
     }
 
@@ -245,6 +279,27 @@ public class SpinBox extends TextInput {
         } else {
             return Color.RGME_MEDIUM_GRAY;
         }
+    }
+    
+    private void setTextToValue() {
+        if(asInt) setText(Integer.parseInt(value + "") + "");
+        else      setText(value + "");
+    }
+    
+    private void parseValue() {
+        if(asInt) {
+            try {
+                value = Integer.parseInt(typed.toString());
+            } catch(NumberFormatException e) {}
+        } else {
+            try {
+                value = Float.parseFloat(typed.toString());
+            } catch(NumberFormatException e) {}
+        }
+    }
+    
+    public float getValue() {
+        return value;
     }
     
 }

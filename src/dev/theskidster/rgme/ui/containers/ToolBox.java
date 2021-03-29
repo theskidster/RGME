@@ -58,10 +58,11 @@ public class ToolBox extends Container implements PropertyChangeListener {
             mouse.setCursorShape(GLFW_ARROW_CURSOR);
         }
         
-        tools.forEach(tool -> {
-            tool.update(mouse, this, selectedGameObject);
+        for(Tool tool : tools) {
+            Command command = tool.update(mouse, this, selectedGameObject);
             if(tool.selected) currTool = tool.name;
-        });
+            if(command != null) return command;
+        }
         
         //Check if no tool is selected.
         if(!tools.stream().anyMatch(tool -> tool.selected)) {
