@@ -298,6 +298,11 @@ public class SpinBox extends TextInput {
         }
     }
     
+    public void setValue(float val) {
+        value = val;
+        setTextToValue();
+    }
+    
     public float getValue() {
         return value;
     }

@@ -29,12 +29,14 @@ public class Translate extends Tool {
     public Translate(float parentPosX, float parentPosY, int order) {
         super("Translate", 0, 2, order);
         
-        xPosInput = new SpinBox(50, 100, 120, bounds.xPos, bounds.yPos, 0, false);
-        yPosInput = new SpinBox(50, 140, 120, bounds.xPos, bounds.yPos, 0, false);
-        zPosInput = new SpinBox(50, 180, 120, bounds.xPos, bounds.yPos, 0, false);
+        xPosInput = new SpinBox(140, 15, 120, parentPosX, parentPosY, 0, false);
+        yPosInput = new SpinBox(140, 60, 120, parentPosX, parentPosY, 0, false);
+        zPosInput = new SpinBox(140, 105, 120, parentPosX, parentPosY, 0, false);
         
         widgets = new LinkedList<>() {{
             add(xPosInput);
+            add(yPosInput);
+            add(zPosInput);
         }};
     }
     
@@ -50,6 +52,14 @@ public class Translate extends Tool {
             return new MoveObject(selectedGameObject, prevVal);
         }
         
+        if(xPosInput.getValue() != selectedGameObject.getPosition().x || yPosInput.getValue() != selectedGameObject.getPosition().y ||
+           zPosInput.getValue() != selectedGameObject.getPosition().z) {
+            prevVal.set(selectedGameObject.getPosition());
+            xPosInput.setValue(selectedGameObject.getPosition().x);
+            yPosInput.setValue(selectedGameObject.getPosition().y);
+            zPosInput.setValue(selectedGameObject.getPosition().z);
+        }
+        
         return null;
     }
 
@@ -58,9 +68,9 @@ public class Translate extends Tool {
         renderButton(uiProgram, background);
         
         if(selected) {
-            font.drawString("Position X:", parentPosX + 45, parentPosY + 30, 1, Color.RGME_WHITE, uiProgram);
-            font.drawString("Position Y:", parentPosX + 45, parentPosY + 80, 1, Color.RGME_WHITE, uiProgram);
-            font.drawString("Position Z:", parentPosX + 45, parentPosY + 100, 1, Color.RGME_WHITE, uiProgram);
+            font.drawString("Position X:", parentPosX + 50, parentPosY + 35, 1, Color.RGME_WHITE, uiProgram);
+            font.drawString("Position Y:", parentPosX + 50, parentPosY + 80, 1, Color.RGME_WHITE, uiProgram);
+            font.drawString("Position Z:", parentPosX + 50, parentPosY + 125, 1, Color.RGME_WHITE, uiProgram);
             
             xPosInput.render(uiProgram, background, font);
             yPosInput.render(uiProgram, background, font);
@@ -71,9 +81,9 @@ public class Translate extends Tool {
     @Override
     public void relocate(float parentPosX, float parentPosY) {
         relocateButton(parentPosX, parentPosY);
-        xPosInput.relocate(bounds.xPos, bounds.yPos);
-        yPosInput.relocate(bounds.xPos, bounds.yPos);
-        zPosInput.relocate(bounds.xPos, bounds.yPos);
+        xPosInput.relocate(parentPosX, parentPosY);
+        yPosInput.relocate(parentPosX, parentPosY);
+        zPosInput.relocate(parentPosX, parentPosY);
     }
 
 }
