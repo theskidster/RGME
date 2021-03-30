@@ -44,7 +44,7 @@ public final class VisibleGeometry extends GameObject {
     private final Matrix3f normal       = new Matrix3f();
     private final Vector3i locationDiff = new Vector3i();
     private final Matrix4f modelMatrix  = new Matrix4f();
-    private final VertexSelector selector = new VertexSelector();
+    private final Selector selector     = new Selector();
     
     private Texture texture;
     

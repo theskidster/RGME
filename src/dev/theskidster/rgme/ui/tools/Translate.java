@@ -43,9 +43,12 @@ public class Translate extends Tool {
     @Override
     public Command update(Mouse mouse, ToolBox toolBox, GameObject selectedGameObject) {
         updateButton(mouse, toolBox);
-        xPosInput.update(mouse);
-        yPosInput.update(mouse);
-        zPosInput.update(mouse);
+        
+        if(selected) {
+            xPosInput.update(mouse);
+            yPosInput.update(mouse);
+            zPosInput.update(mouse);
+        }
         
         if(xPosInput.getValue() != prevVal.x || yPosInput.getValue() != prevVal.y || zPosInput.getValue() != prevVal.z) {
             prevVal.set(xPosInput.getValue(), yPosInput.getValue(), zPosInput.getValue());

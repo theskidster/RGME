@@ -15,7 +15,7 @@ import org.lwjgl.system.MemoryUtil;
  * Created: Mar 23, 2021
  */
 
-final class VertexSelector {
+final class Selector {
 
     private int bufferSizeInBytes;
     
@@ -24,16 +24,18 @@ final class VertexSelector {
     
     private final List<Integer> selectedVertices = new LinkedList<>();
     
-    VertexSelector() {
+    Selector() {
         glBindVertexArray(vao);
         
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         
         glVertexAttribPointer(0, 3, GL_FLOAT, false, (6 * Float.BYTES), 0);
-        glVertexAttribPointer(3, 3, GL_FLOAT, false, (6 * Float.BYTES), (3 * Float.BYTES));
+        glVertexAttribPointer(1, 3, GL_FLOAT, false, (6 * Float.BYTES), (3 * Float.BYTES));
         
         glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(3);
+        glEnableVertexAttribArray(1);
+        
+        //TODO: modify this class so it can be used with the translate tool.
     }
     
     private void findBufferSize(int numVertices) {

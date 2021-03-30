@@ -67,7 +67,10 @@ public class ToolBox extends Container implements PropertyChangeListener {
         //Check if no tool is selected.
         if(!tools.stream().anyMatch(tool -> tool.selected)) {
             currTool = null;
+            widgets.clear();
         }
+        
+        title = (currTool == null) ? "Tool Box" : currTool;
         
         return null;
     }
