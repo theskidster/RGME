@@ -10,6 +10,8 @@ import org.joml.Vector3f;
 
 public class MoveObject extends Command {
 
+    private final boolean prevPosSetImplictly;
+    
     private final Vector3f currPos = new Vector3f();
     private final Vector3f prevPos = new Vector3f();
     private final GameObject object;
@@ -17,11 +19,21 @@ public class MoveObject extends Command {
     public MoveObject(GameObject object, Vector3f currPos) {
         this.object  = object;
         this.currPos.set(currPos.x, currPos.y, currPos.z);
+        
+        prevPosSetImplictly = true;
+    }
+    
+    public MoveObject(GameObject object, Vector3f prevPos, Vector3f currPos) {
+        this.object  = object;
+        this.prevPos.set(prevPos.x, prevPos.y, prevPos.z);
+        this.currPos.set(currPos.x, currPos.y, currPos.z);
+        
+        prevPosSetImplictly = false;
     }
     
     @Override
     public void execute() {
-        prevPos.set(object.getPosition());
+        if(prevPosSetImplictly) prevPos.set(object.getPosition());
         object.setPosition(currPos.x, currPos.y, currPos.z);
     }
 

@@ -1,5 +1,7 @@
 package dev.theskidster.rgme.scene;
 
+import dev.theskidster.rgme.commands.CommandHistory;
+import dev.theskidster.rgme.commands.MoveObject;
 import dev.theskidster.rgme.main.App;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.utils.Color;
@@ -24,6 +26,10 @@ public final class Scene {
     int height;
     int depth;
     
+    private boolean cursorActive;
+    private boolean snapToGrid;
+    private boolean prevObjectPosSet;
+    
     private final RayAabIntersection rayTest = new RayAabIntersection();
     
     final Vector3i initialLocation = new Vector3i();
@@ -31,7 +37,11 @@ public final class Scene {
     final Map<Vector2i, Boolean> tiles;
     
     private final Origin origin;
-    private final Floor floor = new Floor();
+    private final Floor floor           = new Floor();
+    private final MovementCursor cursor = new MovementCursor();
+    
+    private Movement cursorMovement      = new Movement();
+    private final Vector3f prevObjectPos = new Vector3f();
     
     public GameObject selectedGameObject;
     
@@ -41,6 +51,7 @@ public final class Scene {
     public final Map<Integer, GameObject> lightSources    = new HashMap<>();
     public final Map<Integer, GameObject> entities        = new HashMap<>();
     public final Map<Integer, GameObject> instances       = new HashMap<>();
+    private final Map<Integer, Vector3f> vertexPositions  = new HashMap<>();
     
     public Scene(int width, int height, int depth, Color clearColor) {
         this.width  = width;
@@ -50,6 +61,8 @@ public final class Scene {
         App.setClearColor(clearColor);
         
         origin = new Origin(width, height, depth);
+        
+        vertexPositions.put(0, new Vector3f());
         
         tiles = new HashMap<>() {{
             for(int w = -(width / 2); w < width / 2; w++) {
@@ -63,7 +76,29 @@ public final class Scene {
         lightSources.put(worldLight.index, worldLight);
     }
     
-    public void update() {
+    public void update(String currTool) {
+        if(currTool != null) {
+            switch(currTool) {
+                case "Translate" -> {
+                    Vector3f newPos = selectedGameObject.position;
+
+                    switch(cursorMovement.axis) {                    
+                        case "x", "X" -> selectedGameObject.position.set(newPos.x + cursorMovement.value, newPos.y, newPos.z);
+                        case "y", "Y" -> selectedGameObject.position.set(newPos.x, newPos.y + cursorMovement.value, newPos.z);
+                        case "z", "Z" -> selectedGameObject.position.set(newPos.x, newPos.y, newPos.z + cursorMovement.value);
+                    }
+                    
+                    cursorActive = true;
+                    cursor.update(selectedGameObject.position);
+                    
+                    cursorMovement.axis  = "";
+                    cursorMovement.value = 0;
+                }
+            }
+        } else {
+            cursorActive = false;
+        }
+        
         visibleGeometry.values().forEach(geometry -> ((VisibleGeometry) geometry).update());
         lightSources.values().forEach(light -> ((LightSource) light).update());
     }
@@ -84,6 +119,8 @@ public final class Scene {
             if(light.visible) ((LightSource) light).render(sceneProgram, camPos, camUp);
         });
         
+        if(cursorActive) cursor.render(sceneProgram, camPos, camUp);
+        
         origin.render(sceneProgram);
     }
     
@@ -97,9 +134,7 @@ public final class Scene {
     }
     
     public void unselectTiles() {
-        tiles.entrySet().forEach((entry) -> {
-            entry.setValue(false);
-        });
+        tiles.entrySet().forEach((entry) -> entry.setValue(false));
     }
     
     public void addShape() {
@@ -122,6 +157,27 @@ public final class Scene {
         if(selectedGameObject != null && selectedGameObject instanceof VisibleGeometry) {
             ((VisibleGeometry) selectedGameObject).shapeHeight = 0;
         }
+    }
+    
+    public void selectCursorArrow(Vector3f camPos, Vector3f camRay) {
+        cursor.selectArrow(camPos, camRay);
+    }
+    
+    public void moveCursor(Vector3f camDir, Vector3f rayChange, boolean ctrlHeld) {
+        if(!prevObjectPosSet) {
+            prevObjectPos.set(selectedGameObject.position);
+            prevObjectPosSet = true;
+        }
+        
+        cursorMovement = cursor.moveArrow(camDir, rayChange);
+    }
+    
+    public void finalizeMovement(CommandHistory cmdHistory) {
+        if(prevObjectPosSet) {
+            cmdHistory.executeCommand(new MoveObject(selectedGameObject, prevObjectPos, selectedGameObject.position));
+        }
+        
+        prevObjectPosSet = false;
     }
     
 }

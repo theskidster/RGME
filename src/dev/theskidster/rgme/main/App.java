@@ -122,7 +122,7 @@ public final class App {
                 glfwPollEvents();
                 
                 camera.update(window.width - TOOLBAR_WIDTH, window.height);
-                scene.update();
+                scene.update(ui.getCurrTool());
                 ui.update(cmdHistory);
             }
             

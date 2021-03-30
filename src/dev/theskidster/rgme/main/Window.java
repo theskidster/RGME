@@ -139,9 +139,8 @@ public final class Window implements PropertyChangeListener {
                     
                     if(mouseLeftHeld) {
                         switch(ui.getCurrTool()) {
-                            case "Mesh Paintbrush" -> {
-                                scene.stretchShape(camera.rayChange.y, ctrlHeld);
-                            }
+                            case "Mesh Paintbrush" -> scene.stretchShape(camera.rayChange.y, ctrlHeld);
+                            case "Translate"       -> scene.moveCursor(camera.direction, camera.rayChange, ctrlHeld);
                         }
                     }
                 } else {
@@ -162,10 +161,12 @@ public final class Window implements PropertyChangeListener {
                     if(mouseLeftHeld) {
                         switch(ui.getCurrTool()) {
                             case "Mesh Paintbrush" -> scene.addShape();
+                            case "Translate"       -> scene.selectCursorArrow(camera.position, camera.ray);
                         }
                     } else {
                         switch(ui.getCurrTool()) {
                             case "Mesh Paintbrush" -> scene.finalizeShape();
+                            case "Translate"       -> scene.finalizeMovement(cmdHistory);
                         }
                     }
                 }

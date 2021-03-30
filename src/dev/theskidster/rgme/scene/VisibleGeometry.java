@@ -8,7 +8,6 @@ import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.joml.Intersectionf;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -44,7 +43,6 @@ public final class VisibleGeometry extends GameObject {
     private final Matrix3f normal       = new Matrix3f();
     private final Vector3i locationDiff = new Vector3i();
     private final Matrix4f modelMatrix  = new Matrix4f();
-    private final Selector selector     = new Selector();
     
     private Texture texture;
     
@@ -360,24 +358,6 @@ public final class VisibleGeometry extends GameObject {
         }
     }
     
-    void selectVertices(Vector3f camPos, Vector3f camRay) {
-        vertexPositions.forEach((id, pos) -> {
-            float distance = (float) Math.sqrt(
-                    Math.pow((pos.x - camPos.x), 2) + 
-                    Math.pow((pos.y - camPos.y), 2) +
-                    Math.pow((pos.z - camPos.z), 2)) *
-                    0.0003f;
-
-            if(Intersectionf.testRaySphere(camPos, camRay, pos, distance)) {
-                selector.addVertex(id);
-            }
-        });
-    }
-    
-    void clearSelectedVertices() {
-        selector.clear();
-    }
-    
     Vector3f getVertexPos(int index) { return vertexPositions.get(index); }
     
     void setVertexPos(int index, String axis, float value) {
@@ -398,10 +378,6 @@ public final class VisibleGeometry extends GameObject {
     void snapVertexPos(int index) {
         vertexPositions.get(index).round();
         updateData = true;
-    }
-    
-    void selectAll() {
-        vertexPositions.keySet().forEach(id -> selector.addVertex(id));
     }
     
 }
