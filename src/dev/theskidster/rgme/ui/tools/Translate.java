@@ -1,7 +1,7 @@
 package dev.theskidster.rgme.ui.tools;
 
 import dev.theskidster.rgme.commands.Command;
-import dev.theskidster.rgme.commands.MoveObject;
+import dev.theskidster.rgme.commands.TranslateGameObject;
 import dev.theskidster.rgme.graphics.Background;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.scene.GameObject;
@@ -52,7 +52,7 @@ public class Translate extends Tool {
         
         if(xPosInput.getValue() != prevVal.x || yPosInput.getValue() != prevVal.y || zPosInput.getValue() != prevVal.z) {
             prevVal.set(xPosInput.getValue(), yPosInput.getValue(), zPosInput.getValue());
-            return new MoveObject(selectedGameObject, prevVal);
+            return new TranslateGameObject(selectedGameObject, prevVal);
         }
         
         if(xPosInput.getValue() != selectedGameObject.getPosition().x || yPosInput.getValue() != selectedGameObject.getPosition().y ||

@@ -8,7 +8,7 @@ import org.joml.Vector3f;
  * Created: Mar 15, 2021
  */
 
-public class MoveObject extends Command {
+public class TranslateGameObject extends Command {
 
     private final boolean prevPosSetImplictly;
     
@@ -16,17 +16,17 @@ public class MoveObject extends Command {
     private final Vector3f prevPos = new Vector3f();
     private final GameObject object;
     
-    public MoveObject(GameObject object, Vector3f currPos) {
+    public TranslateGameObject(GameObject object, Vector3f currPos) {
         this.object  = object;
-        this.currPos.set(currPos.x, currPos.y, currPos.z);
+        this.currPos.set(currPos);
         
         prevPosSetImplictly = true;
     }
     
-    public MoveObject(GameObject object, Vector3f prevPos, Vector3f currPos) {
+    public TranslateGameObject(GameObject object, Vector3f prevPos, Vector3f currPos) {
         this.object  = object;
-        this.prevPos.set(prevPos.x, prevPos.y, prevPos.z);
-        this.currPos.set(currPos.x, currPos.y, currPos.z);
+        this.prevPos.set(prevPos);
+        this.currPos.set(currPos);
         
         prevPosSetImplictly = false;
     }

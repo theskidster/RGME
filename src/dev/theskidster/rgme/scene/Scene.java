@@ -1,7 +1,7 @@
 package dev.theskidster.rgme.scene;
 
 import dev.theskidster.rgme.commands.CommandHistory;
-import dev.theskidster.rgme.commands.MoveObject;
+import dev.theskidster.rgme.commands.TranslateGameObject;
 import dev.theskidster.rgme.main.App;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.utils.Color;
@@ -26,7 +26,8 @@ public final class Scene {
     int height;
     int depth;
     
-    private boolean cursorActive;
+    private boolean translationCursorActive;
+    private boolean rotationCursorActive;
     private boolean snapToGrid;
     private boolean prevObjectPosSet;
     
@@ -37,8 +38,9 @@ public final class Scene {
     final Map<Vector2i, Boolean> tiles;
     
     private final Origin origin;
-    private final Floor floor           = new Floor();
-    private final MovementCursor cursor = new MovementCursor();
+    private final Floor floor               = new Floor();
+    private final TranslationCursor tCursor = new TranslationCursor();
+    private final RotationCursor rCursor    = new RotationCursor();
     
     private Movement cursorMovement      = new Movement();
     private final Vector3f prevObjectPos = new Vector3f();
@@ -78,25 +80,31 @@ public final class Scene {
     
     public void update(String currTool) {
         if(currTool != null) {
+            translationCursorActive = currTool.equals("Translate");
+            rotationCursorActive    = currTool.equals("Rotate");
+            
             switch(currTool) {
                 case "Translate" -> {
-                    Vector3f newPos = selectedGameObject.position;
+                    Vector3f objPos = selectedGameObject.position;
 
                     switch(cursorMovement.axis) {                    
-                        case "x", "X" -> selectedGameObject.position.set(newPos.x + cursorMovement.value, newPos.y, newPos.z);
-                        case "y", "Y" -> selectedGameObject.position.set(newPos.x, newPos.y + cursorMovement.value, newPos.z);
-                        case "z", "Z" -> selectedGameObject.position.set(newPos.x, newPos.y, newPos.z + cursorMovement.value);
+                        case "x", "X" -> selectedGameObject.position.set(objPos.x + cursorMovement.value, objPos.y, objPos.z);
+                        case "y", "Y" -> selectedGameObject.position.set(objPos.x, objPos.y + cursorMovement.value, objPos.z);
+                        case "z", "Z" -> selectedGameObject.position.set(objPos.x, objPos.y, objPos.z + cursorMovement.value);
                     }
                     
-                    cursorActive = true;
-                    cursor.update(selectedGameObject.position);
-                    
+                    tCursor.update(selectedGameObject.position);
                     cursorMovement.axis  = "";
                     cursorMovement.value = 0;
                 }
+                
+                case "Rotate" -> {
+                    rCursor.update(selectedGameObject.position);
+                }
             }
         } else {
-            cursorActive = false;
+            translationCursorActive = false;
+            rotationCursorActive   = false;
         }
         
         visibleGeometry.values().forEach(geometry -> ((VisibleGeometry) geometry).update());
@@ -119,7 +127,8 @@ public final class Scene {
             if(light.visible) ((LightSource) light).render(sceneProgram, camPos, camUp);
         });
         
-        if(cursorActive) cursor.render(sceneProgram, camPos, camUp);
+        if(translationCursorActive) tCursor.render(sceneProgram, camPos, camUp);
+        if(rotationCursorActive) rCursor.render(sceneProgram);
         
         origin.render(sceneProgram);
     }
@@ -159,25 +168,30 @@ public final class Scene {
         }
     }
     
-    public void selectCursorArrow(Vector3f camPos, Vector3f camRay) {
-        cursor.selectArrow(camPos, camRay);
+    public void selectTranslationCursorArrow(Vector3f camPos, Vector3f camRay) {
+        tCursor.selectArrow(camPos, camRay);
     }
     
-    public void moveCursor(Vector3f camDir, Vector3f rayChange, boolean ctrlHeld) {
+    public void moveTranslationCursor(Vector3f camDir, Vector3f rayChange, boolean ctrlHeld) {
         if(!prevObjectPosSet) {
             prevObjectPos.set(selectedGameObject.position);
             prevObjectPosSet = true;
         }
         
-        cursorMovement = cursor.moveArrow(camDir, rayChange);
+        snapToGrid     = ctrlHeld;
+        cursorMovement = tCursor.moveArrow(camDir, rayChange);
     }
     
-    public void finalizeMovement(CommandHistory cmdHistory) {
+    public void finalizeTranslation(CommandHistory cmdHistory) {
         if(prevObjectPosSet) {
-            cmdHistory.executeCommand(new MoveObject(selectedGameObject, prevObjectPos, selectedGameObject.position));
+            cmdHistory.executeCommand(new TranslateGameObject(selectedGameObject, prevObjectPos, selectedGameObject.position));
         }
         
         prevObjectPosSet = false;
+    }
+    
+    public void selectRotationCursorCircle(Vector3f camPos, Vector3f camRay) {
+        rCursor.selectCircle(camPos, camRay);
     }
     
 }

@@ -10,12 +10,12 @@ import java.util.Map.Entry;
  * Created: Mar 18, 2021
  */
 
-public class AddGameObject extends Command {
+public class CreateGameObject extends Command {
     
     private final Entry<Integer, GameObject> entry;
     private final Map<Integer, GameObject> collection;
     
-    public AddGameObject(Map<Integer, GameObject> collection, GameObject gameObject) {
+    public CreateGameObject(Map<Integer, GameObject> collection, GameObject gameObject) {
         this.collection = collection;
         entry = new SimpleEntry(gameObject.index, gameObject);
     }

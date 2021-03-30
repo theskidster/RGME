@@ -1,6 +1,6 @@
 package dev.theskidster.rgme.ui.containers;
 
-import dev.theskidster.rgme.commands.AddGameObject;
+import dev.theskidster.rgme.commands.CreateGameObject;
 import dev.theskidster.rgme.commands.Command;
 import dev.theskidster.rgme.commands.DeleteGameObject;
 import dev.theskidster.rgme.graphics.Background;
@@ -144,16 +144,16 @@ public final class SceneExplorer extends Container {
                 showTextArea = false;
                 
                 switch(groupIndex) {
-                    default -> { return new AddGameObject(scene.visibleGeometry, new VisibleGeometry()); }
-                    case 1  -> { return new AddGameObject(scene.boundingVolumes, new BoundingVolume()); }
-                    case 2  -> { return new AddGameObject(scene.triggerBoxes,    new VisibleGeometry()); }
+                    default -> { return new CreateGameObject(scene.visibleGeometry, new VisibleGeometry()); }
+                    case 1  -> { return new CreateGameObject(scene.boundingVolumes, new BoundingVolume()); }
+                    case 2  -> { return new CreateGameObject(scene.triggerBoxes,    new VisibleGeometry()); }
                     case 3  -> {
                         if(scene.lightSources.size() < App.MAX_LIGHTS) {
-                            return new AddGameObject(scene.lightSources, new LightSource());
+                            return new CreateGameObject(scene.lightSources, new LightSource());
                         }
                     }
-                    case 4  -> { return new AddGameObject(scene.entities,        new VisibleGeometry()); }
-                    case 5  -> { return new AddGameObject(scene.instances,       new VisibleGeometry()); }
+                    case 4  -> { return new CreateGameObject(scene.entities,        new VisibleGeometry()); }
+                    case 5  -> { return new CreateGameObject(scene.instances,       new VisibleGeometry()); }
                 }
             }
         } else {

@@ -16,7 +16,7 @@ import org.lwjgl.system.MemoryStack;
  * Created: Mar 30, 2021
  */
 
-final class MovementCursor {
+final class TranslationCursor {
     
     private int arrowID;
     
@@ -39,7 +39,7 @@ final class MovementCursor {
     private final Vector3f normDir  = new Vector3f();
     private final Circle circle     = new Circle(0.1f, 1, Color.WHITE);
     
-    MovementCursor() {
+    TranslationCursor() {
         position   = new Vector3f();
         directions = new Vector3f[6];
         

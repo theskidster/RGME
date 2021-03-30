@@ -18,6 +18,7 @@ public class Circle {
     private final int lineWidth;
     
     public final Vector3f position = new Vector3f();
+    public final Vector3f rotation = new Vector3f();
     private final Graphics g       = new Graphics();
     
     public Circle(float radius, int lineWidth, Color color) {
@@ -55,11 +56,12 @@ public class Circle {
     
     public void update() {
         g.modelMatrix.translation(position);
+        g.modelMatrix.rotateX((float) Math.toRadians(rotation.x));
+        g.modelMatrix.rotateY((float) Math.toRadians(rotation.y));
+        g.modelMatrix.rotateZ((float) Math.toRadians(rotation.z));
     }
     
-    public void render(Program sceneProgram, Vector3f camPos, Vector3f camUp) {
-        g.modelMatrix.billboardSpherical(position, camPos, camUp);
-        
+    public void render(Program sceneProgram) {
         glLineWidth(lineWidth);
         glBindVertexArray(g.vao);
         
@@ -70,6 +72,11 @@ public class Circle {
         glLineWidth(1);
         
         App.checkGLError();
+    }
+    
+    public void render(Program sceneProgram, Vector3f camPos, Vector3f camUp) {
+        g.modelMatrix.billboardSpherical(position, camPos, camUp);
+        render(sceneProgram);
     }
     
 }
