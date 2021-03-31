@@ -143,14 +143,10 @@ final class RotationCursor {
     Vector3f findIntersectionPoint(Vector3f camPos, Vector3f camRay, Vector3f normal) {
         Vector3f intersectionPoint = new Vector3f();
         
-        /*
-        TODO: 
-        fix the bug that makes this only work when the origin is crossed after 
-        the shape has been translated.
-        */
-        
         float distanceToPlane = Intersectionf.intersectRayPlane(camPos, camRay, position, normal, 0);
         camPos.add(camRay.mul(distanceToPlane), intersectionPoint);
+        
+        intersectionPoint.sub(position);
         
         return intersectionPoint;
     }
