@@ -18,8 +18,11 @@ final class RotationCursor {
     private final float RADIUS = 0.5f;
     private float epsilon;
     
-    private final Vector3f position = new Vector3f();
-    private final Vector3f[] planes = new Vector3f[3];
+    private final Vector3f normDir   = new Vector3f();
+    private final Vector3f intersect = new Vector3f();
+    private final Vector3f position  = new Vector3f();
+    
+    private final Vector3f[] planes = new Vector3f[6];
     private final Circle[] circles  = new Circle[3];
     
     RotationCursor() {
@@ -33,6 +36,9 @@ final class RotationCursor {
         planes[0] = new Vector3f(1, 0, 0);
         planes[1] = new Vector3f(0, 0, 1);
         planes[2] = new Vector3f(0, 1, 0);
+        planes[3] = new Vector3f(-1, 0,  0);
+        planes[4] = new Vector3f(0,  0, -1);
+        planes[5] = new Vector3f(0, -1,  0);
     }
     
     public void update(Vector3f objectPos) {
@@ -74,24 +80,79 @@ final class RotationCursor {
                 float distanceToOrigin = intersectionPoint.distance(position);
                 
                 if(distanceToOrigin <= (RADIUS + epsilon) && distanceToOrigin >= (RADIUS - epsilon)) {
-                    circleID = c;
-                    System.out.println(circleID);
+                    circleID  = c;
+                    intersect.set(intersectionPoint);
                     break;
                 }
             }
         }
     }
     
-    Movement moveCircle(Vector3f camDir, Vector3f rayChange) {
+    Movement moveCircle(Vector3f camPos, Vector3f camRay, Vector3f camDir, Vector3f rayChange) {
+        camDir.normalize(normDir);
+        float dot = normDir.dot(planes[circleID]);
+        
         Movement movement = new Movement();
         
         switch(circleID) {
             case 0 -> {
+                movement.axis = "X";
                 
+                Vector3f normal = (dot > 0) ? planes[circleID + 3] : planes[circleID];
+                Vector3f point  = findIntersectionPoint(camPos, camRay, normal);
+                
+                movement.value = (float) -Math.toDegrees(point.angleSigned(intersect, planes[circleID]));
+            }
+            
+            case 1 -> {
+                movement.axis = "Z";
+                
+                if(dot < 0) { //Front
+                    if(intersect.z < 0) { //Right
+                        if(Math.abs(intersect.y) > Math.abs(intersect.z)) {
+                            //Horizontal
+                        } else {
+                            //Vertical
+                        }
+                    } else { //Left
+                        
+                    }
+                } else { //Back
+                    if(intersect.z > 0) { //Right
+                        
+                    } else { //Left
+                        
+                    }
+                }
+            }
+            
+            case 2 -> {
+                movement.axis = "Y";
+                
+                if(dot < 0) {
+                   
+                } else {
+                    
+                }
             }
         }
         
         return movement;
+    }
+    
+    Vector3f findIntersectionPoint(Vector3f camPos, Vector3f camRay, Vector3f normal) {
+        Vector3f intersectionPoint = new Vector3f();
+        
+        /*
+        TODO: 
+        fix the bug that makes this only work when the origin is crossed after 
+        the shape has been translated.
+        */
+        
+        float distanceToPlane = Intersectionf.intersectRayPlane(camPos, camRay, position, normal, 0);
+        camPos.add(camRay.mul(distanceToPlane), intersectionPoint);
+        
+        return intersectionPoint;
     }
     
 }

@@ -141,6 +141,9 @@ public final class Window implements PropertyChangeListener {
                         switch(ui.getCurrTool()) {
                             case "Mesh Paintbrush" -> scene.stretchShape(camera.rayChange.y, ctrlHeld);
                             case "Translate"       -> scene.moveTranslationCursor(camera.direction, camera.rayChange, ctrlHeld);
+                            case "Rotate" -> {
+                                scene.moveRotationCursor(camera.position, camera.ray, camera.direction, camera.rayChange, ctrlHeld);
+                            }
                         }
                     }
                 } else {
@@ -168,6 +171,7 @@ public final class Window implements PropertyChangeListener {
                         switch(ui.getCurrTool()) {
                             case "Mesh Paintbrush" -> scene.finalizeShape();
                             case "Translate"       -> scene.finalizeTranslation(cmdHistory);
+                            case "Rotate"          -> scene.finalizeRotation(cmdHistory);
                         }
                     }
                 }

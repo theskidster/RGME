@@ -56,6 +56,7 @@ public final class VisibleGeometry extends GameObject {
         super("Shape");
         
         position = new Vector3f();
+        rotation = new Vector3f();
         
         texCoords = new HashMap<>() {{
             put(0, new Vector2f(0, 0));
@@ -105,6 +106,9 @@ public final class VisibleGeometry extends GameObject {
     
     void update() {
         modelMatrix.translation(position);
+        modelMatrix.rotateX((float) Math.toRadians(rotation.x));
+        modelMatrix.rotateY((float) Math.toRadians(rotation.y));
+        modelMatrix.rotateZ((float) Math.toRadians(rotation.z));
     }
     
     void render(Program sceneProgram, GameObject[] lights, int numLights) {

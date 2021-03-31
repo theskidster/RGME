@@ -30,6 +30,7 @@ public final class Scene {
     private boolean rotationCursorActive;
     private boolean snapToGrid;
     private boolean prevObjectPosSet;
+    private boolean prevObjectRotSet;
     
     private final RayAabIntersection rayTest = new RayAabIntersection();
     
@@ -44,6 +45,7 @@ public final class Scene {
     
     private Movement cursorMovement      = new Movement();
     private final Vector3f prevObjectPos = new Vector3f();
+    private final Vector3f prevObjectRot = new Vector3f();
     
     public GameObject selectedGameObject;
     
@@ -99,7 +101,15 @@ public final class Scene {
                 }
                 
                 case "Rotate" -> {
+                    switch(cursorMovement.axis) {
+                        case "x", "X" -> selectedGameObject.rotation.x = cursorMovement.value;
+                        case "y", "Y" -> selectedGameObject.rotation.y = cursorMovement.value;
+                        case "z", "Z" -> selectedGameObject.rotation.z = cursorMovement.value;
+                    }
+                    
                     rCursor.update(selectedGameObject.position);
+                    cursorMovement.axis  = "";
+                    cursorMovement.value = 0;
                 }
             }
         } else {
@@ -192,6 +202,19 @@ public final class Scene {
     
     public void selectRotationCursorCircle(Vector3f camPos, Vector3f camRay) {
         rCursor.selectCircle(camPos, camRay);
+    }
+    
+    public void moveRotationCursor(Vector3f camPos, Vector3f camRay, Vector3f camDir, Vector3f rayChange, boolean ctrlHeld) {
+        if(!prevObjectRotSet) {
+            prevObjectRot.set(selectedGameObject.position);
+            prevObjectRotSet = true;
+        }
+        
+        cursorMovement = rCursor.moveCircle(camPos, camRay, camDir, rayChange);
+    }
+    
+    public void finalizeRotation(CommandHistory cmdHistory) {
+        prevObjectRotSet = false;
     }
     
 }
