@@ -109,6 +109,7 @@ public final class VisibleGeometry extends GameObject {
         modelMatrix.rotateX((float) Math.toRadians(rotation.x));
         modelMatrix.rotateY((float) Math.toRadians(rotation.y));
         modelMatrix.rotateZ((float) Math.toRadians(rotation.z));
+        modelMatrix.scale(scale);
     }
     
     void render(Program sceneProgram, GameObject[] lights, int numLights) {

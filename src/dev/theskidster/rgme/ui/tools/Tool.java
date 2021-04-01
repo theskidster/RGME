@@ -31,7 +31,7 @@ public abstract class Tool extends Widget implements Renderable, Relocatable {
     public boolean selected;
     
     public final String name;
-    private Color btnColor;
+    private Color btnColor  = Color.RGME_MEDIUM_GRAY;
     private final Icon icon = new Icon(20, 20);
     
     protected LinkedList<Widget> widgets;

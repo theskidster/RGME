@@ -12,6 +12,8 @@ public abstract class GameObject {
     private static int indexLimit;
     public final int index;
     
+    protected float scale = 1;
+    
     protected boolean visible = true;
     
     protected String name;
@@ -27,13 +29,14 @@ public abstract class GameObject {
     public String getName()       { return name; }
     public Vector3f getPosition() { return position; };
     public Vector3f getRotation() { return rotation; };
+    public float getScale()       { return scale; }
     
-    public void setVisible(boolean visible) {
-        this.visible = visible;
+    public void setVisible(boolean value) {
+        visible = value;
     }
     
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String value) {
+        name = value;
     }
     
     public void setPosition(float x, float y, float z) {
@@ -42,6 +45,10 @@ public abstract class GameObject {
     
     public void setRotation(float x, float y, float z) {
         rotation.set(x, y, z);
+    }
+    
+    public void setScale(float value) {
+        scale = value;
     }
     
 }
