@@ -17,14 +17,14 @@ public class TranslateGameObject extends Command {
     private final GameObject object;
     
     public TranslateGameObject(GameObject object, Vector3f currPos) {
-        this.object  = object;
+        this.object = object;
         this.currPos.set(currPos);
         
         prevPosSetImplictly = true;
     }
     
     public TranslateGameObject(GameObject object, Vector3f prevPos, Vector3f currPos) {
-        this.object  = object;
+        this.object = object;
         this.prevPos.set(prevPos);
         this.currPos.set(currPos);
         

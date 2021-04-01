@@ -1,6 +1,7 @@
 package dev.theskidster.rgme.scene;
 
 import dev.theskidster.rgme.commands.CommandHistory;
+import dev.theskidster.rgme.commands.RotateGameObject;
 import dev.theskidster.rgme.commands.TranslateGameObject;
 import dev.theskidster.rgme.main.App;
 import dev.theskidster.rgme.main.Program;
@@ -206,14 +207,19 @@ public final class Scene {
     
     public void moveRotationCursor(Vector3f camPos, Vector3f camRay, Vector3f camDir, Vector3f rayChange, boolean ctrlHeld) {
         if(!prevObjectRotSet) {
-            prevObjectRot.set(selectedGameObject.position);
+            prevObjectRot.set(selectedGameObject.rotation);
             prevObjectRotSet = true;
         }
         
+        snapToGrid     = ctrlHeld;
         cursorMovement = rCursor.moveCircle(camPos, camRay, camDir, rayChange);
     }
     
     public void finalizeRotation(CommandHistory cmdHistory) {
+        if(prevObjectRotSet) {
+            cmdHistory.executeCommand(new RotateGameObject(selectedGameObject, prevObjectRot, selectedGameObject.rotation));
+        }
+        
         prevObjectRotSet = false;
     }
     

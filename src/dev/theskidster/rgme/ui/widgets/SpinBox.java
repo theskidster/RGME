@@ -21,9 +21,11 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class SpinBox extends TextInput {
     
+    private final float maxValue;
     private float value;
     
     private final boolean asInt;
+    private final boolean signed;
     
     private final Rectangle topButton    = new Rectangle(0, 0, 23, 15);
     private final Rectangle bottomButton = new Rectangle(0, 0, 23, 15);
@@ -37,11 +39,14 @@ public class SpinBox extends TextInput {
     private Color topColor    = Color.RGME_MEDIUM_GRAY;;
     private Color bottomColor = Color.RGME_MEDIUM_GRAY;;
     
-    public SpinBox(float xOffset, float yOffset, float width, float parentPosX, float parentPosY, float value, boolean asInt) {
+    public SpinBox(float xOffset, float yOffset, float width, float parentPosX, float parentPosY, 
+            float value, boolean asInt, float maxValue, boolean signed) {
         super(xOffset, yOffset, width, parentPosX, parentPosY);
         
-        this.value = value;
-        this.asInt = asInt;
+        this.value    = value;
+        this.asInt    = asInt;
+        this.maxValue = maxValue;
+        this.signed   = signed;
         
         setTextToValue();
         
@@ -63,6 +68,19 @@ public class SpinBox extends TextInput {
 
     @Override
     protected void validate() {
+        if(signed) {
+            if(value > maxValue)       value = -maxValue;
+            else if(value < -maxValue) value = maxValue;
+        } else {
+            if(maxValue < 0) {
+                if(value < maxValue) value = maxValue;
+                else if(value > 0)   value = 0;
+            } else {
+                if(value > maxValue) value = maxValue;
+                else if(value < 0)   value = 0;
+            }
+        }
+        
         setTextToValue();
     }
 
@@ -210,12 +228,12 @@ public class SpinBox extends TextInput {
         
         if(clickedOnce(topButton, mouse)) {
             value++;
-            setTextToValue();
+            validate();
         }
         
         if(clickedOnce(bottomButton, mouse)) {
             value--;
-            setTextToValue();
+            validate();
         }
         
         return null;

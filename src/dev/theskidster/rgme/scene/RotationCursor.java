@@ -95,47 +95,15 @@ final class RotationCursor {
         Movement movement = new Movement();
         
         switch(circleID) {
-            case 0 -> {
-                movement.axis = "X";
-                
-                Vector3f normal = (dot > 0) ? planes[circleID + 3] : planes[circleID];
-                Vector3f point  = findIntersectionPoint(camPos, camRay, normal);
-                
-                movement.value = (float) -Math.toDegrees(point.angleSigned(intersect, planes[circleID]));
-            }
-            
-            case 1 -> {
-                movement.axis = "Z";
-                
-                if(dot < 0) { //Front
-                    if(intersect.z < 0) { //Right
-                        if(Math.abs(intersect.y) > Math.abs(intersect.z)) {
-                            //Horizontal
-                        } else {
-                            //Vertical
-                        }
-                    } else { //Left
-                        
-                    }
-                } else { //Back
-                    if(intersect.z > 0) { //Right
-                        
-                    } else { //Left
-                        
-                    }
-                }
-            }
-            
-            case 2 -> {
-                movement.axis = "Y";
-                
-                if(dot < 0) {
-                   
-                } else {
-                    
-                }
-            }
+            case 0 -> movement.axis = "X";
+            case 1 -> movement.axis = "Z";
+            case 2 -> movement.axis = "Y";    
         }
+        
+        Vector3f normal = (dot > 0) ? planes[circleID + 3] : planes[circleID];
+        Vector3f point  = findIntersectionPoint(camPos, camRay, normal);
+
+        movement.value = (float) -Math.toDegrees(point.angleSigned(intersect, planes[circleID]));
         
         return movement;
     }

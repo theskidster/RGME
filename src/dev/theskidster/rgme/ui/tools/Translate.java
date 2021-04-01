@@ -29,9 +29,9 @@ public class Translate extends Tool {
     public Translate(float parentPosX, float parentPosY, int order) {
         super("Translate", 0, 2, order);
         
-        xPosInput = new SpinBox(140, 15, 120, parentPosX, parentPosY, 0, false);
-        yPosInput = new SpinBox(140, 60, 120, parentPosX, parentPosY, 0, false);
-        zPosInput = new SpinBox(140, 105, 120, parentPosX, parentPosY, 0, false);
+        xPosInput = new SpinBox(140, 15, 120, parentPosX, parentPosY, 0, false, Float.POSITIVE_INFINITY, true);
+        yPosInput = new SpinBox(140, 60, 120, parentPosX, parentPosY, 0, false, Float.POSITIVE_INFINITY, true);
+        zPosInput = new SpinBox(140, 105, 120, parentPosX, parentPosY, 0, false, Float.POSITIVE_INFINITY, true);
         
         widgets = new LinkedList<>() {{
             add(xPosInput);

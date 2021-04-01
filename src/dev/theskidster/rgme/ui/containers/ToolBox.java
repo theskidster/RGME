@@ -127,7 +127,7 @@ public class ToolBox extends Container implements PropertyChangeListener {
             if(selectedGameObject instanceof VisibleGeometry) {
                 tools.add(new Paintbrush(1));
                 tools.add(new Translate(bounds.xPos, bounds.yPos, 2));
-                tools.add(new Rotate(3));
+                tools.add(new Rotate(bounds.xPos, bounds.yPos, 3));
                 tools.add(new Scale(4));
                 tools.add(new VertexTool(5));
                 tools.add(new FaceTool(6));
