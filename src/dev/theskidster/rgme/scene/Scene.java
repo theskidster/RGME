@@ -115,7 +115,7 @@ public final class Scene {
             }
         } else {
             translationCursorActive = false;
-            rotationCursorActive   = false;
+            rotationCursorActive    = false;
         }
         
         visibleGeometry.values().forEach(geometry -> ((VisibleGeometry) geometry).update());
