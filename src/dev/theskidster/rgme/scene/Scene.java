@@ -37,12 +37,14 @@ public final class Scene {
     
     final Vector3i initialLocation = new Vector3i();
     final Vector3i cursorLocation  = new Vector3i();
+    final Vector3f tempVec         = new Vector3f();
     final Map<Vector2i, Boolean> tiles;
     
     private final Origin origin;
     private final Floor floor               = new Floor();
     private final TranslationCursor tCursor = new TranslationCursor();
     private final RotationCursor rCursor    = new RotationCursor();
+    private final VertexSelector selector   = new VertexSelector();
     
     private Movement cursorMovement      = new Movement();
     private final Vector3f prevObjectPos = new Vector3f();
@@ -112,6 +114,10 @@ public final class Scene {
                     cursorMovement.axis  = "";
                     cursorMovement.value = 0;
                 }
+                
+                case "Vertex Manipulator" -> {
+                    
+                }
             }
         } else {
             translationCursorActive = false;
@@ -122,7 +128,7 @@ public final class Scene {
         lightSources.values().forEach(light -> ((LightSource) light).update());
     }
     
-    public void render(Program sceneProgram, Vector3f camPos, Vector3f camUp) {
+    public void render(Program sceneProgram, Vector3f camPos, Vector3f camUp, String currTool) {
         floor.draw(sceneProgram, tiles);
         
         visibleGeometry.values().forEach(geometry -> {
@@ -130,7 +136,9 @@ public final class Scene {
                 ((VisibleGeometry) geometry).render(
                         sceneProgram, 
                         lightSources.values().toArray(new GameObject[lightSources.size()]), 
-                        lightSources.size());
+                        lightSources.size(),
+                        currTool,
+                        selector);
             }
         });
         
@@ -222,5 +230,19 @@ public final class Scene {
         
         prevObjectRotSet = false;
     }
+    
+    public void selectVertices(Vector3f camPos, Vector3f camRay, boolean ctrlHeld) {
+        camRay.mul(0.5f, tempVec);
+        tempVec.normalize();
+        
+        if(!ctrlHeld) selector.clear();
+        
+        //TODO: add other types that utilize this tool
+        if(selectedGameObject instanceof VisibleGeometry) {
+            ((VisibleGeometry) selectedGameObject).selectVertices(camPos, tempVec, selector);
+        }
+    }
+    
+    //TODO: too tired- add the rest of the vertex selection stuff tomorrow
     
 }

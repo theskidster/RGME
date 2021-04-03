@@ -144,6 +144,9 @@ public final class Window implements PropertyChangeListener {
                             case "Rotate" -> {
                                 scene.moveRotationCursor(camera.position, camera.ray, camera.direction, camera.rayChange, ctrlHeld);
                             }
+                            case "Vertex Manipulator" -> {
+                                
+                            }
                         }
                     }
                 } else {
@@ -160,18 +163,23 @@ public final class Window implements PropertyChangeListener {
                 case GLFW_MOUSE_BUTTON_LEFT   -> {
                     mouseLeftHeld = (action == GLFW_PRESS);
                     
-                    //TODO: provide as command
                     if(mouseLeftHeld) {
                         switch(ui.getCurrTool()) {
-                            case "Mesh Paintbrush" -> scene.addShape();
-                            case "Translate"       -> scene.selectTranslationCursorArrow(camera.position, camera.ray);
-                            case "Rotate"          -> scene.selectRotationCursorCircle(camera.position, camera.ray);
+                            case "Mesh Paintbrush"    -> scene.addShape();
+                            case "Translate"          -> scene.selectTranslationCursorArrow(camera.position, camera.ray);
+                            case "Rotate"             -> scene.selectRotationCursorCircle(camera.position, camera.ray);
+                            case "Vertex Manipulator" -> {
+                                scene.selectVertices(camera.position, camera.ray, ctrlHeld);
+                            }
                         }
                     } else {
                         switch(ui.getCurrTool()) {
                             case "Mesh Paintbrush" -> scene.finalizeShape();
                             case "Translate"       -> scene.finalizeTranslation(cmdHistory);
                             case "Rotate"          -> scene.finalizeRotation(cmdHistory);
+                            case "Vertex Manipulator" -> {
+                                
+                            }
                         }
                     }
                 }

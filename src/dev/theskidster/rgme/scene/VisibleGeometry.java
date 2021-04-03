@@ -8,6 +8,7 @@ import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.joml.Intersectionf;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -112,7 +113,7 @@ public final class VisibleGeometry extends GameObject {
         modelMatrix.scale(scale);
     }
     
-    void render(Program sceneProgram, GameObject[] lights, int numLights) {
+    void render(Program sceneProgram, GameObject[] lights, int numLights, String currTool, VertexSelector selector) {
         if(updateData) {
             findBufferSize();
 
@@ -175,6 +176,10 @@ public final class VisibleGeometry extends GameObject {
         glDisable(GL_DEPTH_TEST);
         
         App.checkGLError();
+        
+        if(currTool.equals("Vertex Manipulator")) {
+            selector.draw(sceneProgram, vertexPositions);
+        }
     }
     
     void addShape(float x, float y, float z) {
@@ -383,6 +388,20 @@ public final class VisibleGeometry extends GameObject {
     void snapVertexPos(int index) {
         vertexPositions.get(index).round();
         updateData = true;
+    }
+    
+    void selectVertices(Vector3f camPos, Vector3f camRay, VertexSelector selector) {
+        vertexPositions.forEach((index, position) -> {
+            float distance = (float) Math.sqrt(
+                    Math.pow((position.x - camPos.x), 2) + 
+                    Math.pow((position.y - camPos.y), 2) +
+                    Math.pow((position.z - camPos.z), 2)) *
+                    0.0003f;
+
+            if(Intersectionf.testRaySphere(camPos, camRay, position, distance)) {
+                selector.addVertex(index);
+            }
+        });
     }
     
 }

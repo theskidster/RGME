@@ -132,7 +132,7 @@ public final class App {
                 sceneProgram.use();
                 glViewport(0, 0, window.width - TOOLBAR_WIDTH, window.height);
                 camera.render(sceneProgram);
-                scene.render(sceneProgram, camera.position, camera.up);
+                scene.render(sceneProgram, camera.position, camera.up, ui.getCurrTool());
 
                 uiProgram.use();
                 glViewport(0, 0, window.width, window.height);
