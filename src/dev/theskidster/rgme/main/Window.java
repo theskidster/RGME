@@ -140,12 +140,14 @@ public final class Window implements PropertyChangeListener {
                     if(mouseLeftHeld) {
                         switch(ui.getCurrTool()) {
                             case "Mesh Paintbrush" -> scene.stretchShape(camera.rayChange.y, ctrlHeld);
-                            case "Translate"       -> scene.moveTranslationCursor(camera.direction, camera.rayChange, ctrlHeld);
+                            case "Translate"       -> scene.moveTranslationCursor(camera.direction, camera.rayChange, ctrlHeld, ui.getCurrTool());
                             case "Rotate" -> {
                                 scene.moveRotationCursor(camera.position, camera.ray, camera.direction, camera.rayChange, ctrlHeld);
                             }
                             case "Vertex Manipulator" -> {
-                                
+                                if(scene.getVertexSelected()) {
+                                    scene.moveTranslationCursor(camera.direction, camera.rayChange, ctrlHeld, ui.getCurrTool());
+                                }
                             }
                         }
                     }
@@ -160,7 +162,7 @@ public final class Window implements PropertyChangeListener {
             ui.setMouseAction(button, action);
             
             switch(button) {
-                case GLFW_MOUSE_BUTTON_LEFT   -> {
+                case GLFW_MOUSE_BUTTON_LEFT -> {
                     mouseLeftHeld = (action == GLFW_PRESS);
                     
                     if(mouseLeftHeld) {
@@ -169,16 +171,24 @@ public final class Window implements PropertyChangeListener {
                             case "Translate"          -> scene.selectTranslationCursorArrow(camera.position, camera.ray);
                             case "Rotate"             -> scene.selectRotationCursorCircle(camera.position, camera.ray);
                             case "Vertex Manipulator" -> {
-                                scene.selectVertices(camera.position, camera.ray, ctrlHeld);
+                                if(scene.getVertexSelected()) {
+                                    scene.selectTranslationCursorArrow(camera.position, camera.ray);
+                                }
+                                
+                                if(!scene.getCursorSelected() && action == GLFW_PRESS) {
+                                    scene.selectVertices(camera.position, camera.ray, ctrlHeld);
+                                }
                             }
                         }
                     } else {
                         switch(ui.getCurrTool()) {
                             case "Mesh Paintbrush" -> scene.finalizeShape();
-                            case "Translate"       -> scene.finalizeTranslation(cmdHistory);
+                            case "Translate"       -> scene.finalizeTranslation(cmdHistory, ui.getCurrTool());
                             case "Rotate"          -> scene.finalizeRotation(cmdHistory);
                             case "Vertex Manipulator" -> {
-                                
+                                if(scene.getVertexSelected()) {
+                                    scene.finalizeTranslation(cmdHistory, ui.getCurrTool());
+                                }
                             }
                         }
                     }

@@ -8,7 +8,6 @@ import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.joml.Intersectionf;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -23,7 +22,7 @@ import org.lwjgl.system.MemoryUtil;
  * Created: Mar 9, 2021
  */
 
-public final class VisibleGeometry extends GameObject {
+public final class VisibleGeometry extends SculptableGameObject {
 
     private final int FLOATS_PER_VERTEX = 8;
     
@@ -39,8 +38,6 @@ public final class VisibleGeometry extends GameObject {
     
     private final int[] offsets = new int[8];
     
-    private boolean updateData;
-    
     private final Matrix3f normal       = new Matrix3f();
     private final Vector3i locationDiff = new Vector3i();
     private final Matrix4f modelMatrix  = new Matrix4f();
@@ -49,9 +46,8 @@ public final class VisibleGeometry extends GameObject {
     
     private final Map<Integer, Vector2f> texCoords;
     private final Map<Integer, Vector3f> normals;
-    private final LinkedHashMap<Integer, Vector3f> initialVPs      = new LinkedHashMap<>();
-    private final LinkedHashMap<Integer, Vector3f> vertexPositions = new LinkedHashMap<>();
-    private final LinkedHashMap<Integer, Face> faces               = new LinkedHashMap<>();
+    private final LinkedHashMap<Integer, Vector3f> initialVPs = new LinkedHashMap<>();
+    private final LinkedHashMap<Integer, Face> faces          = new LinkedHashMap<>();
     
     public VisibleGeometry() {
         super("Shape");
@@ -378,30 +374,6 @@ public final class VisibleGeometry extends GameObject {
         }
         
         updateData = true;
-    }
-    
-    void setVertexPos(int index, float x, float y, float z) {
-        vertexPositions.get(index).set(x, y, z);
-        updateData = true;
-    }
-    
-    void snapVertexPos(int index) {
-        vertexPositions.get(index).round();
-        updateData = true;
-    }
-    
-    void selectVertices(Vector3f camPos, Vector3f camRay, VertexSelector selector) {
-        vertexPositions.forEach((index, position) -> {
-            float distance = (float) Math.sqrt(
-                    Math.pow((position.x - camPos.x), 2) + 
-                    Math.pow((position.y - camPos.y), 2) +
-                    Math.pow((position.z - camPos.z), 2)) *
-                    0.0003f;
-
-            if(Intersectionf.testRaySphere(camPos, camRay, position, distance)) {
-                selector.addVertex(index);
-            }
-        });
     }
     
 }

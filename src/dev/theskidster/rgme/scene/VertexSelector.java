@@ -95,8 +95,8 @@ final class VertexSelector {
         return selectedVertices.contains(index);
     }
     
-    List<Integer> getSelectedVertices() {
-        return selectedVertices;
+    boolean vertexSelected() {
+        return selectedVertices.size() > 0;
     }
     
 }

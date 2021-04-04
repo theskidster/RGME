@@ -3,11 +3,13 @@ package dev.theskidster.rgme.scene;
 import dev.theskidster.rgme.commands.CommandHistory;
 import dev.theskidster.rgme.commands.RotateGameObject;
 import dev.theskidster.rgme.commands.TranslateGameObject;
+import dev.theskidster.rgme.commands.TranslateVertices;
 import dev.theskidster.rgme.main.App;
 import dev.theskidster.rgme.main.Program;
 import dev.theskidster.rgme.utils.Color;
 import static dev.theskidster.rgme.utils.Light.NOON;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import org.joml.RayAabIntersection;
 import org.joml.Vector2i;
@@ -30,8 +32,8 @@ public final class Scene {
     private boolean translationCursorActive;
     private boolean rotationCursorActive;
     private boolean snapToGrid;
-    private boolean prevObjectPosSet;
-    private boolean prevObjectRotSet;
+    private boolean prevPosSet;
+    private boolean prevRotSet;
     
     private final RayAabIntersection rayTest = new RayAabIntersection();
     
@@ -49,6 +51,10 @@ public final class Scene {
     private Movement cursorMovement      = new Movement();
     private final Vector3f prevObjectPos = new Vector3f();
     private final Vector3f prevObjectRot = new Vector3f();
+    
+    private final LinkedHashMap<Integer, Vector3f> selectedVertices = new LinkedHashMap<>();
+    private LinkedHashMap<Integer, Vector3f> prevVertPos;
+    private LinkedHashMap<Integer, Vector3f> currVertPos;
     
     public GameObject selectedGameObject;
     
@@ -85,7 +91,7 @@ public final class Scene {
     
     public void update(String currTool) {
         if(currTool != null) {
-            translationCursorActive = currTool.equals("Translate");
+            translationCursorActive = currTool.equals("Translate") || (currTool.equals("Vertex Manipulator") && getVertexSelected());
             rotationCursorActive    = currTool.equals("Rotate");
             
             switch(currTool) {
@@ -116,7 +122,44 @@ public final class Scene {
                 }
                 
                 case "Vertex Manipulator" -> {
-                    
+                    if(getVertexSelected()) {
+                        SculptableGameObject sculptable = ((SculptableGameObject) selectedGameObject);
+                        
+                        selectedVertices.clear();
+                        selectedVertices.putAll(sculptable.getSelectedVertices(selector));
+                        currVertPos = new LinkedHashMap<>();
+                        
+                        selectedVertices.forEach((index, position) -> {
+                            if(!currVertPos.containsKey(index)) {
+                                currVertPos.put(index, new Vector3f(position));
+                            } else {
+                                if(!snapToGrid && !currVertPos.get(index).equals(position.x, position.y, position.z)) {
+                                    currVertPos.put(index, new Vector3f(position));
+                                }
+                            }
+                        });
+                        
+                        selectedVertices.forEach((index, position) -> {
+                            Vector3f newPos = currVertPos.get(index);
+                            
+                            switch(cursorMovement.axis) {
+                                case "x", "X" -> currVertPos.get(index).set(newPos.x += cursorMovement.value, newPos.y, newPos.z);
+                                case "y", "Y" -> currVertPos.get(index).set(newPos.x, newPos.y += cursorMovement.value, newPos.z);
+                                case "z", "Z" -> currVertPos.get(index).set(newPos.x, newPos.y, newPos.z += cursorMovement.value);
+                            }
+                            
+                            if(!snapToGrid) {
+                                sculptable.setVertexPos(index, newPos.x, newPos.y, newPos.z);
+                            } else {
+                                sculptable.setVertexPos(index, newPos.x, newPos.y, newPos.z);
+                                sculptable.snapVertexPos(index);
+                            }
+                        });
+
+                        tCursor.update(selectedVertices);
+                        cursorMovement.axis  = "";
+                        cursorMovement.value = 0;
+                    }
                 }
             }
         } else {
@@ -191,22 +234,37 @@ public final class Scene {
         tCursor.selectArrow(camPos, camRay);
     }
     
-    public void moveTranslationCursor(Vector3f camDir, Vector3f rayChange, boolean ctrlHeld) {
-        if(!prevObjectPosSet) {
-            prevObjectPos.set(selectedGameObject.position);
-            prevObjectPosSet = true;
+    public void moveTranslationCursor(Vector3f camDir, Vector3f rayChange, boolean ctrlHeld, String currTool) {
+        if(currTool.equals("Vertex Manipulator")) {
+            if(!prevPosSet) {
+                LinkedHashMap<Integer, Vector3f> tempMap = ((SculptableGameObject) selectedGameObject).getVertexPositions();
+                prevVertPos = new LinkedHashMap<>();
+                for(int i = 0; i < tempMap.size(); i++) prevVertPos.put(i, new Vector3f(tempMap.get(i)));
+                prevPosSet = true;
+            }
+        } else {
+            if(!prevPosSet) {
+                prevObjectPos.set(selectedGameObject.position);
+                prevPosSet = true;
+            }
         }
         
         snapToGrid     = ctrlHeld;
         cursorMovement = tCursor.moveArrow(camDir, rayChange);
     }
     
-    public void finalizeTranslation(CommandHistory cmdHistory) {
-        if(prevObjectPosSet) {
-            cmdHistory.executeCommand(new TranslateGameObject(selectedGameObject, prevObjectPos, selectedGameObject.position));
+    public void finalizeTranslation(CommandHistory cmdHistory, String currTool) {
+        if(currTool.equals("Vertex Manipulator")) {
+            if(prevPosSet) {
+                cmdHistory.executeCommand(new TranslateVertices(((SculptableGameObject) selectedGameObject), prevVertPos, currVertPos));
+            }
+        } else {
+            if(prevPosSet) {
+                cmdHistory.executeCommand(new TranslateGameObject(selectedGameObject, prevObjectPos, selectedGameObject.position));
+            }
         }
         
-        prevObjectPosSet = false;
+        prevPosSet = false;
     }
     
     public void selectRotationCursorCircle(Vector3f camPos, Vector3f camRay) {
@@ -214,9 +272,9 @@ public final class Scene {
     }
     
     public void moveRotationCursor(Vector3f camPos, Vector3f camRay, Vector3f camDir, Vector3f rayChange, boolean ctrlHeld) {
-        if(!prevObjectRotSet) {
+        if(!prevRotSet) {
             prevObjectRot.set(selectedGameObject.rotation);
-            prevObjectRotSet = true;
+            prevRotSet = true;
         }
         
         snapToGrid     = ctrlHeld;
@@ -224,11 +282,11 @@ public final class Scene {
     }
     
     public void finalizeRotation(CommandHistory cmdHistory) {
-        if(prevObjectRotSet) {
+        if(prevRotSet) {
             cmdHistory.executeCommand(new RotateGameObject(selectedGameObject, prevObjectRot, selectedGameObject.rotation));
         }
         
-        prevObjectRotSet = false;
+        prevRotSet = false;
     }
     
     public void selectVertices(Vector3f camPos, Vector3f camRay, boolean ctrlHeld) {
@@ -237,12 +295,17 @@ public final class Scene {
         
         if(!ctrlHeld) selector.clear();
         
-        //TODO: add other types that utilize this tool
-        if(selectedGameObject instanceof VisibleGeometry) {
-            ((VisibleGeometry) selectedGameObject).selectVertices(camPos, tempVec, selector);
+        if(selectedGameObject instanceof SculptableGameObject) {
+            ((SculptableGameObject) selectedGameObject).selectVertices(camPos, tempVec, selector);
         }
     }
     
-    //TODO: too tired- add the rest of the vertex selection stuff tomorrow
+    public boolean getVertexSelected() {
+        return selector.vertexSelected();
+    }
+    
+    public boolean getCursorSelected() {
+        return tCursor.getSelected();
+    }
     
 }
