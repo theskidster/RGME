@@ -9,12 +9,16 @@ import dev.theskidster.rgme.ui.FreeTypeFont;
 import static dev.theskidster.rgme.ui.UI.TOOLBAR_WIDTH;
 import dev.theskidster.rgme.ui.containers.ToolBox;
 import dev.theskidster.rgme.ui.widgets.Scrollbar;
+import dev.theskidster.rgme.ui.widgets.VertexID;
 import dev.theskidster.rgme.utils.Color;
 import dev.theskidster.rgme.utils.Mouse;
 import dev.theskidster.rgme.utils.Observable;
 import dev.theskidster.rgme.utils.Rectangle;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import org.joml.Vector2f;
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  * @author J Hoffman
@@ -22,7 +26,10 @@ import org.joml.Vector2f;
  */
 
 public class VertexTool extends Tool {
-
+    
+    private boolean collectionEmpty;
+    
+    private final Rectangle scissorBox  = new Rectangle();
     private final Rectangle viewport    = new Rectangle(0, 0, 294, 224);
     private final Rectangle addButton   = new Rectangle(0, 0, 24, 24);
     private final Rectangle subButton   = new Rectangle(0, 0, 24, 24);
@@ -30,6 +37,9 @@ public class VertexTool extends Tool {
     private final Icon subIcon          = new Icon(24, 24);
     private final Scrollbar scrollbar   = new Scrollbar(TOOLBAR_WIDTH - 24, 0, 176, 224);
     private final Observable observable = new Observable(this);
+    
+    private LinkedHashMap<Integer, VertexID> vertices   = new LinkedHashMap<>();
+    private LinkedHashMap<Integer, Float> vertexLengths = new LinkedHashMap<>();
     
     public VertexTool(int order) {
         super("Vertex Manipulator", 4, 2, order);
@@ -49,6 +59,12 @@ public class VertexTool extends Tool {
         updateButton(mouse, toolBox);
         
         if(selected) {
+            for(int i = 0; i < vertices.size(); i++) vertexLengths.put(i, 28f);
+            
+            scrollbar.setContentLength(vertexLengths);
+            scrollbar.parentHovered = viewport.contains(mouse.cursorPos);
+            scrollbar.update(mouse);
+            
             if(addButton.contains(mouse.cursorPos)) {
                 if(mouse.clicked) addIcon.setColor(Color.RGME_WHITE);
                 else              addIcon.setColor(Color.RGME_SILVER);
@@ -66,7 +82,22 @@ public class VertexTool extends Tool {
                 subIcon.setColor(Color.RGME_SILVER);
             }
             
-            scrollbar.update(mouse);
+            collectionEmpty = toolBox.getVertexPositions().isEmpty();
+            
+            if(!collectionEmpty) {
+                int order = 0;
+                
+                for(int i = 0; i <= Collections.max(toolBox.getVertexPositions().keySet()); i++) {
+                    if(toolBox.getVertexPositions().containsKey(i)) {
+                        order++;
+
+                        if(vertices.containsKey(i)) vertices.get(i).update(viewport, order, scrollbar.getContentScrollOffset());
+                        else                        vertices.put(i, new VertexID(i));
+                    }
+                }
+            }
+            
+            vertices.entrySet().removeIf(entry -> !toolBox.getVertexPositions().containsKey(entry.getKey()));
         }
         
         return null;
@@ -83,6 +114,11 @@ public class VertexTool extends Tool {
             subIcon.render(uiProgram);
             
             scrollbar.render(uiProgram, background, font);
+            
+            glEnable(GL_SCISSOR_TEST);
+            glScissor((int) scissorBox.xPos, (int) scissorBox.yPos, (int) scissorBox.width, (int) scissorBox.height);
+                if(!collectionEmpty) vertices.values().forEach(vertex -> vertex.render(uiProgram, background, font));
+            glDisable(GL_SCISSOR_TEST);
         }
     }
     
@@ -92,6 +128,11 @@ public class VertexTool extends Tool {
         
         viewport.xPos = parentPosX + 42;
         viewport.yPos = parentPosY;
+        
+        scissorBox.xPos   = viewport.xPos;
+        scissorBox.yPos   = ToolBox.getWindowHeight() - (viewport.yPos + viewport.height);
+        scissorBox.width  = viewport.xPos + viewport.width;
+        scissorBox.height = viewport.height;
         
         addButton.xPos = parentPosX + (TOOLBAR_WIDTH - 64);
         addButton.yPos = parentPosY - 32;

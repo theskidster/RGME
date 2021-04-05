@@ -249,7 +249,7 @@ public final class Scene {
             }
         }
         
-        snapToGrid     = ctrlHeld;
+        snapToGrid     = ctrlHeld; //TODO: implement grid snap
         cursorMovement = tCursor.moveArrow(camDir, rayChange);
     }
     
@@ -298,6 +298,12 @@ public final class Scene {
         if(selectedGameObject instanceof SculptableGameObject) {
             ((SculptableGameObject) selectedGameObject).selectVertices(camPos, tempVec, selector);
         }
+        
+        /*
+        Applying a transformation using a shapes matrix will not effect the positions
+        of the vertices- selection may become difficult since the positions no longer
+        reflect their visual counterparts. Keep this in mind when sculpting mesh.
+        */
     }
     
     public boolean getVertexSelected() {
